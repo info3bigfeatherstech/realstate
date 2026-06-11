@@ -3,13 +3,17 @@ import React, { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { TAB_REGISTRY } from "./TabRegistry";
 import { ROLE_PERMISSIONS, ROLE_LABELS, ROLES } from "./roles";
+import { useDispatch, useSelector } from "react-redux";
+import { clearCredentials } from "../../REDUX_FEATURES/REDUX_SLICES/auth/authSlice";
+import { useLogoutMutation } from "../../REDUX_FEATURES/REDUX_SLICES/auth/authApi";
 
 const AdminDashboard = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [logoutApi] = useLogoutMutation();
 
-  // Mocking user auth (replace with Redux or Auth Context state)
-  const user = { name: "Rajesh Kumar", role: ROLES.SUPER_ADMIN };
+  const user = useSelector((state) => state.auth.user);
 
   const activeRole = user?.role || ROLES.AGENT;
   const allowedTabIds = ROLE_PERMISSIONS[activeRole] || [];
@@ -35,14 +39,25 @@ const AdminDashboard = () => {
     setIsSidebarOpen(false);
   };
 
-  const handleLogout = () => {
-    // Implement logout logic here
-    console.log("Logged out");
-    navigate("/");
+  const handleLogout = async () => {
+    try {
+      await logoutApi().unwrap();
+    } catch (err) {
+      // Even if backend logout fails (e.g. token already expired),
+      // proceed to clear local state and redirect.
+      console.error("Logout API error:", err);
+    } finally {
+      dispatch(clearCredentials());
+      navigate("/login", { replace: true });
+    }
   };
 
   const activeTabConfig = allowedTabs.find((t) => t.id === activeTab);
   const TabComponent = activeTabConfig?.component ?? null;
+
+  if (!user) {
+    return null; // ProtectedRoute / App bootstrap should prevent this, but guard anyway
+  }
 
   return (
     <div className="flex min-h-screen bg-slate-50 text-slate-800 font-sans">
@@ -81,8 +96,8 @@ const AdminDashboard = () => {
                 key={tab.id}
                 onClick={() => handleTabClick(tab.id)}
                 className={`w-full flex items-center space-x-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 cursor-pointer ${isActive
-                    ? "bg-blue-50 text-blue-600 shadow-sm"
-                    : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                  ? "bg-blue-50 text-blue-600 shadow-sm"
+                  : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
                   }`}
               >
                 <svg
