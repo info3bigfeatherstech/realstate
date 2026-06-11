@@ -5,6 +5,14 @@ import LOGO from "../../assets/logo1.png";
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const NAV_LINKS = [""];
+const NAVBAR_BG = "#0f0301";
+const LOGO_CONTENT_TOP_RATIO = 825 / 4500;
+const LOGO_CONTENT_HEIGHT_RATIO = 2480 / 4500;
+const LOGO_VISIBLE_HEIGHT = {
+    base: 68,
+    sm: 76,
+    xl: 88,
+};
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
@@ -50,10 +58,34 @@ function MobileNavLink({ item, isActive, onClick }) {
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 
+function LogoMark({ visibleHeight }) {
+    const fullHeight = visibleHeight / LOGO_CONTENT_HEIGHT_RATIO;
+    const offsetTop = -(LOGO_CONTENT_TOP_RATIO * fullHeight);
+
+    return (
+        <div
+            className="shrink-0 overflow-hidden"
+            style={{ height: visibleHeight, width: fullHeight, backgroundColor: NAVBAR_BG }}
+        >
+            <img
+                src={LOGO}
+                alt="Mehta Estates"
+                className="block max-w-none"
+                style={{
+                    height: fullHeight,
+                    width: fullHeight,
+                    marginTop: offsetTop,
+                }}
+            />
+        </div>
+    );
+}
+
 export default function Navbar() {
     const [active, setActive] = useState("Buy");
     const [menuOpen, setMenuOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
+    const [logoVisibleHeight, setLogoVisibleHeight] = useState(LOGO_VISIBLE_HEIGHT.base);
 
     useEffect(() => {
         const handleScroll = () => setScrolled(window.scrollY > 10);
@@ -61,34 +93,40 @@ export default function Navbar() {
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
+    useEffect(() => {
+        const updateLogoHeight = () => {
+            const w = window.innerWidth;
+            if (w >= 1280) setLogoVisibleHeight(LOGO_VISIBLE_HEIGHT.xl);
+            else if (w >= 640) setLogoVisibleHeight(LOGO_VISIBLE_HEIGHT.sm);
+            else setLogoVisibleHeight(LOGO_VISIBLE_HEIGHT.base);
+        };
+        updateLogoHeight();
+        window.addEventListener("resize", updateLogoHeight);
+        return () => window.removeEventListener("resize", updateLogoHeight);
+    }, []);
+
     return (
         <>
             {/* ── Desktop Header ── */}
             <header
                 className={`sticky top-0 font-['satoshi'] z-50 transition-all duration-500 ${scrolled
-                    ? "bg-white/75 backdrop-blur-xl border-b border-black/5"
-                    : "bg-[#f5f5f3]"
+                    ? "backdrop-blur-xl border-b border-white/10"
+                    : ""
                     }`}
+                style={{ backgroundColor: scrolled ? `${NAVBAR_BG}f2` : NAVBAR_BG }}
             >
                 <div className="w-full px-5 md:px-10 lg:px-16">
-                    {/* Header height bumped from h-[88px] to h-[110px] to give large logos breathing room */}
-                    <div className="h-[110px] flex items-center justify-between transition-all duration-300">
+                    <div className="h-[88px] flex items-center justify-between transition-all duration-300">
 
                         {/* Left — Logo + Nav */}
                         <div className="flex items-center gap-10">
 
-                            {/* Logo Wrapper scaled up dramatically */}
-                            <a href="/" className="flex items-center select-none py-1">
-                                <img
-                                    src={LOGO}
-                                    alt="Vistahaven"
-                                    style={{
-                                        height: "96px", // Increased from 76px to 96px
-                                        width: "auto",
-                                        objectFit: "contain"
-                                    }}
-                                    className="drop-shadow-sm"
-                                />
+                            <a
+                                href="/"
+                                className="flex shrink-0 items-center select-none"
+                                style={{ backgroundColor: NAVBAR_BG }}
+                            >
+                                <LogoMark visibleHeight={logoVisibleHeight} />
                             </a>
 
                             {/* Desktop nav links */}
@@ -112,29 +150,32 @@ export default function Navbar() {
 
                         {/* Right — Actions */}
                         <div className="hidden xl:flex items-center gap-3">
-                            <button className="group flex items-center gap-3 rounded-full bg-[#111] pl-5 pr-2 py-2 text-white transition-all duration-300 hover:bg-black">
+                            <button className="group flex items-center gap-3 rounded-full bg-white pl-5 pr-2 py-2 text-black transition-all duration-300 hover:bg-white/90">
                                 <span className="text-[14px] font-medium">Post Property</span>
-                                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-black transition-transform duration-300 group-hover:rotate-45">
+                                <div
+                                    className="flex h-9 w-9 items-center justify-center rounded-full text-white transition-transform duration-300 group-hover:rotate-45"
+                                    style={{ backgroundColor: NAVBAR_BG }}
+                                >
                                     <ArrowIcon />
                                 </div>
                             </button>
 
-                            <button className="flex h-11 w-11 items-center justify-center rounded-full border border-black/5 bg-white text-black transition-all duration-300 hover:bg-[#f3f3f3]">
+                            <button className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white transition-all duration-300 hover:bg-white/20">
                                 <Heart size={18} />
                             </button>
 
-                            <button className="flex items-center gap-2 rounded-full bg-[#e5c7c7] px-2 pr-4 py-2">
-                                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#c79f9f] text-[14px] font-bold text-black">
+                            <button className="flex items-center gap-2 rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/10 px-2 pr-4 py-2 text-white">
+                                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#D4AF37] text-[14px] font-bold text-[#0f0301]">
                                     K
                                 </div>
-                                <ChevronDown size={14} />
+                                <ChevronDown size={14} className="text-white/80" />
                             </button>
                         </div>
 
                         {/* Mobile menu toggle */}
                         <button
                             onClick={() => setMenuOpen(!menuOpen)}
-                            className="flex xl:hidden h-11 w-11 items-center justify-center rounded-full bg-black text-white"
+                            className="flex xl:hidden h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white"
                         >
                             {menuOpen ? <X size={20} /> : <Menu size={20} />}
                         </button>
