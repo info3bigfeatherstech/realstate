@@ -17,10 +17,11 @@ export const ROLE_PERMISSIONS = {
     "add-property",
     "edit-property",
     "property-detail",
+    "users",
+    "subscriptions",
     "leads",
-    "agents",
-    "bookings",
-    "analytics",
+    "documents",
+    "eliteservices",
     "settings"
   ],
   [ROLES.AGENT]: [

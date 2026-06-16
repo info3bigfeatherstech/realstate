@@ -1,28 +1,28 @@
-// src/tabs/Settings/SettingsDashboard.jsx
+// src/tabs/DocumentsTab/DocumentsTab.jsx
 import React, { Suspense } from "react";
 import { useSearchParams } from "react-router-dom";
-import { SETTINGS_REGISTRY } from "./settingsRegistry";
+import { DOCUMENTS_REGISTRY } from "./DocumentsRegistry";
 
-const SettingsDashboard = () => {
+const DocumentsTab = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const activeSubTab = searchParams.get("ctab") || "generalsettings";
+  const activeSubTab = searchParams.get("ctab") || "userkyc";
 
   const handleSubTabClick = (subId) => {
     setSearchParams({
-      tab: "settings",
+      tab: "documents",
       ctab: subId,
     });
   };
 
-  const activeConfig = SETTINGS_REGISTRY.find((sub) => sub.id === activeSubTab) || SETTINGS_REGISTRY[0];
+  const activeConfig = DOCUMENTS_REGISTRY.find((sub) => sub.id === activeSubTab) || DOCUMENTS_REGISTRY[0];
   const SubComponent = activeConfig.component;
 
   return (
     <div className="space-y-6">
       {/* Horizontal Sub-tabs */}
       <div className="flex border-b border-slate-200 overflow-x-auto whitespace-nowrap">
-        {SETTINGS_REGISTRY.map((sub) => {
+        {DOCUMENTS_REGISTRY.map((sub) => {
           const isActive = activeSubTab === sub.id;
           return (
             <button
@@ -59,4 +59,4 @@ const SettingsDashboard = () => {
   );
 };
 
-export default SettingsDashboard;
+export default DocumentsTab;
