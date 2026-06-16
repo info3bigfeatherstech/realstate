@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { useGetPropertyByIdQuery } from "../../../REDUX_FEATURES/REDUX_SLICES/userPropertyApi/userPropertyApi";
 import PropertyMap from "./PropertyMap";
+import { formatListingTypeLabel } from "../../../utils/listingType";
 
 function formatPrice(price, listingType) {
     if (!price && price !== 0) return "—";
@@ -183,7 +184,7 @@ export default function PropertyDetailPage() {
                             {property.listingType && (
                                 <span className="inline-flex items-center gap-1.5 rounded-full bg-[#111] px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-white">
                                     <Tag size={10} />
-                                    {property.listingType}
+                                    {formatListingTypeLabel(property.listingType)}
                                 </span>
                             )}
                             {property.propertyType && (

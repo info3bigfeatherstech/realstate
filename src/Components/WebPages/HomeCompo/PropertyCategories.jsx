@@ -45,7 +45,7 @@ const categories = [
     },
 
     {
-        title: "Luxury Villas",
+        title: "Luxury Homes",
         properties: "1,200+ Properties",
         image:
             "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=1200&auto=format&fit=crop",
@@ -114,7 +114,7 @@ const PropertyCategories = () => {
                 text-[#081630]
               "
                         >
-                            Apartments, Villas
+                            Apartments, Homes
                             <br className="hidden sm:inline" /> and More
                         </h2>
 
@@ -127,7 +127,7 @@ const PropertyCategories = () => {
               "
                         >
                             Explore verified residential apartments,
-                            luxury villas, commercial spaces,
+                            luxury homes, commercial spaces,
                             builder floors and investment-ready plots
                             across India's fastest-growing cities.
                         </p>

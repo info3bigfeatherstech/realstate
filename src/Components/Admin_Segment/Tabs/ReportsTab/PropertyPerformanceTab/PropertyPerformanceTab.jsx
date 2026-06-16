@@ -6,7 +6,7 @@ const DATE_RANGES = ["Today", "This Week", "This Month", "Custom Range"];
 const MOCK_PROPERTIES = [
   { property: "2BHK Sea View Apartment, Bandra", views: 1240, inquiries: 38, visits: 12, status: "Active" },
   { property: "Commercial Office Space, Andheri", views: 860, inquiries: 22, visits: 6, status: "Active" },
-  { property: "3BHK Villa, Whitefield", views: 2010, inquiries: 54, visits: 19, status: "Sold" },
+  { property: "3BHK Independent House, Whitefield", views: 2010, inquiries: 54, visits: 19, status: "Sold" },
   { property: "1BHK Studio, Koramangala", views: 540, inquiries: 15, visits: 4, status: "Active" },
 ];
 

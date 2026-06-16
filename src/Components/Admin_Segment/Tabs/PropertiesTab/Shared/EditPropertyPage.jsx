@@ -197,7 +197,7 @@ const EditPropertyPage = () => {
       },
     };
 
-    if (formData.listingType === "For Sale" || formData.listingType === "BUY") {
+    if (formData.listingType === "For Sell" || formData.listingType === "For Sale" || formData.listingType === "BUY") {
       payload.saleDetails = { possessionStatus: "Immediate Possession", loanAvailability: "Available" };
     }
 

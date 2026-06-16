@@ -16,7 +16,6 @@ const FALLBACK_CONSTANTS = {
   INQUIRY_PROPERTY_TYPES: [
     "Flat / Apartment",
     "Independent House",
-    "Villa",
     "Studio Apartment",
     "Shop",
     "Office Space",

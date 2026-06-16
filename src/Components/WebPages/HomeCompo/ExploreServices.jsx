@@ -23,7 +23,7 @@ const services = [
 
     {
         title: "Renting a home",
-        desc: "Apartments, villas and builder floors",
+        desc: "Apartments, homes and builder floors",
         icon: <House size={28} />,
     },
 

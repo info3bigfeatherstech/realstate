@@ -11,7 +11,7 @@ import { ArrowUpRight } from "lucide-react";
 
 const tabs = [
     { label: "All", value: "", },
-    { label: "Buy", value: "For Sale", },
+    { label: "Buy", value: "For Sell", },
     { label: "Rent", value: "For Rent", },
     { label: "PG", value: "PG", },
     { label: "Commercial", value: "Office Space", },

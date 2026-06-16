@@ -29,7 +29,7 @@ const MOCK_DOCS = [
   },
   {
     id: "ADOC0003",
-    documentName: "Completion Certificate (CC) - 3BHK Villa, Whitefield",
+    documentName: "Completion Certificate (CC) - 3BHK Independent House, Whitefield",
     uploadedBy: "Arjun Verma",
     uploadedDate: "12 May 2026",
     status: "Rejected",

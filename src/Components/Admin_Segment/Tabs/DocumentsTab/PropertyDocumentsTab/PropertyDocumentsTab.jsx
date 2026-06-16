@@ -29,7 +29,7 @@ const MOCK_DOCS = [
   },
   {
     id: "PDOC0003",
-    documentName: "Mutation Certificate - 3BHK Villa, Whitefield",
+    documentName: "Mutation Certificate - 3BHK Independent House, Whitefield",
     uploadedBy: "Arjun Verma",
     uploadedDate: "02 Jun 2026",
     status: "Rejected",

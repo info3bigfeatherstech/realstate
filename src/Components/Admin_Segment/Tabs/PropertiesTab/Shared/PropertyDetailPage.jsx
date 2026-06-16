@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import { useGetPropertyByIdQuery, useDeletePropertyMutation } from "../../../Admin_Redux/PropertyApi/propertyApi";
 import PropertyMap from "../../../../UserSide/PropertyDetailPage/PropertyMap";
+import { isSellListingType, formatListingTypeLabel } from "../../../../../utils/listingType";
 
 
 const formatPrice = (n, listingType) => {
@@ -227,7 +228,7 @@ const PropertyDetailPage = () => {
                         </div>
                         <div className="space-y-0">
                             <InfoRow label="Listing ID" value={property.listingId} />
-                            <InfoRow label="Listing Type" value={property.listingType} />
+                            <InfoRow label="Listing Type" value={formatListingTypeLabel(property.listingType)} />
                             <InfoRow label="Property Type" value={property.propertyType} />
                             <InfoRow label="Ownership" value={property.ownershipType} />
                             <InfoRow label="Construction" value={property.constructionStatus} />
@@ -278,7 +279,7 @@ const PropertyDetailPage = () => {
                 </section>
 
                 {/* Sale Details Section */}
-                {property.saleDetails && (property.listingType === "For Sale" || property.listingType === "BUY") && (
+                {property.saleDetails && isSellListingType(property.listingType) && (
                     <section className="p-8 border-b border-slate-100 bg-slate-50/50">
                         <h4 className="text-base font-bold text-slate-800 mb-5 flex items-center gap-2">
                             <Building2 className="w-5 h-5 text-blue-600" />

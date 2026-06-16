@@ -38,7 +38,7 @@ const testimonials = [
         role: "Architect",
         image: "https://randomuser.me/api/portraits/men/76.jpg",
         text:
-            "The luxury villa options were incredible. I loved how premium yet simple the browsing experience felt.",
+            "The luxury home options were incredible. I loved how premium yet simple the browsing experience felt.",
     },
 ];
 

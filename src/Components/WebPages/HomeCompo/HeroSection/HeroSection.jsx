@@ -41,7 +41,7 @@ const TAB_CONFIG = {
         stats: "12K+ Properties",
         placeholders: [
             "Search luxury apartments in Noida",
-            "Find villas near expressway",
+            "Find homes near expressway",
             "Explore premium 3 BHK homes",
         ],
         trending: ["Ready To Move", "Luxury Homes", "Sea Facing", "Smart Apartments"],

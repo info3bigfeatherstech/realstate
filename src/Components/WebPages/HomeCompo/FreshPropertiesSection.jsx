@@ -28,7 +28,7 @@ const properties = [
     },
 
     {
-        title: "Premium Villa",
+        title: "Premium Penthouse",
         price: "₹3.2 Cr",
         sqft: "4200 sqft",
         location: "Sarjapur Road",

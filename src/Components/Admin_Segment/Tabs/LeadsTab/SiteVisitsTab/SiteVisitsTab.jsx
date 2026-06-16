@@ -13,7 +13,7 @@ const STATUS_STYLES = {
 const MOCK_VISITS = [
   {
     id: "VISIT0001",
-    property: "3BHK Villa, Whitefield",
+    property: "3BHK Independent House, Whitefield",
     userName: "Arjun Verma",
     contact: "+91 98765 33333",
     leadType: "Buy",

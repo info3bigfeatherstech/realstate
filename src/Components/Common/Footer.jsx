@@ -5,7 +5,7 @@ import LOGO from "../../assets/m.png";
 
 const NAV_LINKS = {
     "Quick Links": ["Contact Us", "Student Support", "Utility Services"],
-    "Properties": ["Flat", "Villa", "Penthouse"],
+    "Properties": ["Flat", "Penthouse"],
     "More Properties": ["Studio Apartment","Office Space", "Warehouse", "Shop" ],
 };
 
@@ -162,7 +162,7 @@ export default function Footer() {
                             </h3>
 
                             <p className="lg:mt-7 max-w-[500px] text-[17px] leading-[1.9] text-white">
-                                Discover premium apartments, luxury villas, commercial spaces
+                                Discover premium apartments, luxury homes, commercial spaces
                                 and investment-ready properties across India's fastest growing cities.
                             </p>
 

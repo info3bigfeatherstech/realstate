@@ -126,7 +126,7 @@ const DocumentUpload = ({ label, file, url, name, onFileChange, onRemove }) => {
 
 // ─── Schema-matched enum arrays ────────────────────────────────────────────────
 
-const LISTING_TYPES = ["For Sale", "For Rent", "BUY", "PG"];
+const LISTING_TYPES = ["For Sell", "For Rent", "BUY", "PG"];
 
 const PROPERTY_TYPES = [
     "Flat",

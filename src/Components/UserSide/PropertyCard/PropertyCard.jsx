@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { MapPin, BedDouble, Bath, Maximize2, Heart, ArrowUpRight } from "lucide-react";
+import { formatListingTypeLabel } from "../../../utils/listingType";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -16,12 +17,12 @@ function formatPrice(price, listingType) {
 }
 
 function getTag(property) {
-    if (property.listingType === "For Sale") return "For Sale";
+    if (property.listingType === "For Sell" || property.listingType === "For Sale") return "For Sell";
     if (property.listingType === "For Rent") return "For Rent";
     if (property.listingType === "PG") return "PG";
     if (property.propertyType === "Office Space") return "Commercial";
     if (property.propertyType === "Residential Plot") return "Plot";
-    return property.listingType || "Featured";
+    return formatListingTypeLabel(property.listingType) || "Featured";
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────

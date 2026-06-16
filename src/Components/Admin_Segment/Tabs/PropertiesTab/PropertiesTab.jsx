@@ -25,6 +25,7 @@ import {
   selectAllIds,
   clearSelectedIds,
 } from "../../Admin_Redux/PropertyApi/propertySlice";
+import { formatListingTypeLabel, isSellListingType } from "../../../../utils/listingType";
 
 const StatusBadge = ({ status }) => {
   const styles = {
@@ -41,10 +42,10 @@ const StatusBadge = ({ status }) => {
 };
 
 const ListingBadge = ({ type }) => {
-  const isSale = type === "For Sale";
+  const isSale = isSellListingType(type) && type !== "BUY";
   return (
     <span className={`px-2 py-0.5 rounded-md text-xs font-semibold ${isSale ? "bg-blue-100 text-blue-700" : "bg-purple-100 text-purple-700"}`}>
-      {type}
+      {formatListingTypeLabel(type)}
     </span>
   );
 };
@@ -197,7 +198,7 @@ const PropertiesTab = () => {
 
         <select value={listingType} onChange={(e) => dispatch(setListingType(e.target.value))} className="px-4 py-2.5 text-sm border border-slate-200 rounded-xl bg-white cursor-pointer">
           <option value="">All Listing Types</option>
-          <option value="For Sale">For Sale</option>
+          <option value="For Sell">For Sell</option>
           <option value="For Rent">For Rent</option>
           <option value="BUY">BUY</option>
           <option value="PG">PG</option>
