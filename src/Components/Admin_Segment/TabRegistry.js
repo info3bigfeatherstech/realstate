@@ -6,14 +6,13 @@ const PropertiesTab = lazy(() => import("./Tabs/PropertiesTab/PropertiesTab"));
 const AddPropertyPage = lazy(() => import("./Tabs/PropertiesTab/Shared/AddPropertyPage"));
 const EditPropertyPage = lazy(() => import("./Tabs/PropertiesTab/Shared/EditPropertyPage"));
 const PropertyDetailPage = lazy(() => import("./Tabs/PropertiesTab/Shared/PropertyDetailPage"));
-const UsersTab = lazy(() => import("./tabs/UsersTab/UsersTab"));
-const SubscriptionsTab = lazy(() => import("./tabs/SubscriptionsTab/SubscriptionsTab"));
-const LeadsTab = lazy(() => import("./tabs/LeadsTab/LeadsTab"));
-const DocumentsTab = lazy(() => import("./tabs/DocumentsTab/DocumentsTab"));
-const ReportsTab = lazy(() => import("./tabs/ReportsTab/ReportsTab"));
+const UsersTab = lazy(() => import("./Tabs/UsersTab/UsersTab"));
+const SubscriptionsTab = lazy(() => import("./Tabs/SubscriptionsTab/SubscriptionsTab"));
+const LeadsTab = lazy(() => import("./Tabs/LeadsTab/LeadsTab"));
+const DocumentsTab = lazy(() => import("./Tabs/DocumentsTab/DocumentsTab"));
+const ReportsTab = lazy(() => import("./Tabs/ReportsTab/ReportsTab"));
 const UtilityServicesTab = lazy(() => import("./Tabs/UtilityServicesTab/UtilityServicesTab"));
-const SettingsDashboard = lazy(() => import("./tabs/Settings/SettingsDashboard"));
-// const SettingsDashboard = lazy(() => import("./tabs/Settings/SettingsDashboard"));
+const SettingsDashboard = lazy(() => import("./Tabs/Settings/SettingsDashboard"));
 
 export const TAB_REGISTRY = [
   {
