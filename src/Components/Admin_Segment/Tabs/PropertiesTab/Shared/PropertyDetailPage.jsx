@@ -1,4 +1,3 @@
-/ src/Tabs/PropertiesTab/Shared/PropertyDetailPage.jsx
 import React, { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import {

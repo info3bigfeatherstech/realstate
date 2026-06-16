@@ -1,28 +1,30 @@
-// src/tabs/Settings/SettingsDashboard.jsx
+// src/tabs/Users/UserDashboard.jsx
 import React, { Suspense } from "react";
 import { useSearchParams } from "react-router-dom";
 import { SETTINGS_REGISTRY } from "./settingsRegistry";
 
-const SettingsDashboard = () => {
+const UserDashboard = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const activeSubTab = searchParams.get("ctab") || "generalsettings";
+  // Sub-tab is stored in URL as ctab (child tab) parameter
+  const activeSubTab = searchParams.get("ctab") || "allusers";
 
   const handleSubTabClick = (subId) => {
+    // Keep parent tab in URL, only update child tab (ctab)
     setSearchParams({
       tab: "settings",
       ctab: subId,
     });
   };
 
-  const activeConfig = SETTINGS_REGISTRY.find((sub) => sub.id === activeSubTab) || SETTINGS_REGISTRY[0];
+  const activeConfig = USERS_REGISTRY.find((sub) => sub.id === activeSubTab) || USERS_REGISTRY[0];
   const SubComponent = activeConfig.component;
 
   return (
     <div className="space-y-6">
-      {/* Horizontal Sub-tabs */}
-      <div className="flex border-b border-slate-200 overflow-x-auto whitespace-nowrap">
-        {SETTINGS_REGISTRY.map((sub) => {
+      {/* Horizontal Scroll bar */}
+      <div className="flex border-b border-slate-200 overflow-x-auto whitespace-nowrap scrollbar-none">
+        {USERS_REGISTRY.map((sub) => {
           const isActive = activeSubTab === sub.id;
           return (
             <button
@@ -35,28 +37,19 @@ const SettingsDashboard = () => {
               }`}
             >
               {sub.label}
-              {sub.badge && (
-                <span className="ml-2 px-1.5 py-0.5 text-xs rounded-full bg-slate-100 text-slate-600">
-                  {sub.badge}
-                </span>
-              )}
             </button>
           );
         })}
       </div>
 
-      {/* Render selected component */}
-      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm">
-        <Suspense fallback={
-          <div className="flex items-center justify-center py-20">
-            <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
-          </div>
-        }>
-          <SubComponent />
+      {/* Render selected child component */}
+      <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+        <Suspense fallback={<div className="py-10 text-center text-slate-400">Loading Configuration...</div>}>
+          {SubComponent ? <SubComponent /> : <div>Component Not Configured</div>}
         </Suspense>
       </div>
     </div>
   );
 };
 
-export default SettingsDashboard;
+export default UserDashboard;
