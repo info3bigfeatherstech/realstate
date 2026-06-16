@@ -1,3 +1,4 @@
+// src/Components/Admin_Segment/Tabs/PropertiesTab/Shared/LocationPicker.jsx
 import { useState, useEffect, useCallback } from "react";
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import L from "leaflet";

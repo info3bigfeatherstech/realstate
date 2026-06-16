@@ -22,6 +22,8 @@ export const ROLE_PERMISSIONS = {
     "leads",
     "documents",
     "eliteservices",
+    "add-utility-service",
+    "edit-utility-service",
     "settings"
   ],
   [ROLES.AGENT]: [

@@ -5,6 +5,11 @@ import propertyReducer from "../../Components/Admin_Segment/Admin_Redux/Property
 import { propertyApi } from "../../Components/Admin_Segment/Admin_Redux/PropertyApi/propertyApi";
 import userPropertyReducer from "../REDUX_SLICES/userPropertyApi/userPropertySlice";
 import { userPropertyApi } from "../REDUX_SLICES/userPropertyApi/userPropertyApi";
+import { eliteServiceApi } from "../../Components/Admin_Segment/Admin_Redux/EliteServiceApi/eliteServiceApi";
+import eliteServiceReducer from "../../Components/Admin_Segment/Admin_Redux/EliteServiceApi/eliteServiceSlice";
+
+import { userEliteServiceApi } from "../REDUX_SLICES/userEliteServiceApi/userEliteServiceApi";
+import userEliteServiceReducer from "../REDUX_SLICES/userEliteServiceApi/userEliteServiceSlice";
 
 export const store = configureStore({
     reducer: {
@@ -14,9 +19,13 @@ export const store = configureStore({
         [propertyApi.reducerPath]: propertyApi.reducer,
         userProperty: userPropertyReducer,
         [userPropertyApi.reducerPath]: userPropertyApi.reducer,
+        eliteService: eliteServiceReducer,
+        [eliteServiceApi.reducerPath]: eliteServiceApi.reducer,
+        userEliteService: userEliteServiceReducer,
+        [userEliteServiceApi.reducerPath]: userEliteServiceApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware().concat(authApi.middleware, propertyApi.middleware, userPropertyApi.middleware),
+        getDefaultMiddleware().concat(authApi.middleware, propertyApi.middleware, userPropertyApi.middleware, eliteServiceApi.middleware,userEliteServiceApi.middleware),
 });
 
 
