@@ -1,9 +1,12 @@
-import React from 'react'
+import React from "react";
+import AccommodationInquiryFormBody from "./Shared/AccommodationInquiryFormBody";
 
 const Accommodation = () => {
   return (
-    <div>user side Accommodation</div>
-  )
-}
+    <div className="min-h-screen bg-slate-50">
+      <AccommodationInquiryFormBody />
+    </div>
+  );
+};
 
 export default Accommodation;

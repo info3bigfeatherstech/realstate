@@ -16,6 +16,7 @@ import Footer from "./Components/Common/Footer";
 import PropertyDetailPage from "./Components/UserSide/PropertyDetailPage/PropertyDetailPage";
 import ContactUs from "./Components/WebPages/ContactUs/ContactUs";
 import Eliteservices from "./Components/WebPages/Utilities/Eliteservices";
+import Accommodation from "./Components/WebPages/EnquiryPages/Accommodation/Accommodation";
 
 
 // ─── Routes where Navbar & Footer should NOT appear ──────────────────────────
@@ -107,6 +108,7 @@ function App() {
           <Route path="/property/:id" element={<PropertyDetailPage />} />
           <Route path="/contact" element={<ContactUs />} />
           <Route path="/eliteservices" element={<Eliteservices />} />
+          <Route path="/enquiry" element={<Accommodation />} />
 
           {/* catch all redirect to home*/}
           <Route path="*" element={<Navigate to="/" replace />} />

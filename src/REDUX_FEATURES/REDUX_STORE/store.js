@@ -10,6 +10,10 @@ import eliteServiceReducer from "../../Components/Admin_Segment/Admin_Redux/Elit
 
 import { userEliteServiceApi } from "../REDUX_SLICES/userEliteServiceApi/userEliteServiceApi";
 import userEliteServiceReducer from "../REDUX_SLICES/userEliteServiceApi/userEliteServiceSlice";
+import { constantsApi } from "../REDUX_SLICES/constantsApi/constantsApi";
+import { userAccommodationInquiryApi } from "../REDUX_SLICES/userAccommodationInquiryApi/userAccommodationInquiryApi";
+import { accommodationInquiryApi } from "../../Components/Admin_Segment/Admin_Redux/AccommodationInquiryApi/accommodationInquiryApi";
+import accommodationInquiryReducer from "../../Components/Admin_Segment/Admin_Redux/AccommodationInquiryApi/accommodationInquirySlice";
 
 export const store = configureStore({
     reducer: {
@@ -23,9 +27,22 @@ export const store = configureStore({
         [eliteServiceApi.reducerPath]: eliteServiceApi.reducer,
         userEliteService: userEliteServiceReducer,
         [userEliteServiceApi.reducerPath]: userEliteServiceApi.reducer,
+        [constantsApi.reducerPath]: constantsApi.reducer,
+        [userAccommodationInquiryApi.reducerPath]: userAccommodationInquiryApi.reducer,
+        accommodationInquiry: accommodationInquiryReducer,
+        [accommodationInquiryApi.reducerPath]: accommodationInquiryApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware().concat(authApi.middleware, propertyApi.middleware, userPropertyApi.middleware, eliteServiceApi.middleware,userEliteServiceApi.middleware),
+        getDefaultMiddleware().concat(
+            authApi.middleware,
+            propertyApi.middleware,
+            userPropertyApi.middleware,
+            eliteServiceApi.middleware,
+            userEliteServiceApi.middleware,
+            constantsApi.middleware,
+            userAccommodationInquiryApi.middleware,
+            accommodationInquiryApi.middleware
+        ),
 });
 
 

@@ -3,6 +3,7 @@ import { lazy } from "react";
 
 const AllLeadsTab = lazy(() => import("./AllLeadsTab/AllLeadsTab"));
 const SiteVisitsTab = lazy(() => import("./SiteVisitsTab/SiteVisitsTab"));
+const AccommodationInquiriesTab = lazy(() => import("./AccommodationInquiriesTab/AccommodationInquiriesTab"));
 
 export const LEADS_REGISTRY = [
   {
@@ -14,5 +15,10 @@ export const LEADS_REGISTRY = [
     id: "sitevisits",
     label: "Site Visits",
     component: SiteVisitsTab,
+  },
+  {
+    id: "accommodationinquiries",
+    label: "Accommodation Inquiries",
+    component: AccommodationInquiriesTab,
   },
 ];
