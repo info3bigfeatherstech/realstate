@@ -10,3 +10,10 @@ export const formatListingTypeLabel = (listingType) => {
 
 /** Normalize before API submit (legacy clients / edit forms). */
 export const normalizeListingTypeForSubmit = (listingType) => formatListingTypeLabel(listingType);
+
+/** Normalize dropdown options from /constants (handles old backend still sending For Sale). */
+export const normalizeListingTypesList = (types) => {
+  const source = Array.isArray(types) && types.length ? types : null;
+  if (!source) return null;
+  return [...new Set(source.map(formatListingTypeLabel))];
+};

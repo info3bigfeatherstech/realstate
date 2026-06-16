@@ -5,6 +5,7 @@ import {
 } from "lucide-react";
 import LocationPicker from "./LocationPicker";
 import { useGetConstantsQuery } from "../../../../../REDUX_FEATURES/REDUX_SLICES/constantsApi/constantsApi";
+import { normalizeListingTypesList } from "../../../../../utils/listingType";
 
 const inputCls = "w-full h-10 px-3 rounded-lg border border-slate-300 focus:border-blue-600 focus:ring-1 focus:ring-blue-600 outline-none text-sm";
 const labelCls = "block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5";
@@ -179,7 +180,7 @@ const NEARBY_FACILITIES = [
 
 const PropertyFormBody = ({ formData, onChange }) => {
     const { data: constants } = useGetConstantsQuery();
-    const listingTypes = constants?.LISTING_TYPES || FALLBACK_LISTING_TYPES;
+    const listingTypes = normalizeListingTypesList(constants?.LISTING_TYPES) || FALLBACK_LISTING_TYPES;
     const propertyTypes = constants?.PROPERTY_TYPES || FALLBACK_PROPERTY_TYPES;
 
     const set = (field) => (val) => onChange(field, val);
