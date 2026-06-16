@@ -162,6 +162,7 @@ export const TAB_REGISTRY = [
     component: UtilityServicesTab,
     badge: null,
   },
+  
    {
     id: "settings",
     label: "Settings",
