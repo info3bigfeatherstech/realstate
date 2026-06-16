@@ -4,6 +4,7 @@ import {
     ChevronUp, ChevronDown, Upload, X,
 } from "lucide-react";
 import LocationPicker from "./LocationPicker";
+import { useGetConstantsQuery } from "../../../../../REDUX_FEATURES/REDUX_SLICES/constantsApi/constantsApi";
 
 const inputCls = "w-full h-10 px-3 rounded-lg border border-slate-300 focus:border-blue-600 focus:ring-1 focus:ring-blue-600 outline-none text-sm";
 const labelCls = "block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5";
@@ -126,25 +127,13 @@ const DocumentUpload = ({ label, file, url, name, onFileChange, onRemove }) => {
 
 // ─── Schema-matched enum arrays ────────────────────────────────────────────────
 
-const LISTING_TYPES = ["For Sell", "For Rent", "BUY", "PG"];
-
-const PROPERTY_TYPES = [
-    "Flat",
-    "Builder Floor",
-    "Independent House",
-    "Penthouse",
-    "Farmhouse",
-    "Studio Apartment",
-    "Office Space",
-    "Shop",
-    "Showroom",
-    "Warehouse",
-    "Factory",
-    "Co-working Space",
-    "Residential Plot",
-    "Commercial Plot",
-    "Agricultural Land",
-    "Industrial Land",
+// Fallback if /constants not loaded yet
+const FALLBACK_LISTING_TYPES = ["For Sell", "For Rent", "BUY", "PG"];
+const FALLBACK_PROPERTY_TYPES = [
+    "Flat", "Builder Floor", "Independent House", "Penthouse", "Farmhouse",
+    "Studio Apartment", "Office Space", "Shop", "Showroom", "Warehouse",
+    "Factory", "Co-working Space", "Residential Plot", "Commercial Plot",
+    "Agricultural Land", "Industrial Land",
 ];
 
 const OWNERSHIP_TYPES = ["Freehold", "Leasehold", "POA", "Co-operative Society"];
@@ -189,6 +178,10 @@ const NEARBY_FACILITIES = [
 // ──────────────────────────────────────────────────────────────────────────────
 
 const PropertyFormBody = ({ formData, onChange }) => {
+    const { data: constants } = useGetConstantsQuery();
+    const listingTypes = constants?.LISTING_TYPES || FALLBACK_LISTING_TYPES;
+    const propertyTypes = constants?.PROPERTY_TYPES || FALLBACK_PROPERTY_TYPES;
+
     const set = (field) => (val) => onChange(field, val);
     const toggleCheck = (field, item) => {
         const current = formData[field] || [];
@@ -205,13 +198,13 @@ const PropertyFormBody = ({ formData, onChange }) => {
                         label="Listing Type" required
                         value={formData.listingType}
                         onChange={set("listingType")}
-                        options={LISTING_TYPES}
+                        options={listingTypes}
                     />
                     <SelectField
                         label="Property Type" required
                         value={formData.propertyType}
                         onChange={set("propertyType")}
-                        options={PROPERTY_TYPES}
+                        options={propertyTypes}
                     />
                     <SelectField
                         label="Ownership Type"

@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import PropertyFormBody from "./PropertyFormBody";
+import { isSellListingType, normalizeListingTypeForSubmit } from "../../../../../utils/listingType";
 import {
     useCreatePropertyMutation,
     useUpdatePropertyMutation,
@@ -71,7 +72,7 @@ const AddPropertyPage = () => {
 
     const buildPayload = () => {
         const payload = {
-            listingType: formData.listingType,
+            listingType: normalizeListingTypeForSubmit(formData.listingType),
             propertyType: formData.propertyType,
             ownershipType: formData.ownershipType,
             title: formData.title,
@@ -106,7 +107,7 @@ const AddPropertyPage = () => {
             status: "active"
         };
 
-        if (formData.listingType === "For Sell" || formData.listingType === "For Sale" || formData.listingType === "BUY") {
+        if (isSellListingType(formData.listingType)) {
             payload.saleDetails = { possessionStatus: "Immediate Possession", loanAvailability: "Available" };
         }
 

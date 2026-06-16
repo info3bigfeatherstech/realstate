@@ -350,10 +350,10 @@ export default function PropertyDetailPage() {
                         </div>
                     )}
 
-                    {/* Sale Details */}
+                    {/* Sell Details */}
                     {property.saleDetails && (
                         <div className="rounded-2xl border border-[#EBEBEB] bg-white p-7">
-                            <h2 className="mb-5 text-[18px] font-bold tracking-tight text-[#111]">Sale Details</h2>
+                            <h2 className="mb-5 text-[18px] font-bold tracking-tight text-[#111]">Sell Details</h2>
                             <div className="grid grid-cols-2 gap-x-8 gap-y-4 sm:grid-cols-3">
                                 {[
                                     ["Possession Status", property.saleDetails.possessionStatus],

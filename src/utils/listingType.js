@@ -7,3 +7,6 @@ export const formatListingTypeLabel = (listingType) => {
   if (listingType === "For Sale") return "For Sell";
   return listingType;
 };
+
+/** Normalize before API submit (legacy clients / edit forms). */
+export const normalizeListingTypeForSubmit = (listingType) => formatListingTypeLabel(listingType);

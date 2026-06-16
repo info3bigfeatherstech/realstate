@@ -42,9 +42,9 @@ const StatusBadge = ({ status }) => {
 };
 
 const ListingBadge = ({ type }) => {
-  const isSale = isSellListingType(type) && type !== "BUY";
+  const isSell = isSellListingType(type) && type !== "BUY";
   return (
-    <span className={`px-2 py-0.5 rounded-md text-xs font-semibold ${isSale ? "bg-blue-100 text-blue-700" : "bg-purple-100 text-purple-700"}`}>
+    <span className={`px-2 py-0.5 rounded-md text-xs font-semibold ${isSell ? "bg-blue-100 text-blue-700" : "bg-purple-100 text-purple-700"}`}>
       {formatListingTypeLabel(type)}
     </span>
   );

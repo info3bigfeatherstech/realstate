@@ -17,7 +17,6 @@ function formatPrice(price, listingType) {
 }
 
 function getTag(property) {
-    if (property.listingType === "For Sell" || property.listingType === "For Sale") return "For Sell";
     if (property.listingType === "For Rent") return "For Rent";
     if (property.listingType === "PG") return "PG";
     if (property.propertyType === "Office Space") return "Commercial";

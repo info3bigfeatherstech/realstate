@@ -278,12 +278,12 @@ const PropertyDetailPage = () => {
                     </div>
                 </section>
 
-                {/* Sale Details Section */}
+                {/* Sell Details Section */}
                 {property.saleDetails && isSellListingType(property.listingType) && (
                     <section className="p-8 border-b border-slate-100 bg-slate-50/50">
                         <h4 className="text-base font-bold text-slate-800 mb-5 flex items-center gap-2">
                             <Building2 className="w-5 h-5 text-blue-600" />
-                            Sale Details
+                            Sell Details
                         </h4>
                         <div className="grid grid-cols-2 gap-4">
                             <DetailCard label="Possession Status" value={property.saleDetails.possessionStatus} />

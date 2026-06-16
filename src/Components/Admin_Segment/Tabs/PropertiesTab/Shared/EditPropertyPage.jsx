@@ -12,6 +12,7 @@ import {
   useDeleteMediaMutation,
   useDeleteDocumentMutation,
 } from "../../../Admin_Redux/PropertyApi/propertyApi";
+import { normalizeListingTypeForSubmit, formatListingTypeLabel, isSellListingType } from "../../../../../utils/listingType";
 
 const EditPropertyPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -70,7 +71,7 @@ const EditPropertyPage = () => {
     }
 
     return {
-      listingType: property.listingType || "",
+      listingType: formatListingTypeLabel(property.listingType) || "",
       propertyType: property.propertyType || "",
       ownershipType: property.ownershipType || "Freehold",
       title: property.title || "",
@@ -163,7 +164,7 @@ const EditPropertyPage = () => {
 
   const buildUpdatePayload = () => {
     const payload = {
-      listingType: formData.listingType,
+      listingType: normalizeListingTypeForSubmit(formData.listingType),
       propertyType: formData.propertyType,
       ownershipType: formData.ownershipType,
       title: formData.title,
@@ -197,7 +198,7 @@ const EditPropertyPage = () => {
       },
     };
 
-    if (formData.listingType === "For Sell" || formData.listingType === "For Sale" || formData.listingType === "BUY") {
+    if (isSellListingType(formData.listingType)) {
       payload.saleDetails = { possessionStatus: "Immediate Possession", loanAvailability: "Available" };
     }
 
