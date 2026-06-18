@@ -15,6 +15,22 @@ import { userAccommodationInquiryApi } from "../REDUX_SLICES/userAccommodationIn
 import { accommodationInquiryApi } from "../../Components/Admin_Segment/Admin_Redux/AccommodationInquiryApi/accommodationInquiryApi";
 import accommodationInquiryReducer from "../../Components/Admin_Segment/Admin_Redux/AccommodationInquiryApi/accommodationInquirySlice";
 
+import { buyPropertyInquiryApi } from "../../Components/Admin_Segment/Admin_Redux/BuyPropertyInquiryApi/buyPropertyInquiryApi";
+import buyPropertyInquiryReducer from "../../Components/Admin_Segment/Admin_Redux/BuyPropertyInquiryApi/buyPropertyInquirySlice";
+
+import { sellPropertyInquiryApi } from "../../Components/Admin_Segment/Admin_Redux/SellPropertyInquiryApi/sellPropertyInquiryApi";
+import sellPropertyInquiryReducer from "../../Components/Admin_Segment/Admin_Redux/SellPropertyInquiryApi/sellPropertyInquirySlice";
+
+import { accommodationListingInquiryApi } from "../../Components/Admin_Segment/Admin_Redux/AccommodationListingInquiryApi/accommodationListingInquiryApi";
+import accommodationListingInquiryReducer from "../../Components/Admin_Segment/Admin_Redux/AccommodationListingInquiryApi/accommodationListingInquirySlice";
+
+import { inquiryApi } from "../../Components/Admin_Segment/Admin_Redux/InquiryApi/inquiryApi";
+import { customerAdminApi } from "../../Components/Admin_Segment/Admin_Redux/CustomerApi/customerAdminApi";
+
+import customerAuthReducer from "../REDUX_SLICES/customerAuth/customerAuthSlice";
+import { customerAuthApi } from "../REDUX_SLICES/customerAuth/customerAuthApi";
+import { customerInquiryApi } from "../REDUX_SLICES/customerInquiryApi/customerInquiryApi";
+
 export const store = configureStore({
     reducer: {
         auth: authReducer,
@@ -31,6 +47,22 @@ export const store = configureStore({
         [userAccommodationInquiryApi.reducerPath]: userAccommodationInquiryApi.reducer,
         accommodationInquiry: accommodationInquiryReducer,
         [accommodationInquiryApi.reducerPath]: accommodationInquiryApi.reducer,
+
+        buyPropertyInquiry: buyPropertyInquiryReducer,
+        [buyPropertyInquiryApi.reducerPath]: buyPropertyInquiryApi.reducer,
+
+        sellPropertyInquiry: sellPropertyInquiryReducer,
+        [sellPropertyInquiryApi.reducerPath]: sellPropertyInquiryApi.reducer,
+
+        accommodationListingInquiry: accommodationListingInquiryReducer,
+        [accommodationListingInquiryApi.reducerPath]: accommodationListingInquiryApi.reducer,
+
+        [inquiryApi.reducerPath]: inquiryApi.reducer,
+        [customerAdminApi.reducerPath]: customerAdminApi.reducer,
+
+        customerAuth: customerAuthReducer,
+        [customerAuthApi.reducerPath]: customerAuthApi.reducer,
+        [customerInquiryApi.reducerPath]: customerInquiryApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat(
@@ -41,10 +73,15 @@ export const store = configureStore({
             userEliteServiceApi.middleware,
             constantsApi.middleware,
             userAccommodationInquiryApi.middleware,
-            accommodationInquiryApi.middleware
+            accommodationInquiryApi.middleware,
+            buyPropertyInquiryApi.middleware,
+            sellPropertyInquiryApi.middleware,
+            accommodationListingInquiryApi.middleware,
+            inquiryApi.middleware,
+            customerAdminApi.middleware,
+            customerAuthApi.middleware,
+            customerInquiryApi.middleware
         ),
 });
-
-
 
 export default store;
