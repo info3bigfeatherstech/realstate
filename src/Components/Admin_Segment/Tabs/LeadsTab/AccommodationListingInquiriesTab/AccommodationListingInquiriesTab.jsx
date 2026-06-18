@@ -24,8 +24,6 @@ import UnifiedInquiryDetailModal from "../Shared/UnifiedInquiryDetailModal";
 import { downloadAccommodationListingTemplate } from "./downloadAccommodationListingTemplate";
 
 
-// there is the new thing is the new thing is now thing there is the surface
-//
 
 const StatCard = ({ label, value, color = "text-slate-800", isLoading = false }) => {
     if (isLoading) {
@@ -137,7 +135,7 @@ const AccommodationListingInquiriesTab = () => {
                         Reset
                     </button>
                 </form>
-
+ 
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
                     <select
                         className="h-9 px-2 rounded-lg border border-slate-300 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-blue-100"
