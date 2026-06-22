@@ -14,7 +14,7 @@ const CustomerLoginPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [searchParams] = useSearchParams();
-  const returnUrl = getReturnUrl(searchParams, "/dashboard");
+  const returnUrl = getReturnUrl(searchParams, "/customer/dashboard");
   const [login, { isLoading }] = useLoginMutation();
   const [form, setForm] = useState({ email: "", password: "" });
 
@@ -28,7 +28,7 @@ const CustomerLoginPage = () => {
     } catch (err) {
       if (err?.status === 403) {
         toast.error("Please verify your email first");
-        navigate("/verify-otp", { state: { email: form.email, returnUrl } });
+        navigate("/customer/verify-otp", { state: { email: form.email, returnUrl } });
         return;
       }
       toast.error(err?.data?.message || "Login failed");
@@ -62,7 +62,7 @@ const CustomerLoginPage = () => {
         <p className="text-sm text-slate-500 text-center mt-6">
           New user?{" "}
           <Link
-            to={searchParams.get("returnUrl") ? `/signup?returnUrl=${searchParams.get("returnUrl")}` : "/signup"}
+            to={searchParams.get("returnUrl") ? `/customer/signup?returnUrl=${searchParams.get("returnUrl")}` : "/customer/signup"}
             className="text-blue-600 font-semibold hover:underline"
           >
             Create account

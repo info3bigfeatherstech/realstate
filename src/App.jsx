@@ -17,6 +17,10 @@ import PropertyDetailPage from "./Components/UserSide/PropertyDetailPage/Propert
 import ContactUs from "./Components/WebPages/ContactUs/ContactUs";
 import Eliteservices from "./Components/WebPages/Utilities/Eliteservices";
 import Accommodation from "./Components/WebPages/EnquiryPages/Accommodation/Accommodation";
+import CustomerLoginPage from "./Components/WebPages/CustomerAuth/CustomerLoginPage";
+import CustomerSignupPage from "./Components/WebPages/CustomerAuth/SignupPage";
+import CustomerDashboard from "./Components/WebPages/CustomerDashboard/CustomerDashboard";
+import VerifyOtpPage from "./Components/WebPages/CustomerAuth/VerifyOtpPage";
 
 
 // ─── Routes where Navbar & Footer should NOT appear ──────────────────────────
@@ -88,7 +92,7 @@ function App() {
       <AppShell>
         <Routes>
           <Route
-            path="/login"
+            path="/admin/login"
             element={isAuthenticated ? <Navigate to="/admin" replace /> : <LoginPage />}
           />
           {/* Admin Routes Start */}
@@ -109,6 +113,13 @@ function App() {
           <Route path="/contact" element={<ContactUs />} />
           <Route path="/eliteservices" element={<Eliteservices />} />
           <Route path="/enquiry" element={<Accommodation />} />
+
+          {/* Customer Routes Start */}
+          <Route path="/customer/login" element={<CustomerLoginPage />} />
+          <Route path="/customer/signup" element={<CustomerSignupPage />} />
+          <Route path="/customer/verify-otp" element={<VerifyOtpPage />} />
+          <Route path="/customer/dashboard" element={<CustomerDashboard />} />
+          {/* Customer Routes End */}
 
           {/* catch all redirect to home*/}
           <Route path="*" element={<Navigate to="/" replace />} />

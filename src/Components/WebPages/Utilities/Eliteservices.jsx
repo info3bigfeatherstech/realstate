@@ -10,7 +10,7 @@ import {
 
 // Available Filter Tabs Configuration (values must match backend `role` enum exactly)
 const tabs = [
-    { label: "All Services", value: "" },
+    // { label: "All Services", value: "" },
     { label: "Plumbers", value: "Plumber" },
     { label: "Electricians", value: "Electrician" },
     { label: "Carpenters", value: "Carpenter" },

@@ -28,7 +28,7 @@ const CustomerDashboard = () => {
   const [logout] = useLogoutMutation();
 
   if (authChecked && !isAuthenticated) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/customer/login" replace />;
   }
 
   const allowedForms = user?.allowedForms || FORM_ACCESS[user?.accountType] || [];

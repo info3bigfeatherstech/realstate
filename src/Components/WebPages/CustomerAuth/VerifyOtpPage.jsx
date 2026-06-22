@@ -20,7 +20,7 @@ const VerifyOtpPage = () => {
   const dispatch = useDispatch();
   const email = location.state?.email || "";
   const returnUrl =
-    location.state?.returnUrl || getReturnUrl(searchParams, "/dashboard");
+    location.state?.returnUrl || getReturnUrl(searchParams, "/customer/dashboard");
   const [otp, setOtp] = useState("");
   const [verifyOtp, { isLoading }] = useVerifyOtpMutation();
   const [resendOtp, { isLoading: isResending }] = useResendOtpMutation();
@@ -29,7 +29,7 @@ const VerifyOtpPage = () => {
     e.preventDefault();
     if (!email) {
       toast.error("Email missing. Please sign up again.");
-      navigate("/signup");
+      navigate("/customer/signup");
       return;
     }
     try {
@@ -85,7 +85,7 @@ const VerifyOtpPage = () => {
         </button>
 
         <p className="text-sm text-slate-500 text-center mt-6">
-          <Link to="/login" className="text-blue-600 font-semibold hover:underline">
+          <Link to="/customer/login" className="text-blue-600 font-semibold hover:underline">
             Back to login
           </Link>
         </p>

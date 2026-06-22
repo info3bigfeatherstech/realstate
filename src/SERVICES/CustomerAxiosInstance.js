@@ -77,7 +77,8 @@ customerAxiosInstance.interceptors.response.use(
           store.dispatch({ type: "customerAuth/clearCredentials" });
         }
         const returnUrl = encodeURIComponent(window.location.pathname + window.location.search);
-        window.location.href = `/login?returnUrl=${returnUrl}`;
+        window.location.href = `/customer/login?returnUrl=${returnUrl}`;
+
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;
