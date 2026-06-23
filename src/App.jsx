@@ -115,6 +115,7 @@ function App() {
             path="/admin/login"
             element={isAuthenticated ? <Navigate to="/admin" replace /> : <LoginPage />}
           />
+
           {/* Admin Routes Start */}
           <Route
             path="/admin/*"
