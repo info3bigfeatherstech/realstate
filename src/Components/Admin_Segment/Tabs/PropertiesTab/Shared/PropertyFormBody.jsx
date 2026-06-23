@@ -7,6 +7,59 @@ import LocationPicker from "./LocationPicker";
 import { useGetConstantsQuery } from "../../../../../REDUX_FEATURES/REDUX_SLICES/constantsApi/constantsApi";
 import { normalizeListingTypesList } from "../../../../../utils/listingType";
 
+// Backend-accepted state enum (exact match required by Joi schema)
+const VALID_STATES = [
+    "Andaman and Nicobar Islands", "Andhra Pradesh", "Arunachal Pradesh",
+    "Assam", "Bihar", "Chhattisgarh", "Chandigarh",
+    "Dadra and Nagar Haveli and Daman and Diu", "Delhi", "Goa", "Gujarat",
+    "Haryana", "Himachal Pradesh", "Jharkhand", "Jammu and Kashmir",
+    "Karnataka", "Kerala", "Ladakh", "Lakshadweep", "Maharashtra",
+    "Meghalaya", "Manipur", "Madhya Pradesh", "Mizoram", "Nagaland",
+    "Odisha", "Punjab", "Puducherry", "Rajasthan", "Sikkim",
+    "Tamil Nadu", "Telangana", "Tripura", "Uttarakhand",
+    "Uttar Pradesh", "West Bengal",
+];
+
+const STATE_ALIASES = {
+    "delhi": "Delhi", "ncr": "Delhi", "up": "Uttar Pradesh",
+    "uttarpradesh": "Uttar Pradesh", "mp": "Madhya Pradesh",
+    "madhyapradesh": "Madhya Pradesh", "hp": "Himachal Pradesh",
+    "himachalpradesh": "Himachal Pradesh", "j&k": "Jammu and Kashmir",
+    "jammuandkashmir": "Jammu and Kashmir", "jk": "Jammu and Kashmir",
+    "tn": "Tamil Nadu", "tamilnadu": "Tamil Nadu",
+    "wb": "West Bengal", "westbengal": "West Bengal",
+    "ap": "Andhra Pradesh", "andhrapradesh": "Andhra Pradesh",
+    "ts": "Telangana", "ka": "Karnataka", "mh": "Maharashtra",
+    "rj": "Rajasthan", "gj": "Gujarat", "pb": "Punjab",
+    "hr": "Haryana", "br": "Bihar", "jh": "Jharkhand",
+    "uk": "Uttarakhand", "uttarakhand": "Uttarakhand",
+    "cg": "Chhattisgarh", "chhattisgarh": "Chhattisgarh",
+    "or": "Odisha", "kl": "Kerala", "ar": "Arunachal Pradesh",
+    "as": "Assam", "mn": "Manipur", "ml": "Meghalaya",
+    "mz": "Mizoram", "nl": "Nagaland", "sk": "Sikkim", "tr": "Tripura",
+    "pondicherry": "Puducherry", "pondicheri": "Puducherry",
+    "daman": "Dadra and Nagar Haveli and Daman and Diu",
+    "diu": "Dadra and Nagar Haveli and Daman and Diu",
+    "andaman": "Andaman and Nicobar Islands",
+    "nicobar": "Andaman and Nicobar Islands",
+    "lakshadweep": "Lakshadweep", "ladakh": "Ladakh",
+    "chandigarh": "Chandigarh", "goa": "Goa", "odisha": "Odisha", "assam": "Assam",
+};
+
+const normalizeState = (raw) => {
+    if (!raw) return "";
+    const trimmed = raw.trim();
+    const exactMatch = VALID_STATES.find(s => s.toLowerCase() === trimmed.toLowerCase());
+    if (exactMatch) return exactMatch;
+    const key = trimmed.toLowerCase().replace(/\s+/g, "");
+    if (STATE_ALIASES[key]) return STATE_ALIASES[key];
+    if (STATE_ALIASES[trimmed.toLowerCase()]) return STATE_ALIASES[trimmed.toLowerCase()];
+    const partialMatch = VALID_STATES.find(s => trimmed.toLowerCase().includes(s.toLowerCase()) || s.toLowerCase().includes(trimmed.toLowerCase()));
+    if (partialMatch) return partialMatch;
+    return trimmed;
+};
+
+
 const inputCls = "w-full h-10 px-3 rounded-lg border border-slate-300 focus:border-blue-600 focus:ring-1 focus:ring-blue-600 outline-none text-sm";
 const labelCls = "block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5";
 
@@ -447,7 +500,8 @@ const PropertyFormBody = ({ formData, onChange }) => {
                                 set("longitude")(String(lng));
                                 if (fullAddress) set("fullAddress")(fullAddress);
                                 if (city) set("city")(city);
-                                if (state) set("state")(state);
+                                // Normalize state to backend-accepted enum value
+                                if (state) set("state")(normalizeState(state));
                                 if (pincode) set("pincode")(pincode);
                             }}
                         />
@@ -462,7 +516,18 @@ const PropertyFormBody = ({ formData, onChange }) => {
                             />
                         </div>
                         <InputField label="City" required placeholder="Auto-filled" value={formData.city} onChange={set("city")} />
-                        <InputField label="State" required placeholder="Auto-filled" value={formData.state} onChange={set("state")} />
+                        <Field label="State" required>
+                            <select
+                                className={inputCls}
+                                value={formData.state}
+                                onChange={(e) => set("state")(e.target.value)}
+                            >
+                                <option value="">Select State</option>
+                                {VALID_STATES.map((s) => (
+                                    <option key={s} value={s}>{s}</option>
+                                ))}
+                            </select>
+                        </Field>
                         <InputField label="Pincode" required placeholder="Auto-filled" value={formData.pincode} onChange={set("pincode")} />
                         <InputField label="Latitude" placeholder="Auto-filled" value={formData.latitude} onChange={set("latitude")} />
                         <InputField label="Longitude" placeholder="Auto-filled" value={formData.longitude} onChange={set("longitude")} />

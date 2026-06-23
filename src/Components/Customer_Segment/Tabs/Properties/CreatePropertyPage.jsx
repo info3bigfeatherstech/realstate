@@ -1,15 +1,14 @@
-// src/Tabs/PropertiesTab/Shared/AddPropertyPage.jsx
 import React, { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import PropertyFormBody from "./PropertyFormBody";
-import { isSellListingType, normalizeListingTypeForSubmit } from "../../../../../utils/listingType";
+import { isSellListingType, normalizeListingTypeForSubmit } from "../../../../utils/listingType";
 import {
     useCreatePropertyMutation,
     useUpdatePropertyMutation,
     useUploadMediaMutation,
     useUploadDocumentMutation
-} from "../../../Admin_Redux/PropertyApi/propertyApi";
+} from "../../../../REDUX_FEATURES/REDUX_SLICES/customerPropertyApi/customerPropertyApi";
 
 const INITIAL_FORM = {
     listingType: "",
@@ -46,7 +45,7 @@ const INITIAL_FORM = {
     documents: {},
 };
 
-const AddPropertyPage = () => {
+const CreatePropertyPage = () => {
     const [, setSearchParams] = useSearchParams();
     const [createProperty, { isLoading: isCreating }] = useCreatePropertyMutation();
     const [updateProperty] = useUpdatePropertyMutation();
@@ -104,7 +103,7 @@ const AddPropertyPage = () => {
                 latitude: formData.latitude ? Number(formData.latitude) : undefined,
                 longitude: formData.longitude ? Number(formData.longitude) : undefined,
             },
-            status: "active"
+            status: "pending" // Default status is pending for Super Admin approval
         };
 
         if (isSellListingType(formData.listingType)) {
@@ -175,7 +174,7 @@ const AddPropertyPage = () => {
             }
 
             setCreatedPropertyId(null);
-            setSearchParams({ tab: "properties" });
+            setSearchParams({ tab: "my-properties" });
         } catch (err) {
             setError(err.data?.message || "Failed to create property");
         } finally {
@@ -206,7 +205,7 @@ const AddPropertyPage = () => {
             }
 
             setCreatedPropertyId(null);
-            setSearchParams({ tab: "properties" });
+            setSearchParams({ tab: "my-properties" });
         } catch (err) {
             setError(err.data?.message || "Failed to save draft");
         } finally {
@@ -219,7 +218,7 @@ const AddPropertyPage = () => {
     return (
         <div className="min-h-screen bg-slate-50">
             <div className="mb-6 flex items-center gap-4">
-                <button onClick={() => setSearchParams({ tab: "properties" })} className="p-2 rounded-xl hover:bg-white transition-all">
+                <button onClick={() => setSearchParams({ tab: "my-properties" })} className="p-2 rounded-xl hover:bg-white transition-all">
                     <ArrowLeft className="w-5 h-5" />
                 </button>
                 <div>
@@ -238,8 +237,8 @@ const AddPropertyPage = () => {
                 <PropertyFormBody formData={formData} onChange={handleChange} />
             </div>
 
-            <footer className="fixed bottom-0 left-64 right-0 h-20 bg-white border-t flex items-center justify-end gap-3 px-8 z-50">
-                <button onClick={() => setSearchParams({ tab: "properties" })} className="px-6 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50">
+            <footer className="fixed bottom-0 left-0 md:left-64 right-0 h-20 bg-white border-t flex items-center justify-end gap-3 px-8 z-50">
+                <button onClick={() => setSearchParams({ tab: "my-properties" })} className="px-6 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50">
                     Cancel
                 </button>
                 <button onClick={handleSaveDraft} disabled={isLoading} className="px-6 py-2.5 rounded-xl border border-blue-600 text-blue-600 hover:bg-blue-50 disabled:opacity-50">
@@ -253,4 +252,4 @@ const AddPropertyPage = () => {
     );
 };
 
-export default AddPropertyPage;
+export default CreatePropertyPage;

@@ -1,4 +1,3 @@
-// src/Tabs/PropertiesTab/Shared/EditPropertyPage.jsx
 import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { ArrowLeft, Loader2 } from "lucide-react";
@@ -11,8 +10,8 @@ import {
   useUploadDocumentMutation,
   useDeleteMediaMutation,
   useDeleteDocumentMutation,
-} from "../../../Admin_Redux/PropertyApi/propertyApi";
-import { normalizeListingTypeForSubmit, formatListingTypeLabel, isSellListingType } from "../../../../../utils/listingType";
+} from "../../../../REDUX_FEATURES/REDUX_SLICES/customerPropertyApi/customerPropertyApi";
+import { normalizeListingTypeForSubmit, formatListingTypeLabel, isSellListingType } from "../../../../utils/listingType";
 
 const EditPropertyPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -196,7 +195,6 @@ const EditPropertyPage = () => {
         latitude: formData.latitude ? Number(formData.latitude) : undefined,
         longitude: formData.longitude ? Number(formData.longitude) : undefined,
       },
-      status: propertyData?.status || "pending",
     };
 
     if (isSellListingType(formData.listingType)) {
@@ -248,8 +246,10 @@ const EditPropertyPage = () => {
 
     setIsUpdatingAll(true);
     try {
-      // 1. Update text fields
+      // 1. Update text fields (sends to pending for Super Admin approval since it's modified)
       const payload = buildUpdatePayload();
+      // Keep status as pending after edit or whatever the backend requires. Let's let the backend handle the status or set it to pending.
+      payload.status = "pending";
       await updateProperty({ id: propertyId, ...payload }).unwrap();
 
       // 2. Delete old media/docs that were removed or replaced
@@ -268,7 +268,7 @@ const EditPropertyPage = () => {
         await uploadAllDocuments(propertyId, formData.documents);
       }
 
-      setSearchParams({ tab: "properties" });
+      setSearchParams({ tab: "my-properties" });
     } catch (err) {
       setError(err.data?.message || "Failed to update property");
     } finally {
@@ -300,7 +300,7 @@ const EditPropertyPage = () => {
         await uploadAllDocuments(propertyId, formData.documents);
       }
 
-      setSearchParams({ tab: "properties" });
+      setSearchParams({ tab: "my-properties" });
     } catch (err) {
       setError(err.data?.message || "Failed to save draft");
     } finally {
@@ -308,7 +308,7 @@ const EditPropertyPage = () => {
     }
   };
 
-  const handleCancel = () => setSearchParams({ tab: "properties" });
+  const handleCancel = () => setSearchParams({ tab: "my-properties" });
 
   if (isLoadingProperty || !formData) {
     return (
@@ -339,10 +339,10 @@ const EditPropertyPage = () => {
       )}
 
       <div className="pb-28">
-        <PropertyFormBody formData={formData} onChange={handleChange} mode="edit" />
+        <PropertyFormBody formData={formData} onChange={handleChange} />
       </div>
 
-      <footer className="fixed bottom-0 left-64 right-0 h-20 bg-white border-t flex items-center justify-end gap-3 px-8 z-50">
+      <footer className="fixed bottom-0 left-0 md:left-64 right-0 h-20 bg-white border-t flex items-center justify-end gap-3 px-8 z-50">
         <button onClick={handleCancel} className="px-6 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50">
           Cancel
         </button>

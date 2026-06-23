@@ -30,6 +30,14 @@ import { customerAdminApi } from "../../Components/Admin_Segment/Admin_Redux/Cus
 import customerAuthReducer from "../REDUX_SLICES/customerAuth/customerAuthSlice";
 import { customerAuthApi } from "../REDUX_SLICES/customerAuth/customerAuthApi";
 import { customerInquiryApi } from "../REDUX_SLICES/customerInquiryApi/customerInquiryApi";
+import customerPropertyReducer from "../REDUX_SLICES/customerPropertyApi/customerPropertySlice";
+import { customerPropertyApi } from "../REDUX_SLICES/customerPropertyApi/customerPropertyApi";
+
+// New modules
+import { inventoryItemApi } from "../../Components/Admin_Segment/Admin_Redux/InventoryItemApi/inventoryItemApi";
+import { customerInventoryApi } from "../REDUX_SLICES/customerInventoryApi/customerInventoryApi";
+import { tenantEntryApi } from "../REDUX_SLICES/tenantEntryApi/tenantEntryApi";
+import { tenantExitApi } from "../REDUX_SLICES/tenantExitApi/tenantExitApi";
 
 export const store = configureStore({
     reducer: {
@@ -63,6 +71,14 @@ export const store = configureStore({
         customerAuth: customerAuthReducer,
         [customerAuthApi.reducerPath]: customerAuthApi.reducer,
         [customerInquiryApi.reducerPath]: customerInquiryApi.reducer,
+        customerProperty: customerPropertyReducer,
+        [customerPropertyApi.reducerPath]: customerPropertyApi.reducer,
+
+        // New Reducers
+        [inventoryItemApi.reducerPath]: inventoryItemApi.reducer,
+        [customerInventoryApi.reducerPath]: customerInventoryApi.reducer,
+        [tenantEntryApi.reducerPath]: tenantEntryApi.reducer,
+        [tenantExitApi.reducerPath]: tenantExitApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat(
@@ -80,7 +96,14 @@ export const store = configureStore({
             inquiryApi.middleware,
             customerAdminApi.middleware,
             customerAuthApi.middleware,
-            customerInquiryApi.middleware
+            customerInquiryApi.middleware,
+            customerPropertyApi.middleware,
+            
+            // New Middlewares
+            inventoryItemApi.middleware,
+            customerInventoryApi.middleware,
+            tenantEntryApi.middleware,
+            tenantExitApi.middleware
         ),
 });
 

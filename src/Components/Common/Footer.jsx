@@ -15,7 +15,8 @@ const CONTACT_ITEMS = [
     { icon: Phone, text: "+91 98730 85801", href: "tel:+919873085801" },
     { icon: Phone, text: "+91 92896 84801", href: "tel:+919289684801" },
     { icon: Mail, text: "mehtaestatesncr@gmail.com", href: "mailto:mehtaestatesncr@gmail.com" },
-    { icon: MapPin, text: "Tower A, Sector 62, Noida, Uttar Pradesh 201309, India", multiline: true },
+    { icon: MapPin, text: "E 23 West Patel Nagar New Delhi -110008", multiline: true },
+    { icon: MapPin, text: "13/29, Ground Floor, East Patel Nagar New Delhi- 110008", multiline: true },
 ];
 
 // ─── Sub-components ───────────────────────────────────────────────────────────

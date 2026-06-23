@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import AdminDashboard from "./Components/Admin_Segment/AdminDashboard";
@@ -6,6 +6,8 @@ import LoginPage from "./Components/Admin_Segment/LoginPage/LoginPage";
 import ProtectedRoute from "./Components/Admin_Segment/LoginPage/ProtectedRoute";
 import { useRefreshTokenMutation, useLazyGetMeQuery, } from "./REDUX_FEATURES/REDUX_SLICES/auth/authApi";
 import { clearCredentials, setAuthChecked, setCredentials, } from "./REDUX_FEATURES/REDUX_SLICES/auth/authSlice";
+import { useRefreshTokenMutation as useCustomerRefreshToken, useLazyGetMeQuery as useLazyCustomerGetMe, } from "./REDUX_FEATURES/REDUX_SLICES/customerAuth/customerAuthApi";
+import { clearCredentials as clearCustomerCredentials, setCustomerCredentials, setCustomerAuthChecked, } from "./REDUX_FEATURES/REDUX_SLICES/customerAuth/customerAuthSlice";
 import ToastConfig from "./Components/Shared/ToastConfig";
 
 
@@ -19,12 +21,13 @@ import Eliteservices from "./Components/WebPages/Utilities/Eliteservices";
 import Accommodation from "./Components/WebPages/EnquiryPages/Accommodation/Accommodation";
 import CustomerLoginPage from "./Components/WebPages/CustomerAuth/CustomerLoginPage";
 import CustomerSignupPage from "./Components/WebPages/CustomerAuth/SignupPage";
-import CustomerDashboard from "./Components/WebPages/CustomerDashboard/CustomerDashboard";
+import CustomerDashboard from "./Components/Customer_Segment/CustomerDashboard";
+import CustomerProtectedRoute from "./Components/Customer_Segment/CustomerProtectedRoute";
 import VerifyOtpPage from "./Components/WebPages/CustomerAuth/VerifyOtpPage";
 
 
 // ─── Routes where Navbar & Footer should NOT appear ──────────────────────────
-const SHELL_EXCLUDED_ROUTES = ["/admin", "/login"];
+const SHELL_EXCLUDED_ROUTES = ["/admin", "/login", "/customer/dashboard"];
 
 function AppShell({ children }) {
   const { pathname } = useLocation();
@@ -43,39 +46,56 @@ function AppShell({ children }) {
 
 function App() {
   const dispatch = useDispatch();
+  const hasBootstrapped = useRef(false);
+
+  // ─── Admin Auth ─────────────────────────────────────────────────────────────
   const [refreshToken] = useRefreshTokenMutation();
   const [triggerGetMe] = useLazyGetMeQuery();
   const { isAuthenticated, authChecked } = useSelector((state) => state.auth);
 
+  // ─── Customer Auth ───────────────────────────────────────────────────────────
+  const [customerRefreshToken] = useCustomerRefreshToken();
+  const [triggerCustomerGetMe] = useLazyCustomerGetMe();
+
   useEffect(() => {
+    // Guard against React StrictMode double-invoke — only run once per mount
+    if (hasBootstrapped.current) return;
+    hasBootstrapped.current = true;
+
+    // ── Admin bootstrap ──────────────────────────────────────────────────────
     const bootstrapAuth = async () => {
       try {
-        // Step 1: try to get a fresh access token using the httpOnly refresh cookie
         const refreshPayload = await refreshToken().unwrap();
         const accessToken = refreshPayload?.accessToken;
-
-        if (!accessToken) {
-          throw new Error("No access token returned from refresh");
-        }
-
-        // Step 2: put token in Redux FIRST so axiosInstance interceptor
-        // can attach it as Authorization header for the /me call below
+        if (!accessToken) throw new Error("No access token returned from refresh");
         dispatch(setCredentials({ user: null, accessToken }));
-
-        // Step 3: fetch the current user profile
         const meResult = await triggerGetMe().unwrap();
-
-        // Step 4: finalize auth state with both user + token
         dispatch(setCredentials({ user: meResult, accessToken }));
       } catch (_error) {
-        // No valid refresh token (expired/missing) -> clean logged-out state
         dispatch(clearCredentials());
       } finally {
         dispatch(setAuthChecked(true));
       }
     };
 
-    bootstrapAuth();
+    // ── Customer bootstrap ───────────────────────────────────────────────────
+    const bootstrapCustomerAuth = async () => {
+      try {
+        const refreshPayload = await customerRefreshToken().unwrap();
+        const accessToken = refreshPayload?.accessToken;
+        if (!accessToken) throw new Error("No customer access token returned from refresh");
+        dispatch(setCustomerCredentials({ user: null, accessToken }));
+        const meResult = await triggerCustomerGetMe().unwrap();
+        dispatch(setCustomerCredentials({ user: meResult, accessToken }));
+      } catch (_error) {
+        dispatch(clearCustomerCredentials());
+      } finally {
+        dispatch(setCustomerAuthChecked(true));
+      }
+    };
+
+    // Run both bootstraps in parallel — halves startup time
+    Promise.all([bootstrapAuth(), bootstrapCustomerAuth()]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -118,7 +138,14 @@ function App() {
           <Route path="/customer/login" element={<CustomerLoginPage />} />
           <Route path="/customer/signup" element={<CustomerSignupPage />} />
           <Route path="/customer/verify-otp" element={<VerifyOtpPage />} />
-          <Route path="/customer/dashboard" element={<CustomerDashboard />} />
+          <Route
+            path="/customer/dashboard"
+            element={
+              <CustomerProtectedRoute>
+                <CustomerDashboard />
+              </CustomerProtectedRoute>
+            }
+          />
           {/* Customer Routes End */}
 
           {/* catch all redirect to home*/}

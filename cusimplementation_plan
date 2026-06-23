@@ -1,0 +1,195 @@
+# My Properties — Owner/Agent Listing Feature
+
+## Overview
+
+Add a **"My Properties"** tab to the Customer Dashboard visible only to `owner` and `agent` roles. This tab lets them:
+- **List** their submitted properties (Pending / Active / Expired)
+- **Create** a new property listing (submitted for admin approval)
+- **View Detail** of any property (status, rejection reason, etc.)
+- **Update Status** (hide/unhide, mark as rented/sold/occupied)
+- **Delete** a property
+
+The flow matches the backend docs exactly:  
+`Owner/Agent submits → status: pending → Admin approves/rejects → status: active/rejected`
+
+---
+
+## Open Questions
+
+> [!IMPORTANT]
+> **Upload Media & Documents (API 17–20)**: The backend supports file upload for property photos and ownership documents. Should the Create Property form **include media upload in the same form flow** (multi-step), or should media upload be a **separate section visible after property creation** (via Edit/Detail view)?
+>
+> _Recommended: Separate upload — show "Upload Photos" button after property is created. Simpler UX, avoids large multi-step form._
+
+> [!NOTE]
+> **Property Edit**: After a property is created (`pending`), should users be able to **edit it**? The backend supports `PUT /customer/properties/:id`. I'll build an Edit modal — please confirm.
+
+---
+
+## Proposed Changes
+
+### 1. RTK Query API Slice (NEW)
+
+#### [NEW] `src/REDUX_FEATURES/REDUX_SLICES/customerPropertyApi/customerPropertyApi.js`
+
+Covers all 6 property CRUD endpoints + 4 media/document endpoints:
+
+| Hook | Method | Endpoint |
+|---|---|---|
+| `useCreatePropertyMutation` | POST | `/customer/properties` |
+| `useGetMyPropertiesQuery` | GET | `/customer/properties?page&limit&status` |
+| `useGetPropertyByIdQuery` | GET | `/customer/properties/:id` |
+| `useUpdatePropertyMutation` | PUT | `/customer/properties/:id` |
+| `useUpdatePropertyStatusMutation` | PATCH | `/customer/properties/:id/status` |
+| `useDeletePropertyMutation` | DELETE | `/customer/properties/:id` |
+| `useUploadPropertyMediaMutation` | POST | `/customer/properties/:id/media` |
+| `useDeletePropertyMediaMutation` | DELETE | `/customer/properties/:id/media/:mediaId` |
+| `useUploadPropertyDocumentMutation` | POST | `/customer/properties/:id/documents` |
+| `useDeletePropertyDocumentMutation` | DELETE | `/customer/properties/:id/documents/:documentId` |
+
+Uses the **same `axiosBaseQuery` pattern** as `customerAuthApi` — no new axios instance needed.
+
+---
+
+### 2. Redux Store Wiring
+
+#### [MODIFY] `src/REDUX_FEATURES/REDUX_STORE/store.js`
+
+Add `customerPropertyApi` to both `reducer` and `middleware` arrays.  
+**No existing reducers/middleware touched.**
+
+---
+
+### 3. Role Permissions
+
+#### [MODIFY] `src/Components/Customer_Segment/CustomerRoles.js`
+
+Add `"my_properties"` tab ID to `owner` and `agent` permission arrays.  
+`seeker` — NOT added (seekers cannot list properties).
+
+---
+
+### 4. Tab Registry
+
+#### [MODIFY] `src/Components/Customer_Segment/CustomerTabRegistry.js`
+
+Add lazy-loaded `MyPropertiesTab` entry with a buildings/home icon.  
+Position: 2nd slot for owner/agent (after "My Inquiries").
+
+---
+
+### 5. My Properties Tab (Main UI)
+
+#### [NEW] `src/Components/Customer_Segment/Tabs/Properties/MyPropertiesTab.jsx`
+
+**Architecture:**
+```
+MyPropertiesTab
+├── Status filter tabs row  →  [ All | Pending | Active | Rejected | Inactive | Expired ]
+├── "+ List New Property" button  →  opens CreatePropertyModal
+├── Property cards list  (fetched with RTK Query, paginated)
+│     Each card shows:
+│       – Property title, listingId badge
+│       – Type badge (For Rent / For Sell)
+│       – Location (city, state)
+│       – Price
+│       – Status badge (color-coded)
+│       – Created date
+│       – [View] [Edit] [Delete] [Status Change] actions
+└── Pagination controls
+```
+
+---
+
+### 6. Create Property Modal (Multi-step Form)
+
+#### [NEW] `src/Components/Customer_Segment/Tabs/Properties/CreatePropertyModal.jsx`
+
+**Step flow (4 steps):**
+
+| Step | Fields |
+|---|---|
+| 1. Basic Info | listingType, propertyType, title, description, condition, constructionStatus, furnishing, facing, flooringType, ownershipType |
+| 2. Size & Specs | area (value + unit), price, maintenance, bedrooms, bathrooms, floorNo, totalFloors, waterSupply, powerBackup, parkingType |
+| 3. Features | securityFeatures (checkboxes), amenities (checkboxes), connectivity (checkboxes), nearbyFacilities (checkboxes) |
+| 4. Location + Listing Specifics | location fields (fullAddress, city, state, pincode, lat, lng) + conditional: `rentalDetails` (if "For Rent") OR `saleDetails` (if "For Sell") |
+
+**Design:** Dark-themed modal with step progress bar, matching admin segment visual language.  
+Submit → calls `useCreatePropertyMutation` → toast success → close modal → refetch list.
+
+---
+
+### 7. Property Detail / Edit Modal
+
+#### [NEW] `src/Components/Customer_Segment/Tabs/Properties/PropertyDetailModal.jsx`
+
+- Read-only detail view with all fields rendered
+- Shows admin rejection reason if `status === "rejected"`
+- **Edit mode toggle** — inline edit for allowed fields (title, price, maintenance, bedrooms, bathrooms)
+- Status change dropdown (active/inactive/rented/sold/occupied) — only shows valid allowed statuses per backend rules
+- Media upload section (after property exists)
+
+---
+
+### 8. Property Status Badge
+
+#### [NEW] `src/Components/Customer_Segment/Tabs/Properties/PropertyStatusBadge.jsx`
+
+Reusable badge component with color mapping:
+
+| Status | Color |
+|---|---|
+| `pending` | Amber |
+| `active` | Green |
+| `inactive` | Slate |
+| `rejected` | Red |
+| `rented` | Blue |
+| `sold` | Purple |
+| `occupied` | Indigo |
+| `draft` | Gray |
+
+---
+
+## File Tree Summary
+
+```
+src/
+├── REDUX_FEATURES/
+│   ├── REDUX_SLICES/
+│   │   └── customerPropertyApi/
+│   │       └── customerPropertyApi.js          [NEW]
+│   └── REDUX_STORE/
+│       └── store.js                            [MODIFY — add API]
+│
+└── Components/
+    └── Customer_Segment/
+        ├── CustomerRoles.js                    [MODIFY — add my_properties]
+        ├── CustomerTabRegistry.js              [MODIFY — add tab]
+        └── Tabs/
+            └── Properties/
+                ├── MyPropertiesTab.jsx         [NEW — main tab]
+                ├── CreatePropertyModal.jsx     [NEW — 4-step form]
+                ├── PropertyDetailModal.jsx     [NEW — view/edit/status]
+                └── PropertyStatusBadge.jsx     [NEW — reusable badge]
+```
+
+---
+
+## Verification Plan
+
+### Build
+- `npx vite build` — 0 errors expected
+
+### Manual Flow
+1. Login as `owner` → Dashboard → should see "My Properties" tab
+2. Login as `seeker` → Dashboard → "My Properties" tab should NOT appear
+3. Click "+ List New Property" → 4-step form opens
+4. Fill + Submit → property appears in list with `pending` badge
+5. Admin panel approves → status changes to `active`
+6. Owner changes status to `inactive` → status updates
+7. Delete property → removed from list
+
+### Zero Regression
+- Admin segment: untouched
+- `seeker` role tabs: untouched
+- `customerAuthApi`, `customerInquiryApi`: untouched

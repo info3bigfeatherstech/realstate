@@ -24,7 +24,8 @@ export const ROLE_PERMISSIONS = {
     "eliteservices",
     "add-utility-service",
     "edit-utility-service",
-    "settings"
+    "settings",
+    "master-inventory"
   ],
   [ROLES.AGENT]: [
     "properties",

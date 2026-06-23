@@ -133,12 +133,7 @@ export default function ContactUs() {
                         <div className="w-full overflow-hidden rounded-[28px] border border-[#E4E7EC] bg-[#F9F9F9] p-2">
                             <iframe
                                 title="Google Map"
-                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3502.5620216441406!2d77.22728097632124!3d28.612911975674312!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390cfd5b347eb62d%3A0x37205b715389640!2sIndia%20Gate!5e0!3m2!1sen!2sin!4v1710000000000!5m2!1sen!2sin"
-                                className="w-full h-[280px] md:h-[320px] rounded-[22px] border-0 block opacity-90 hover:opacity-100 transition-opacity duration-300"
-                                allowFullScreen=""
-                                loading="lazy"
-                                referrerPolicy="no-referrer-when-downgrade"
-                            />
+                                src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3501.5473939407098!2d77.17308367550119!3d28.643324175658872!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMjjCsDM4JzM2LjAiTiA3N8KwMTAnMzIuNCJF!5e0!3m2!1sen!2sin!4v1782117860530!5m2!1sen!2sin" className="w-full h-[280px] md:h-[320px] rounded-[22px] border-0 block opacity-90 hover:opacity-100 transition-opacity duration-300" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                         </div>
 
                         {/* Social Media Channels Row */}

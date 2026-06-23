@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Heart, Menu, X, ChevronDown } from "lucide-react";
+import { useSelector, useDispatch } from "react-redux";
+import { useLogoutMutation } from "../../REDUX_FEATURES/REDUX_SLICES/customerAuth/customerAuthApi";
+import { clearCredentials as clearCustomerCredentials } from "../../REDUX_FEATURES/REDUX_SLICES/customerAuth/customerAuthSlice";
 import LOGO from "../../assets/m.png";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -103,10 +106,27 @@ function LogoMark({ visibleHeight }) {
 
 export default function Navbar() {
     const location = useLocation();
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const [logoutApi] = useLogoutMutation();
+    const { isAuthenticated, user } = useSelector((state) => state.customerAuth);
     const [menuOpen, setMenuOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
     const [logoVisibleHeight, setLogoVisibleHeight] = useState(LOGO_VISIBLE_HEIGHT.base);
     const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
+
+    const userInitial = user?.fullName
+        ? user.fullName.trim().charAt(0).toUpperCase()
+        : (user?.email ? user.email.trim().charAt(0).toUpperCase() : "U");
+
+    const handleNavbarLogout = async () => {
+        try {
+            await logoutApi().unwrap();
+        } catch (_) { /* silent */ } finally {
+            dispatch(clearCustomerCredentials());
+            navigate("/");
+        }
+    };
 
     useEffect(() => {
         const handleScroll = () => setScrolled(window.scrollY > 10);
@@ -203,12 +223,55 @@ export default function Navbar() {
                                 <Heart size={18} />
                             </button>
 
-                            {/* Authenticated Login Avatar Indicator Frame */}
-                            <button className="flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-2 pr-4 py-2 text-white">
-                                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#D4AF37] text-[14px] font-bold text-[#0f0301]">
-                                    K
+                            {/* Authenticated Login Avatar Indicator Frame with Hover Dropdown */}
+                            {isAuthenticated ? (
+                                <div className="relative group/user h-full py-5">
+                                    {/* Trigger pill */}
+                                    <button className="flex items-center gap-2 rounded-full border border-white/20 bg-white/10 p-2 text-white hover:bg-white/20 transition-all duration-300">
+                                        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#D4AF37] text-[14px] font-bold text-[#0f0301] shadow-inner">
+                                            {userInitial}
+                                        </div>
+                                        <span className="text-[14px] font-medium pr-2 hidden sm:inline">{user?.fullName || "Account"}</span>
+                                        <ChevronDown size={13} className="mr-1 text-white/60 transition-transform duration-300 group-hover/user:rotate-180" />
+                                    </button>
+
+                                    {/* Dropdown Menu */}
+                                    <div className="absolute right-0 top-full mt-1 w-52 origin-top-right rounded-2xl bg-white p-2 shadow-xl ring-1 ring-black/5 opacity-0 scale-95 pointer-events-none transition-all duration-200 group-hover/user:opacity-100 group-hover/user:scale-100 group-hover/user:pointer-events-auto z-[60]">
+                                        {/* User info strip */}
+                                        <div className="px-4 py-2.5 border-b border-slate-100 mb-1">
+                                            <p className="text-[13px] font-semibold text-slate-800 truncate">{user?.fullName}</p>
+                                            <p className="text-[11px] text-slate-400 truncate">{user?.email}</p>
+                                        </div>
+                                        {/* Dashboard link */}
+                                        <button
+                                            onClick={() => navigate("/customer/dashboard")}
+                                            className="w-full flex items-center gap-3 rounded-xl px-4 py-2.5 text-[14px] font-medium text-slate-700 hover:bg-slate-50 transition-colors text-left"
+                                        >
+                                            <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                                            </svg>
+                                            Dashboard
+                                        </button>
+                                        {/* Logout */}
+                                        <button
+                                            onClick={handleNavbarLogout}
+                                            className="w-full flex items-center gap-3 rounded-xl px-4 py-2.5 text-[14px] font-medium text-red-500 hover:bg-red-50 transition-colors text-left"
+                                        >
+                                            <svg className="w-4 h-4 text-red-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                                            </svg>
+                                            Sign Out
+                                        </button>
+                                    </div>
                                 </div>
-                            </button>
+                            ) : (
+                                <button
+                                    onClick={() => navigate("/customer/login")}
+                                    className="flex h-11 items-center justify-center rounded-full border border-white/15 bg-white/10 px-5 text-white text-[15px] font-medium transition-all duration-300 hover:bg-white/20"
+                                >
+                                    Sign In
+                                </button>
+                            )}
                         </div>
 
                         {/* Mobile menu hamburger icon */}
@@ -282,6 +345,37 @@ export default function Navbar() {
                                 </a>
                             ))}
                         </div>
+                    </div>
+
+                    {/* Mobile Auth Section */}
+                    <div className="mt-2 border-t border-black/5 pt-4">
+                        {isAuthenticated ? (
+                            <button
+                                onClick={() => {
+                                    setMenuOpen(false);
+                                    navigate("/customer/dashboard");
+                                }}
+                                className="flex w-full items-center gap-3 rounded-2xl bg-[#f5f5f5] p-4 text-black text-left"
+                            >
+                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#D4AF37] text-[15px] font-bold text-[#0f0301]">
+                                    {userInitial}
+                                </div>
+                                <div className="overflow-hidden">
+                                    <p className="font-semibold text-[15px] leading-tight truncate">{user?.fullName || "User"}</p>
+                                    <p className="text-[12px] text-zinc-500 leading-tight truncate">{user?.email}</p>
+                                </div>
+                            </button>
+                        ) : (
+                            <button
+                                onClick={() => {
+                                    setMenuOpen(false);
+                                    navigate("/customer/login");
+                                }}
+                                className="flex w-full items-center justify-center rounded-2xl bg-black py-4 font-semibold text-white transition-all hover:bg-[#222]"
+                            >
+                                Sign In
+                            </button>
+                        )}
                     </div>
 
                     {/* CTA Card element block */}

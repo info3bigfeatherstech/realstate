@@ -15,11 +15,11 @@ const CustomerProtectedRoute = ({ children, allowedAccountTypes }) => {
 
   if (!isAuthenticated) {
     const returnUrl = encodeURIComponent(location.pathname + location.search);
-    return <Navigate to={`/login?returnUrl=${returnUrl}`} replace />;
+    return <Navigate to={`customer/login?returnUrl=${returnUrl}`} replace />;
   }
 
   if (allowedAccountTypes?.length && !allowedAccountTypes.includes(user?.accountType)) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to="/customer/dashboard" replace />;
   }
 
   return children;

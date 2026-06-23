@@ -1,4 +1,3 @@
-// src/REDUX_FEATURES/REDUX_SLICES/property/propertySlice.js
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
@@ -10,7 +9,7 @@ const initialState = {
     search: "",
     listingType: "",
     propertyType: "",
-    status: "",
+    status: "", // active, pending, inactive, draft, rented, sold, occupied, rejected, etc.
     city: "",
 
     // Sorting
@@ -20,11 +19,10 @@ const initialState = {
     // UI State
     selectedIds: [],
     isFilterOpen: false,
-    postedBy: "",
 };
 
-const propertySlice = createSlice({
-    name: "property",
+const customerPropertySlice = createSlice({
+    name: "customerProperty",
     initialState,
     reducers: {
         setPage: (state, action) => {
@@ -80,10 +78,6 @@ const propertySlice = createSlice({
         toggleFilterOpen: (state) => {
             state.isFilterOpen = !state.isFilterOpen;
         },
-        setPostedBy: (state, action) => {
-            state.postedBy = action.payload;
-            state.page = 1;
-        },
         resetFilters: (state) => {
             state.search = "";
             state.listingType = "";
@@ -113,7 +107,6 @@ export const {
     clearSelectedIds,
     toggleFilterOpen,
     resetFilters,
-    setPostedBy,
-} = propertySlice.actions;
+} = customerPropertySlice.actions;
 
-export default propertySlice.reducer;
+export default customerPropertySlice.reducer;
