@@ -40,6 +40,13 @@ export const authApi = createApi({
             }),
             transformResponse: (response) => response.data,
         }),
+        getUsers: builder.query({
+            query: () => ({
+                url: "/admin/auth/users",
+                method: "GET",
+            }),
+            transformResponse: (response) => response.data,
+        }),
         refreshToken: builder.mutation({
             query: () => ({
                 url: "/admin/auth/refresh-token",
@@ -61,6 +68,7 @@ export const {
     useLoginMutation,
     useGetMeQuery,
     useLazyGetMeQuery,
+    useGetUsersQuery,
     useRefreshTokenMutation,
     useLogoutMutation,
 } = authApi;
