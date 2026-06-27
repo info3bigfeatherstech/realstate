@@ -9,16 +9,16 @@ import LOGO from "../../assets/m.png";
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const NAV_LINKS = [
-    { name: "Buy", path: "/buy" },
-    { name: "Rent", path: "/rent" },
-    { name: "New Launch", path: "/new-launch" },
-    { name: "Commercial", path: "/commercial" },
-    { name: "Plots", path: "/plots" },
-    { name: "Enquiry Form", path: "/enquiry" },
+    // { name: "Buy", path: "/buy" },
+    // { name: "Rent", path: "/rent" },
+    // { name: "New Launch", path: "/new-launch" },
+    // { name: "Commercial", path: "/commercial" },
+    // { name: "Plots", path: "/plots" },
     // Purane current links ko last me shift kar diya hai
+    // { name: "Student Support", path: "#" },
+    // { name: "Elite Services", path: "/eliteservices" },
+    { name: "Enquiry Form", path: "/enquiry" },
     { name: "Contact Us", path: "/contact" },
-    { name: "Student Support", path: "#" },
-    { name: "Elite Services", path: "/eliteservices" }
 ];
 
 const OTHER_SERVICES = [
@@ -159,8 +159,8 @@ export default function Navbar() {
                 <div className="w-full px-5 md:px-10 lg:px-16">
                     <div className="h-[88px] flex items-center justify-between transition-all duration-300">
 
-                        {/* Left Group */}
-                        <div className="flex items-center gap-6 lg:gap-10">
+                        {/* Left/Logo Group - Taking 50% width on desktop to align nav items to center */}
+                        <div className="flex items-center xl:flex-1">
                             <a
                                 href="/"
                                 className="flex shrink-0 items-center select-none"
@@ -168,110 +168,109 @@ export default function Navbar() {
                             >
                                 <LogoMark visibleHeight={logoVisibleHeight} />
                             </a>
-
-                            {/* Center Navigation Links Panel with clear baseline height */}
-                            <nav className="hidden xl:flex items-center h-full">
-                                <div className="flex items-center gap-1">
-                                    {NAV_LINKS.map((item) => (
-                                        <NavLink
-                                            key={item.name}
-                                            item={item}
-                                            isActive={location.pathname === item.path}
-                                        />
-                                    ))}
-                                </div>
-                            </nav>
                         </div>
 
-                        {/* Right Group (Top-Right Aligned Content Area) */}
-                        <div className="hidden xl:flex items-center gap-3">
+                        {/* Desktop Navigation Group (Starts from center to right end) */}
+                        <div className="hidden xl:flex xl:flex-1 items-center justify-between gap-1.5 h-full pl-6">
+                            {/* Inner Left: List Property, Other Services, Enquiry, Contact Us starting from center */}
+                            <div className="flex items-center gap-1.5">
+                                {/* 1. List Property (FREE) */}
+                                <NavLink
+                                    item={{ name: "List Property (FREE)", path: "#" }}
+                                    isActive={false}
+                                />
 
-                            {/* List Property CTA Button */}
-                            <button className="group flex items-center gap-3 rounded-full bg-white pl-5 pr-2 py-2 text-black transition-all duration-300 hover:bg-white/90">
-                                <span className="text-[14px] font-medium">List Property (FREE)</span>
-                                <div
-                                    className="flex h-9 w-9 items-center justify-center rounded-full text-white transition-transform duration-300 group-hover:rotate-45"
-                                    style={{ backgroundColor: NAVBAR_BG }}
-                                >
-                                    <ArrowIcon />
-                                </div>
-                            </button>
-
-                            {/* Naye Features Dropdown System Architecture: Other Services */}
-                            <div className="relative group/dropdown h-full py-5">
-                                <button className="flex items-center gap-1.5 rounded-full px-4 py-2.5 text-[15px] lg:text-[16px] font-medium leading-none text-white hover:bg-white/10 transition-all duration-300">
-                                    <span>Other Services</span>
-                                    <ChevronDown size={14} className="transition-transform duration-300 group-hover/dropdown:rotate-180" />
-                                </button>
-
-                                {/* Dropdown Menu Container overlay */}
-                                <div className="absolute right-0 top-full mt-1 w-64 origin-top-right rounded-2xl bg-white p-2 shadow-xl ring-1 ring-black/5 opacity-0 scale-95 pointer-events-none transition-all duration-200 group-hover/dropdown:opacity-100 group-hover/dropdown:scale-100 group-hover/dropdown:pointer-events-auto z-[60]">
-                                    {OTHER_SERVICES.map((service) => (
-                                        <a
-                                            key={service.name}
-                                            href={service.path}
-                                            className="block rounded-xl px-4 py-3 text-[14px] font-medium text-slate-800 hover:bg-slate-50 transition-colors"
-                                        >
-                                            {service.name}
-                                        </a>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Wishlist Icon Action Link */}
-                            <button className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white transition-all duration-300 hover:bg-white/20">
-                                <Heart size={18} />
-                            </button>
-
-                            {/* Authenticated Login Avatar Indicator Frame with Hover Dropdown */}
-                            {isAuthenticated ? (
-                                <div className="relative group/user h-full py-5">
-                                    {/* Trigger pill */}
-                                    <button className="flex items-center gap-2 rounded-full border border-white/20 bg-white/10 p-2 text-white hover:bg-white/20 transition-all duration-300">
-                                        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#D4AF37] text-[14px] font-bold text-[#0f0301] shadow-inner">
-                                            {userInitial}
-                                        </div>
-                                        <span className="text-[14px] font-medium pr-2 hidden sm:inline">{user?.fullName || "Account"}</span>
-                                        <ChevronDown size={13} className="mr-1 text-white/60 transition-transform duration-300 group-hover/user:rotate-180" />
+                                {/* 2. Other Services Dropdown */}
+                                <div className="relative group/dropdown h-full py-5">
+                                    <button className="flex items-center gap-1.5 rounded-full px-4 py-2.5 text-[15px] lg:text-[16px] font-medium leading-none text-white hover:bg-white/10 transition-all duration-300 translate-y-[2px]">
+                                        <span>Other Services</span>
+                                        <ChevronDown size={14} className="transition-transform duration-300 group-hover/dropdown:rotate-180" />
                                     </button>
 
-                                    {/* Dropdown Menu */}
-                                    <div className="absolute right-0 top-full mt-1 w-52 origin-top-right rounded-2xl bg-white p-2 shadow-xl ring-1 ring-black/5 opacity-0 scale-95 pointer-events-none transition-all duration-200 group-hover/user:opacity-100 group-hover/user:scale-100 group-hover/user:pointer-events-auto z-[60]">
-                                        {/* User info strip */}
-                                        <div className="px-4 py-2.5 border-b border-slate-100 mb-1">
-                                            <p className="text-[13px] font-semibold text-slate-800 truncate">{user?.fullName}</p>
-                                            <p className="text-[11px] text-slate-400 truncate">{user?.email}</p>
-                                        </div>
-                                        {/* Dashboard link */}
-                                        <button
-                                            onClick={() => navigate("/customer/dashboard")}
-                                            className="w-full flex items-center gap-3 rounded-xl px-4 py-2.5 text-[14px] font-medium text-slate-700 hover:bg-slate-50 transition-colors text-left"
-                                        >
-                                            <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                                            </svg>
-                                            Dashboard
-                                        </button>
-                                        {/* Logout */}
-                                        <button
-                                            onClick={handleNavbarLogout}
-                                            className="w-full flex items-center gap-3 rounded-xl px-4 py-2.5 text-[14px] font-medium text-red-500 hover:bg-red-50 transition-colors text-left"
-                                        >
-                                            <svg className="w-4 h-4 text-red-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                                            </svg>
-                                            Sign Out
-                                        </button>
+                                    {/* Dropdown Menu Container */}
+                                    <div className="absolute left-0 top-full mt-1 w-64 origin-top-left rounded-2xl bg-white p-2 shadow-xl ring-1 ring-black/5 opacity-0 scale-95 pointer-events-none transition-all duration-200 group-hover/dropdown:opacity-100 group-hover/dropdown:scale-100 group-hover/dropdown:pointer-events-auto z-[60]">
+                                        {OTHER_SERVICES.map((service) => (
+                                            <a
+                                                key={service.name}
+                                                href={service.path}
+                                                className="block rounded-xl px-4 py-3 text-[14px] font-medium text-slate-800 hover:bg-slate-50 transition-colors"
+                                            >
+                                                {service.name}
+                                            </a>
+                                        ))}
                                     </div>
                                 </div>
-                            ) : (
-                                <button
-                                    onClick={() => navigate("/customer/login")}
-                                    className="flex h-11 items-center justify-center rounded-full border border-white/15 bg-white/10 px-5 text-white text-[15px] font-medium transition-all duration-300 hover:bg-white/20"
-                                >
-                                    Sign In
+
+                                {/* 3. Enquiry Form */}
+                                <NavLink
+                                    item={{ name: "Enquiry Form", path: "/enquiry" }}
+                                    isActive={location.pathname === "/enquiry"}
+                                />
+
+                                {/* 4. Contact Us */}
+                                <NavLink
+                                    item={{ name: "Contact Us", path: "/contact" }}
+                                    isActive={location.pathname === "/contact"}
+                                />
+                            </div>
+
+                            {/* Inner Right: Wishlist & Login/Sign In */}
+                            <div className="flex items-center gap-3">
+                                {/* 5. Wishlist Icon Action Link */}
+                                <button className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white transition-all duration-300 hover:bg-white/20">
+                                    <Heart size={18} />
                                 </button>
-                            )}
+
+                                {/* 6. Authenticated Login Avatar Indicator Frame with Hover Dropdown */}
+                                {isAuthenticated ? (
+                                    <div className="relative group/user h-full py-5">
+                                        {/* Trigger pill */}
+                                        <button className="flex items-center gap-2 rounded-full border border-white/20 bg-white/10 p-2 text-white hover:bg-white/20 transition-all duration-300">
+                                            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#D4AF37] text-[14px] font-bold text-[#0f0301] shadow-inner">
+                                                {userInitial}
+                                            </div>
+                                            <span className="text-[14px] font-medium pr-2 hidden sm:inline">{user?.fullName || "Account"}</span>
+                                            <ChevronDown size={13} className="mr-1 text-white/60 transition-transform duration-300 group-hover/user:rotate-180" />
+                                        </button>
+
+                                        {/* Dropdown Menu */}
+                                        <div className="absolute right-0 top-full mt-1 w-52 origin-top-right rounded-2xl bg-white p-2 shadow-xl ring-1 ring-black/5 opacity-0 scale-95 pointer-events-none transition-all duration-200 group-hover/user:opacity-100 group-hover/user:scale-100 group-hover/user:pointer-events-auto z-[60]">
+                                            {/* User info strip */}
+                                            <div className="px-4 py-2.5 border-b border-slate-100 mb-1">
+                                                <p className="text-[13px] font-semibold text-slate-800 truncate">{user?.fullName}</p>
+                                                <p className="text-[11px] text-slate-400 truncate">{user?.email}</p>
+                                            </div>
+                                            {/* Dashboard link */}
+                                            <button
+                                                onClick={() => navigate("/customer/dashboard")}
+                                                className="w-full flex items-center gap-3 rounded-xl px-4 py-2.5 text-[14px] font-medium text-slate-700 hover:bg-slate-50 transition-colors text-left"
+                                            >
+                                                <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                                                </svg>
+                                                Dashboard
+                                            </button>
+                                            {/* Logout */}
+                                            <button
+                                                onClick={handleNavbarLogout}
+                                                className="w-full flex items-center gap-3 rounded-xl px-4 py-2.5 text-[14px] font-medium text-red-500 hover:bg-red-50 transition-colors text-left"
+                                            >
+                                                <svg className="w-4 h-4 text-red-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                                                </svg>
+                                                Sign Out
+                                            </button>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <button
+                                        onClick={() => navigate("/customer/login")}
+                                        className="flex h-11 items-center justify-center rounded-full border border-white/15 bg-white/10 px-5 text-white text-[15px] font-medium transition-all duration-300 hover:bg-white/20"
+                                    >
+                                        Sign In
+                                    </button>
+                                )}
+                            </div>
                         </div>
 
                         {/* Mobile menu hamburger icon */}
@@ -313,17 +312,14 @@ export default function Navbar() {
                 {/* Drawer navigation links */}
                 <div className="px-4 py-5 flex flex-col gap-2 overflow-y-auto flex-1">
 
-                    {/* Primary Navigation list elements */}
-                    {NAV_LINKS.map((item) => (
-                        <MobileNavLink
-                            key={item.name}
-                            item={item}
-                            isActive={location.pathname === item.path}
-                            onClick={() => setMenuOpen(false)}
-                        />
-                    ))}
+                    {/* 1. List Property (FREE) */}
+                    <MobileNavLink
+                        item={{ name: "List Property (FREE)", path: "#" }}
+                        isActive={false}
+                        onClick={() => setMenuOpen(false)}
+                    />
 
-                    {/* Mobile Menu Dropdown Wrapper: Other Services */}
+                    {/* 2. Mobile Menu Dropdown Wrapper: Other Services */}
                     <div className="flex flex-col rounded-2xl bg-[#f5f5f5] overflow-hidden transition-all duration-300">
                         <button
                             onClick={() => setMobileServicesOpen(!mobileServicesOpen)}
@@ -346,6 +342,16 @@ export default function Navbar() {
                             ))}
                         </div>
                     </div>
+
+                    {/* 3. Enquiry Form & 4. Contact Us */}
+                    {NAV_LINKS.map((item) => (
+                        <MobileNavLink
+                            key={item.name}
+                            item={item}
+                            isActive={location.pathname === item.path}
+                            onClick={() => setMenuOpen(false)}
+                        />
+                    ))}
 
                     {/* Mobile Auth Section */}
                     <div className="mt-2 border-t border-black/5 pt-4">

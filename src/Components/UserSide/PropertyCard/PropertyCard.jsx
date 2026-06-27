@@ -63,10 +63,19 @@ export default function PropertyCard({ property, onClick }) {
                 </button>
 
                 {/* Price overlay at bottom */}
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent px-4 pt-6 pb-3">
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent px-4 pt-6 pb-3 flex items-center justify-between">
                     <span className="text-[18px] font-extrabold text-white tracking-tight">
                         {formatPrice(property.price, property.listingType)}
                     </span>
+                    {property.status && ["sold", "rented", "occupied"].includes(property.status.toLowerCase()) && (
+                        <span className={`rounded-full px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider text-white shadow-sm backdrop-blur-sm ${
+                            property.status.toLowerCase() === "sold" ? "bg-red-600/90" :
+                            property.status.toLowerCase() === "rented" ? "bg-purple-600/90" :
+                            "bg-amber-600/90"
+                        }`}>
+                            {property.status}
+                        </span>
+                    )}
                 </div>
             </div>
 

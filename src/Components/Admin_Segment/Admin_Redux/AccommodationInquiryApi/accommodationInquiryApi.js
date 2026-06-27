@@ -1,27 +1,41 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import axiosInstance from "../../../../SERVICES/Axiosinstance";
-
-const axiosBaseQuery = () => async ({ url, method, body, params, headers }) => {
-  try {
-    const config = { url, method, data: body, params, headers: { ...headers } };
-    const response = await axiosInstance(config);
-    return { data: response.data };
-  } catch (error) {
-    return { error: { status: error.response?.status, data: error.response?.data } };
-  }
-};
-
+const axiosBaseQuery =
+  () =>
+  async ({ url, method, body, params, headers }) => {
+    try {
+      const config = {
+        url,
+        method,
+        data: body,
+        params,
+        headers: { ...headers },
+      };
+      const response = await axiosInstance(config);
+      return { data: response.data };
+    } catch (error) {
+      return {
+        error: { status: error.response?.status, data: error.response?.data },
+      };
+    }
+  };
 export const accommodationInquiryApi = createApi({
   reducerPath: "accommodationInquiryApi",
   baseQuery: axiosBaseQuery(),
-  tagTypes: ["AccommodationInquiry", "AccommodationInquiryDetail", "AccommodationInquiryStats"],
+  tagTypes: [
+    "AccommodationInquiry",
+    "AccommodationInquiryDetail",
+    "AccommodationInquiryStats",
+  ],
   endpoints: (builder) => ({
     getInquiryStats: builder.query({
-      query: () => ({ url: "/admin/accommodation-inquiries/stats", method: "GET" }),
+      query: () => ({
+        url: "/admin/accommodation-inquiries/stats",
+        method: "GET",
+      }),
       transformResponse: (response) => response.data,
       providesTags: [{ type: "AccommodationInquiryStats", id: "STATS" }],
     }),
-
     getInquiries: builder.query({
       query: (params) => ({
         url: "/admin/accommodation-inquiries",
@@ -32,23 +46,29 @@ export const accommodationInquiryApi = createApi({
       providesTags: (result) =>
         result?.data
           ? [
-              ...result.data.map(({ _id }) => ({ type: "AccommodationInquiry", id: _id })),
+              ...result.data.map(({ _id }) => ({
+                type: "AccommodationInquiry",
+                id: _id,
+              })),
               { type: "AccommodationInquiry", id: "LIST" },
             ]
           : [{ type: "AccommodationInquiry", id: "LIST" }],
     }),
-
     getInquiryById: builder.query({
-      query: (id) => ({ url: `/admin/accommodation-inquiries/${id}`, method: "GET" }),
+      query: (id) => ({
+        url: `/admin/accommodation-inquiries/${id}`,
+        method: "GET",
+      }),
       transformResponse: (response) => response.data,
-      providesTags: (result, error, id) => [{ type: "AccommodationInquiryDetail", id }],
+      providesTags: (result, error, id) => [
+        { type: "AccommodationInquiryDetail", id },
+      ],
     }),
-
     updateInquiryStatus: builder.mutation({
-      query: ({ id, status, adminNotes }) => ({
+      query: ({ id, ...body }) => ({
         url: `/admin/accommodation-inquiries/${id}/status`,
         method: "PATCH",
-        body: { status, ...(adminNotes !== undefined ? { adminNotes } : {}) },
+        body,
       }),
       transformResponse: (response) => response.data,
       invalidatesTags: (result, error, { id }) => [
@@ -57,12 +77,11 @@ export const accommodationInquiryApi = createApi({
         { type: "AccommodationInquiryStats", id: "STATS" },
       ],
     }),
-
     updateInquiryNotes: builder.mutation({
-      query: ({ id, adminNotes }) => ({
+      query: ({ id, ...body }) => ({
         url: `/admin/accommodation-inquiries/${id}/notes`,
         method: "PATCH",
-        body: { adminNotes },
+        body,
       }),
       transformResponse: (response) => response.data,
       invalidatesTags: (result, error, { id }) => [
@@ -70,9 +89,11 @@ export const accommodationInquiryApi = createApi({
         { type: "AccommodationInquiry", id: "LIST" },
       ],
     }),
-
     deleteInquiry: builder.mutation({
-      query: (id) => ({ url: `/admin/accommodation-inquiries/${id}`, method: "DELETE" }),
+      query: (id) => ({
+        url: `/admin/accommodation-inquiries/${id}`,
+        method: "DELETE",
+      }),
       invalidatesTags: [
         { type: "AccommodationInquiry", id: "LIST" },
         { type: "AccommodationInquiryStats", id: "STATS" },
@@ -80,7 +101,6 @@ export const accommodationInquiryApi = createApi({
     }),
   }),
 });
-
 export const {
   useGetInquiryStatsQuery,
   useGetInquiriesQuery,
