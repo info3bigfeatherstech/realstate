@@ -18,7 +18,7 @@ const InteriorBanner = () => {
                 >
 
                     <img
-                        src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=1400&auto=format&fit=crop"
+                        src="https://images.pexels.com/photos/1488267/pexels-photo-1488267.png"
                         alt=""
                         className="
               absolute inset-0

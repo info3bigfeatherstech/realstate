@@ -49,10 +49,10 @@ const FAQSection = () => {
                             </span>
                         </div>
 
-                        <h2 className="mt-6 text-[32px] sm:text-[40px] lg:text-[40px] leading-[1.1] tracking-[-2px] text-[#111]">
-                            FREQUENTLY
+                        <h2 className="mt-6 text-[32px] sm:text-[40px] lg:text-[35px] leading-[1.1] tracking-[-2px] text-[#111]">
+                             Frequently
                             <br />
-                            ASKED QUESTIONS
+                            Asked Questions
                         </h2>
                     </div>
 

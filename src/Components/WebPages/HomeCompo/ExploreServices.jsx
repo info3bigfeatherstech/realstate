@@ -81,7 +81,7 @@ const ExploreServices = () => {
                             className="
                 text-[14px]
                 font-bold
-                uppercase tracking-[0.2em]
+                 tracking-[0.2em]
                 text-[#7d8797]
               "
                         >
@@ -103,7 +103,7 @@ const ExploreServices = () => {
                                     className="
                     text-[32px] sm:text-[38px] lg:text-[40px]
                     font-
-                    leading-[1.1] uppercase
+                    leading-[1.1] 
                     tracking-[-2px]
                     text-[#081630]
                   "
@@ -126,22 +126,6 @@ const ExploreServices = () => {
                                     available in one modern marketplace.
                                 </p>
                             </div>
-
-                            {/* BUTTON */}
-                            <button
-                                className="
-                  h-[62px]
-                  rounded-full
-                  bg-black px-8
-                  text-[16px]
-                  font-bold text-white
-                  transition-all duration-300
-
-                  hover:scale-[1.03]
-                "
-                            >
-                                Explore All Services
-                            </button>
                         </div>
 
                         {/* SERVICES GRID */}

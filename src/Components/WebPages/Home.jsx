@@ -1,6 +1,6 @@
 import HeroSection from "./HomeCompo/HeroSection/HeroSection";
 import FeaturedProperties from "./HomeCompo/FeaturedProperties/FeaturedProperties";
-import FreshPropertiesSection from "./HomeCompo/FreshPropertiesSection";
+import FreshPropertiesSection from "./HomeCompo/FreshPropertiesSection/FreshPropertiesSection";
 import HighDemandProjects from "./HomeCompo/HighDemandProjects";
 import InteriorBanner from "./HomeCompo/InteriorBanner";
 import PropertyToolsSection from "./HomeCompo/PropertyToolsSection";
@@ -23,7 +23,7 @@ export default function HomePage() {
             <PropertyToolsSection />
             <PropertyCategories />
             <ExploreServices />
-            <ExploreCities />
+            {/* <ExploreCities /> */}
             <TestimonialsSection />
             <FAQSection />
         </>

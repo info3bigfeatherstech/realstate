@@ -110,16 +110,16 @@ const TestimonialsSection = () => {
                             <h2
                                 className="
                   mt-6
-                  text-[32px] sm:text-[40px] lg:text-[40px]
+                  text-[32px] sm:text-[40px] lg:text-[35px]
                   
                   leading-[1.1]
                   tracking-[-2px]
                   text-[#111]
                 "
                             >
-                                TRUSTED BY MANY,
+                                Trusted By Many,
                                 <br />
-                                LOVED BY ALL
+                                Loved By All
                             </h2>
 
                             <p

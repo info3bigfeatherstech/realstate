@@ -10,7 +10,7 @@ import {
     ChevronDown,
 } from "lucide-react";
 
-import bg from "../../../../assets/hero-bg.png";
+// import bg from "../../../../assets/hero-bg.png";
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -36,6 +36,8 @@ const AVATARS = [
     "https://i.pravatar.cc/150?img=68",
 ];
 
+
+const bg = 'https://images.pexels.com/photos/27307397/pexels-photo-27307397.jpeg';
 const TAB_CONFIG = {
     Buy: {
         stats: "12K+ Properties",
@@ -95,16 +97,16 @@ function TabButton({ icon: Icon, name, isActive, onClick, isFirst, isLast }) {
                 flex h-8 w-8 items-center justify-center rounded-xl
                 transition-all duration-300
                 ${isActive
-                    ? "bg-[#f5c842] text-black shadow-[0_0_20px_rgba(245,200,66,.35)] scale-105"
+                    ? "bg-[#C8973E] text-black shadow-[0_0_20px_rgba(245,200,66,.35)] scale-105"
                     : "bg-white/5 text-white/60"
                 }
             `}>
                 <Icon size={15} />
             </div>
 
-            <div className="flex flex-col items-start text-left">
+            <div className="flex flex-col items-start text-left text-white">
                 <span className="text-sm font-semibold tracking-wide whitespace-nowrap">{name}</span>
-                <span className={`text-[10px] tracking-wide transition-opacity ${isActive ? "text-[#f5c842]" : "text-white/25"}`}>
+                <span className={`text-[10px] tracking-wide transition-opacity ${isActive ? "text-white" : "text-white"}`}>
                     {config?.stats}
                 </span>
             </div>
@@ -119,9 +121,9 @@ function TabButton({ icon: Icon, name, isActive, onClick, isFirst, isLast }) {
 function AgentsBadge() {
     return (
         <div className="group absolute right-0 bottom-0 hidden xl:flex items-center gap-5 overflow-hidden rounded-tl-[32px] border border-white/10 border-b-0 border-r-0 bg-black/90 px-7 py-5 backdrop-blur-2xl shadow-[0_-8px_40px_rgba(0,0,0,.25)]">
-            <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-[#f5c842]/10 blur-3xl" />
+            <div className="absolute -right-10 -top-10 h-32 w-32 rounded-text-xs text-white whitespace-nowrap mr-1 bg-[#C8973E]/10 blur-3xl" />
 
-            <div className="relative flex items-center">
+            {/* <div className="relative flex items-center">
                 {AVATARS.map((src, i) => (
                     <div key={i} className={`${i !== 0 ? "-ml-3" : ""} relative`}>
                         <div className="rounded-full bg-gradient-to-br from-[#f5c842] to-yellow-200 p-[2px]">
@@ -137,10 +139,10 @@ function AgentsBadge() {
                 <div className="-ml-3 flex h-12 w-12 items-center justify-center rounded-full border-2 border-[#081220] bg-white/10 text-xs font-semibold text-white backdrop-blur-xl">
                     +8
                 </div>
-            </div>
+            </div> */}
 
             <div className="h-12 w-px bg-white/10" />
-
+            {/* 
             <div>
                 <div className="flex items-center gap-2">
                     <span className="text-2xl font-bold tracking-tight text-white">10+</span>
@@ -156,7 +158,7 @@ function AgentsBadge() {
                         4.7 Client Rating
                     </span>
                 </div>
-            </div>
+            </div> */}
 
             <div className="absolute inset-0 rounded-tl-[32px] border border-transparent transition-all duration-500 group-hover:border-[#f5c842]/20" />
         </div>
@@ -323,19 +325,19 @@ export default function HeroSection() {
                                 </div>
 
                                 {/* Search button */}
-                                <button className="h-[52px] rounded-xl bg-[#f5c842] px-8 text-sm font-bold text-black w-full sm:w-auto transition-all hover:bg-[#e0b536] active:scale-[0.97]">
+                                <button className="h-[52px] rounded-xl bg-[#C8973E] px-8 text-sm font-bold text-black w-full sm:w-auto transition-all hover:bg-[#e0b536] active:scale-[0.97]">
                                     Search
                                 </button>
                             </div>
 
                             {/* Trending tags */}
                             <div className="flex items-center gap-2 overflow-x-auto px-4 pb-4 hide-scrollbar">
-                                <span className="text-xs text-white/35 whitespace-nowrap mr-1">Trending:</span>
+                                <span className="text-xs text-white whitespace-nowrap mr-1">Trending:</span>
                                 {currentTab?.trending.map((tag) => (
                                     <div
                                         key={tag}
                                         onClick={() => setQuery(tag)}
-                                        className="whitespace-nowrap rounded-full border border-white/5 bg-white/5 px-3 py-1.5 text-xs text-white/70 transition-all hover:bg-white/10 hover:text-white cursor-pointer"
+                                        className="whitespace-nowrap rounded-full border border-white/5 bg-white/5 px-3 py-1.5 text-xs text-white transition-all hover:bg-white/10 hover:text-white cursor-pointer"
                                     >
                                         {tag}
                                     </div>
