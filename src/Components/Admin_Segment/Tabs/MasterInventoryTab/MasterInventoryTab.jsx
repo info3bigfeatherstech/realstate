@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
     useGetInventoryItemsQuery,
     useCreateInventoryItemMutation,
@@ -7,9 +7,9 @@ import {
     useDeleteInventoryItemMutation,
     useSeedDefaultInventoryItemsMutation,
 } from "../../Admin_Redux/InventoryItemApi/inventoryItemApi";
+import { useGetInventoryCategoriesQuery } from "../../Admin_Redux/InventoryCategoryApi/inventoryCategoryApi";
+import CategoryManagerModal from "./Shared/CategoryManagerModal";
 import { toast } from "../../../Shared/ToastConfig";
-
-const CATEGORIES = ["Furniture", "Appliance", "Key", "Accessory", "Other"];
 
 const MasterInventoryTab = () => {
     // Search and filters
@@ -28,6 +28,9 @@ const MasterInventoryTab = () => {
         isActive: statusFilter === "" ? undefined : statusFilter === "active",
     });
 
+    const { data: categoriesData } = useGetInventoryCategoriesQuery({ limit: 100 });
+    const categoriesList = useMemo(() => categoriesData?.data || [], [categoriesData]);
+
     const [createItem, { isLoading: isCreating }] = useCreateInventoryItemMutation();
     const [updateItem, { isLoading: isUpdating }] = useUpdateInventoryItemMutation();
     const [toggleStatus] = useToggleInventoryItemStatusMutation();
@@ -36,22 +39,31 @@ const MasterInventoryTab = () => {
 
     // Modal state
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
     const [editingItem, setEditingItem] = useState(null);
     const [itemName, setItemName] = useState("");
-    const [itemCategory, setItemCategory] = useState("Furniture");
+    const [itemCategory, setItemCategory] = useState("");
+
+    // Set first category _id as default when list loads
+    React.useEffect(() => {
+        if (categoriesList.length > 0 && !editingItem && !itemCategory) {
+            setItemCategory(categoriesList[0]._id);
+        }
+    }, [categoriesList, editingItem, itemCategory]);
 
     // Handlers
     const handleOpenCreateModal = () => {
         setEditingItem(null);
         setItemName("");
-        setItemCategory("Furniture");
+        setItemCategory(categoriesList[0]?._id || "");
         setIsModalOpen(true);
     };
 
     const handleOpenEditModal = (item) => {
         setEditingItem(item);
         setItemName(item.name);
-        setItemCategory(item.category);
+        // item.category may be populated object or string id
+        setItemCategory(item.categoryId?._id || item.categoryId || item.category?._id || "");
         setIsModalOpen(true);
     };
 
@@ -67,13 +79,13 @@ const MasterInventoryTab = () => {
                 await updateItem({
                     id: editingItem._id,
                     name: itemName,
-                    category: itemCategory,
+                    categoryId: itemCategory,
                 }).unwrap();
                 toast.success("Inventory item updated successfully");
             } else {
                 await createItem({
                     name: itemName,
-                    category: itemCategory,
+                    categoryId: itemCategory,
                 }).unwrap();
                 toast.success("Inventory item created successfully");
             }
@@ -128,6 +140,15 @@ const MasterInventoryTab = () => {
                 </div>
                 <div className="flex items-center gap-3">
                     <button
+                        onClick={() => setIsCategoryModalOpen(true)}
+                        className="px-4 py-2.5 text-sm font-semibold text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl transition-all flex items-center gap-2 cursor-pointer shadow-sm"
+                    >
+                        <svg className="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 9.776c.112-.017.227-.026.344-.026h15.812c.117 0 .232.009.344.026m-16.5 0a2.25 2.25 0 00-1.884 2.223v6.34a2.25 2.25 0 002.25 2.25h15.75a2.25 2.25 0 002.25-2.25v-6.34a2.25 2.25 0 00-1.884-2.223m-16.5 0c.23-.034.47-.052.714-.052h14.88c.245 0 .484.018.714.052m-16.5 0V7.5A2.25 2.25 0 014.5 5.25h15A2.25 2.25 0 0121.75 7.5v2.276M9 14.25h6M9 17.25h3" />
+                        </svg>
+                        Manage Categories
+                    </button>
+                    <button
                         onClick={handleSeed}
                         disabled={isSeeding}
                         className="px-4 py-2.5 text-sm font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-xl transition-all flex items-center gap-2 cursor-pointer disabled:opacity-55"
@@ -174,8 +195,8 @@ const MasterInventoryTab = () => {
                         className="w-full px-3 py-2 text-sm bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-500 transition-all cursor-pointer"
                     >
                         <option value="">All Categories</option>
-                        {CATEGORIES.map((cat) => (
-                            <option key={cat} value={cat}>{cat}</option>
+                        {categoriesList.map((cat) => (
+                            <option key={cat._id} value={cat.name}>{cat.name}</option>
                         ))}
                     </select>
                 </div>
@@ -224,15 +245,24 @@ const MasterInventoryTab = () => {
                                     <tr key={item._id} className="border-b border-slate-50 hover:bg-slate-50/30 transition-colors">
                                         <td className="py-4 px-6 font-semibold text-slate-800">{item.name}</td>
                                         <td className="py-4 px-6">
-                                            <span className={`px-2.5 py-1 text-xs font-bold rounded-lg ${
-                                                item.category === "Furniture" ? "bg-amber-50 text-amber-700 border border-amber-100" :
-                                                item.category === "Appliance" ? "bg-indigo-50 text-indigo-700 border border-indigo-100" :
-                                                item.category === "Key" ? "bg-emerald-50 text-emerald-700 border border-emerald-100" :
-                                                item.category === "Accessory" ? "bg-purple-50 text-purple-700 border border-purple-100" :
-                                                "bg-slate-100 text-slate-700"
-                                            }`}>
-                                                {item.category}
-                                            </span>
+                                            {(() => {
+                                                const catName =
+                                                    item.categoryId?.name ||
+                                                    item.category?.name ||
+                                                    (typeof item.category === "string" ? item.category : "") ||
+                                                    "—";
+                                                const colorClass =
+                                                    catName === "Furniture" ? "bg-amber-50 text-amber-700 border border-amber-100" :
+                                                    catName === "Appliance" ? "bg-indigo-50 text-indigo-700 border border-indigo-100" :
+                                                    catName === "Key" ? "bg-emerald-50 text-emerald-700 border border-emerald-100" :
+                                                    catName === "Accessory" ? "bg-purple-50 text-purple-700 border border-purple-100" :
+                                                    "bg-slate-100 text-slate-700";
+                                                return (
+                                                    <span className={`px-2.5 py-1 text-xs font-bold rounded-lg ${colorClass}`}>
+                                                        {catName}
+                                                    </span>
+                                                );
+                                            })()}
                                         </td>
                                         <td className="py-4 px-6">
                                             <button
@@ -330,8 +360,8 @@ const MasterInventoryTab = () => {
                                         onChange={(e) => setItemCategory(e.target.value)}
                                         className="w-full px-3.5 py-2.5 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-500 transition-all cursor-pointer"
                                     >
-                                        {CATEGORIES.map((cat) => (
-                                            <option key={cat} value={cat}>{cat}</option>
+                                        {categoriesList.map((cat) => (
+                                            <option key={cat._id} value={cat._id}>{cat.name}</option>
                                         ))}
                                     </select>
                                 </div>
@@ -355,6 +385,14 @@ const MasterInventoryTab = () => {
                         </form>
                     </div>
                 </div>
+            )}
+
+            {/* Category Manager Modal */}
+            {isCategoryModalOpen && (
+                <CategoryManagerModal
+                    onClose={() => setIsCategoryModalOpen(false)}
+                    onCategoriesUpdated={refetch}
+                />
             )}
         </div>
     );

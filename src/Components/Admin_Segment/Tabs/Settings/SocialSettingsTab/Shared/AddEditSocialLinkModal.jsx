@@ -3,7 +3,7 @@ import { X, Loader2, ChevronDown } from "lucide-react";
 import {
   useCreateSocialLinkMutation,
   useUpdateSocialLinkMutation,
-} from "../../../../../REDUX_FEATURES/REDUX_SLICES/userSocialApi/userSocialApi";
+} from "../../../../Admin_Redux/AdminSocialApi/adminSocialApi";
 import { toast } from "../../../../../Shared/ToastConfig";
 
 export const PLATFORM_OPTIONS = [
