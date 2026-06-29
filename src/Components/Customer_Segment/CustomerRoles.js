@@ -25,6 +25,7 @@ export const CUSTOMER_ROLE_PERMISSIONS = {
     "property-inventory",
     "tenant-entry",
     "tenant-exit",
+    "my-badges",
   ],
   [CUSTOMER_ROLES.AGENT]: [
     "my-inquiries",
@@ -38,6 +39,8 @@ export const CUSTOMER_ROLE_PERMISSIONS = {
     "property-inventory",
     "tenant-entry",
     "tenant-exit",
+    "agent-badges",
+    "key-management",
   ],
 };
 

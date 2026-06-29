@@ -39,6 +39,19 @@ import { customerInventoryApi } from "../REDUX_SLICES/customerInventoryApi/custo
 import { tenantEntryApi } from "../REDUX_SLICES/tenantEntryApi/tenantEntryApi";
 import { tenantExitApi } from "../REDUX_SLICES/tenantExitApi/tenantExitApi";
 
+// Recovered modules (estate commit)
+import { propertyViewsApi } from "../../Components/Admin_Segment/Admin_Redux/PropertyViewsApi/propertyViewsApi";
+import { adminBadgeApi } from "../../Components/Admin_Segment/Admin_Redux/AdminBadgeApi/adminBadgeApi";
+import { adminSocialApi } from "../../Components/Admin_Segment/Admin_Redux/AdminSocialApi/adminSocialApi";
+import { generalInquiryApi } from "../../Components/Admin_Segment/Admin_Redux/GeneralInquiryApi/generalInquiryApi";
+import generalInquiryReducer from "../../Components/Admin_Segment/Admin_Redux/GeneralInquiryApi/generalInquirySlice";
+import { inventoryCategoryApi } from "../../Components/Admin_Segment/Admin_Redux/InventoryCategoryApi/inventoryCategoryApi";
+import { adminReportsApi } from "../../Components/Admin_Segment/Admin_Redux/AdminReportsApi/adminReportsApi";
+import { agentBadgeApi } from "../REDUX_SLICES/agentBadgeApi/agentBadgeApi";
+import { customerKeysApi } from "../REDUX_SLICES/customerKeysApi/customerKeysApi";
+import { userGeneralInquiryApi } from "../REDUX_SLICES/userGeneralInquiryApi/userGeneralInquiryApi";
+import { userSocialApi } from "../REDUX_SLICES/userSocialApi/userSocialApi";
+
 export const store = configureStore({
     reducer: {
         auth: authReducer,
@@ -79,6 +92,19 @@ export const store = configureStore({
         [customerInventoryApi.reducerPath]: customerInventoryApi.reducer,
         [tenantEntryApi.reducerPath]: tenantEntryApi.reducer,
         [tenantExitApi.reducerPath]: tenantExitApi.reducer,
+
+        // Recovered Reducers (estate commit)
+        [propertyViewsApi.reducerPath]: propertyViewsApi.reducer,
+        [adminBadgeApi.reducerPath]: adminBadgeApi.reducer,
+        [adminSocialApi.reducerPath]: adminSocialApi.reducer,
+        generalInquiry: generalInquiryReducer,
+        [generalInquiryApi.reducerPath]: generalInquiryApi.reducer,
+        [inventoryCategoryApi.reducerPath]: inventoryCategoryApi.reducer,
+        [adminReportsApi.reducerPath]: adminReportsApi.reducer,
+        [agentBadgeApi.reducerPath]: agentBadgeApi.reducer,
+        [customerKeysApi.reducerPath]: customerKeysApi.reducer,
+        [userGeneralInquiryApi.reducerPath]: userGeneralInquiryApi.reducer,
+        [userSocialApi.reducerPath]: userSocialApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat(
@@ -103,7 +129,19 @@ export const store = configureStore({
             inventoryItemApi.middleware,
             customerInventoryApi.middleware,
             tenantEntryApi.middleware,
-            tenantExitApi.middleware
+            tenantExitApi.middleware,
+
+            // Recovered Middlewares (estate commit)
+            propertyViewsApi.middleware,
+            adminBadgeApi.middleware,
+            adminSocialApi.middleware,
+            generalInquiryApi.middleware,
+            inventoryCategoryApi.middleware,
+            adminReportsApi.middleware,
+            agentBadgeApi.middleware,
+            customerKeysApi.middleware,
+            userGeneralInquiryApi.middleware,
+            userSocialApi.middleware
         ),
 });
 

@@ -12,6 +12,8 @@ const PropertyDetailPage = lazy(() => import("./Tabs/Properties/PropertyDetailPa
 const PropertyInventoryTab = lazy(() => import("./Tabs/Inventory/PropertyInventoryTab"));
 const TenantEntryTab = lazy(() => import("./Tabs/Tenants/TenantEntryTab"));
 const TenantExitTab = lazy(() => import("./Tabs/Tenants/TenantExitTab"));
+const AgentBadgesTab = lazy(() => import("./Tabs/AgentBadges/AgentBadgesTab"));
+const KeyManagementTab = lazy(() => import("./Tabs/Keys/KeyManagementTab"));
 
 const AccommodationRequirementTab = lazy(() =>
   import("../WebPages/EnquiryPages/Accommodation/Shared/AccommodationInquiryFormBody")
@@ -108,4 +110,17 @@ export const CUSTOMER_TAB_REGISTRY = [
     icon: "M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1",
     component: TenantExitTab,
   },
+  {
+    id: "agent-badges",
+    label: "Agent Badges",
+    icon: "M12 15a3 3 0 100-6 3 3 0 000 6zm0 0v7l-3-3-3 3v-7m6 0v7l3-3 3 3v-7",
+    component: AgentBadgesTab,
+  },
+  {
+    id: "key-management",
+    label: "Key Management",
+    icon: "M15 7a2 2 0 012 2m-2-2a2 2 0 00-2-2m2 2h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16",
+    component: KeyManagementTab,
+  },
 ];
+

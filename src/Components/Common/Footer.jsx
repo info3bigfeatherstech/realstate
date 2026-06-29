@@ -4,7 +4,7 @@ import LOGO from "../../assets/m.png";
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const NAV_LINKS = {
-    "Quick Links": ["Contact Us", "Student Support", "Utility Services"],
+    "Quick Links": ["Contact Us", "About Us", " Mehta Estates Reviews"],
     "Properties": ["Flat", "Penthouse"],
     "More Properties": ["Studio Apartment","Office Space", "Warehouse", "Shop" ],
 };
@@ -15,8 +15,8 @@ const CONTACT_ITEMS = [
     { icon: Phone, text: "+91 98730 85801", href: "tel:+919873085801" },
     { icon: Phone, text: "+91 92896 84801", href: "tel:+919289684801" },
     { icon: Mail, text: "mehtaestatesncr@gmail.com", href: "mailto:mehtaestatesncr@gmail.com" },
-    { icon: MapPin, text: "E 23 West Patel Nagar New Delhi -110008", multiline: true },
-    { icon: MapPin, text: "13/29, Ground Floor, East Patel Nagar New Delhi- 110008", multiline: true },
+    { icon: MapPin, text: "E 23 West Patel Nagar New Delhi -110008", multiline: false },
+    { icon: MapPin, text: "13/29, Ground Floor, East Patel Nagar New Delhi- 110008", multiline: false },
 ];
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
@@ -196,9 +196,9 @@ export default function Footer() {
                                                 placeholder="Enter your email"
                                                 className="h-12 flex-1 bg-transparent px-4 text-[15px] text-white outline-none placeholder:text-white/45"
                                             />
-                                            <button className="flex h-12 w-12 items-center justify-center rounded-full bg-white text-black transition-transform duration-300 hover:rotate-45">
+                                            {/* <button className="flex h-12 w-12 items-center justify-center rounded-full bg-white text-black transition-transform duration-300 hover:rotate-45">
                                                 <ArrowUpRight size={18} />
-                                            </button>
+                                            </button> */}
                                         </div>
 
                                         <div className="mt-8 flex flex-nowrap items-center gap-3">

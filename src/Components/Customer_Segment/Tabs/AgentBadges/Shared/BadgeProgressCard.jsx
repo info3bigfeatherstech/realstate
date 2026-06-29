@@ -1,14 +1,113 @@
 import React from "react";
 import { Award, CheckCircle2 } from "lucide-react";
+
 const BadgeProgressCard = ({ myBadge }) => {
   if (!myBadge) {
     return (
       <div className="bg-white border border-slate-200 rounded-2xl p-6 text-center text-slate-400">
-        {" "}
-        No achievements found.{" "}
+        No achievements found.
       </div>
     );
   }
-  const { totalDeals, currentBadge, nextBadge } = myBadge; // Defaults if no current badge unlocked const currentIcon = currentBadge?.icon || "🌱"; const currentName = currentBadge?.name || "Rookie Agent"; const currentColor = currentBadge?.color || "#64748b"; let percentage = 0; let dealsRemainingText = ""; if (nextBadge) { const currentMin = currentBadge?.minDeals || 0; const nextMin = nextBadge.minDeals; const range = nextMin - currentMin; const progress = totalDeals - currentMin; percentage = range > 0 ? Math.min(100, Math.max(0, (progress / range) * 100)) : 0; dealsRemainingText = `${nextBadge.dealsNeeded} more deals needed for ${nextBadge.name}`; } else { percentage = 100; dealsRemainingText = "🎉 You have reached the highest badge tier!"; } return ( <div className="bg-white border border-slate-100 rounded-2xl shadow-sm overflow-hidden flex flex-col md:flex-row items-center gap-6 p-6"> {/* Visual Badge Display */} <div className="relative shrink-0 flex items-center justify-center w-24 h-24 rounded-full bg-slate-50 border-2" style={{ borderColor: currentColor }}> <span className="text-5xl">{currentIcon}</span> <span className="absolute -bottom-1 bg-slate-800 text-white font-mono font-bold text-xs px-2 py-0.5 rounded-full"> Lv.{currentBadge?.level || 1} </span> </div> {/* Stats and Progress */} <div className="flex-1 w-full space-y-4"> <div> <span className="text-[10px] font-bold text-blue-600 uppercase tracking-widest bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100"> Current Tier </span> <h2 className="text-xl font-bold text-slate-800 mt-2 flex items-center gap-2"> {currentName} {totalDeals >= 100 && <CheckCircle2 className="w-5 h-5 text-green-500 fill-green-50" />} </h2> <p className="text-sm text-slate-500 mt-1"> You have completed <strong className="text-slate-800 font-bold font-mono">{totalDeals}</strong> total deal{totalDeals !== 1 ? "s" : ""}. </p> </div> {/* Progress Bar */} <div className="space-y-1.5"> <div className="flex items-center justify-between text-xs font-semibold"> <span className="text-slate-400"> {currentBadge?.minDeals || 0} Deals </span> <span className="text-blue-600"> {Math.round(percentage)}% Complete </span> <span className="text-slate-400"> {nextBadge ? `${nextBadge.minDeals} Deals` : "Max Tier"} </span> </div> <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden border border-slate-200/50"> <div className="h-full rounded-full transition-all duration-500 ease-out" style={{ width: `${percentage}%`, backgroundColor: currentColor, }} /> </div> <p className="text-xs text-slate-500 font-medium"> {dealsRemainingText} </p> </div> {/* Next level stats */} {nextBadge && ( <div className="flex items-center gap-2 text-xs border-t border-slate-100 pt-3"> <span className="text-slate-400">Next milestone:</span> <span className="text-xl">{nextBadge.icon}</span> <span className="font-bold text-slate-700">{nextBadge.name}</span> <span className="text-slate-400 font-mono">({nextBadge.minDeals} deals minimum)</span> </div> )} </div> </div> );
+
+  const { totalDeals, currentBadge, nextBadge } = myBadge;
+
+  // Defaults if no current badge unlocked
+  const currentIcon = currentBadge?.icon || "🌱";
+  const currentName = currentBadge?.name || "Rookie Agent";
+  const currentColor = currentBadge?.color || "#64748b";
+
+  let percentage = 0;
+  let dealsRemainingText = "";
+
+  if (nextBadge) {
+    const currentMin = currentBadge?.minDeals || 0;
+    const nextMin = nextBadge.minDeals;
+    const range = nextMin - currentMin;
+    const progress = totalDeals - currentMin;
+    percentage =
+      range > 0 ? Math.min(100, Math.max(0, (progress / range) * 100)) : 0;
+    dealsRemainingText = `${nextBadge.dealsNeeded} more deals needed for ${nextBadge.name}`;
+  } else {
+    percentage = 100;
+    dealsRemainingText = "🎉 You have reached the highest badge tier!";
+  }
+
+  return (
+    <div className="bg-white border border-slate-100 rounded-2xl shadow-sm overflow-hidden flex flex-col md:flex-row items-center gap-6 p-6">
+      {/* Visual Badge Display */}
+      <div
+        className="relative shrink-0 flex items-center justify-center w-24 h-24 rounded-full bg-slate-50 border-2"
+        style={{ borderColor: currentColor }}
+      >
+        <span className="text-5xl">{currentIcon}</span>
+        <span className="absolute -bottom-1 bg-slate-800 text-white font-mono font-bold text-xs px-2 py-0.5 rounded-full">
+          Lv.{currentBadge?.level || 1}
+        </span>
+      </div>
+
+      {/* Stats and Progress */}
+      <div className="flex-1 w-full space-y-4">
+        <div>
+          <span className="text-[10px] font-bold text-blue-600 uppercase tracking-widest bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100">
+            Current Tier
+          </span>
+          <h2 className="text-xl font-bold text-slate-800 mt-2 flex items-center gap-2">
+            {currentName}{" "}
+            {totalDeals >= 100 && (
+              <CheckCircle2 className="w-5 h-5 text-green-500 fill-green-50" />
+            )}
+          </h2>
+          <p className="text-sm text-slate-500 mt-1">
+            You have completed{" "}
+            <strong className="text-slate-800 font-bold font-mono">
+              {totalDeals}
+            </strong>{" "}
+            total deal{totalDeals !== 1 ? "s" : ""}.
+          </p>
+        </div>
+
+        {/* Progress Bar */}
+        <div className="space-y-1.5">
+          <div className="flex items-center justify-between text-xs font-semibold">
+            <span className="text-slate-400">
+              {currentBadge?.minDeals || 0} Deals
+            </span>
+            <span className="text-blue-600">
+              {Math.round(percentage)}% Complete
+            </span>
+            <span className="text-slate-400">
+              {nextBadge ? `${nextBadge.minDeals} Deals` : "Max Tier"}
+            </span>
+          </div>
+          <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden border border-slate-200/50">
+            <div
+              className="h-full rounded-full transition-all duration-500 ease-out"
+              style={{
+                width: `${percentage}%`,
+                backgroundColor: currentColor,
+              }}
+            />
+          </div>
+          <p className="text-xs text-slate-500 font-medium">
+            {dealsRemainingText}
+          </p>
+        </div>
+
+        {/* Next level stats */}
+        {nextBadge && (
+          <div className="flex items-center gap-2 text-xs border-t border-slate-100 pt-3">
+            <span className="text-slate-400">Next milestone:</span>
+            <span className="text-xl">{nextBadge.icon}</span>
+            <span className="font-bold text-slate-700">{nextBadge.name}</span>
+            <span className="text-slate-400 font-mono">
+              ({nextBadge.minDeals} deals minimum)
+            </span>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 };
+
 export default BadgeProgressCard;
