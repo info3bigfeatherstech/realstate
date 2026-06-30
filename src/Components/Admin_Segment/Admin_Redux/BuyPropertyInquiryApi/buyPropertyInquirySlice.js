@@ -6,11 +6,10 @@ const initialState = {
     limit: 10,
     search: "",
     status: "",
-    requirementType: "",
-    occupantType: "",
+    propertyType: "",
+    budgetRange: "",
+    priority: "",
     city: "",
-    monthlyBudget: "",
-    moveInPriority: "",
     sortBy: "createdAt",
     sortOrder: "desc",
 };
@@ -34,24 +33,20 @@ const buyPropertyInquirySlice = createSlice({
             state.status = action.payload;
             state.page = 1;
         },
-        setRequirementType: (state, action) => {
-            state.requirementType = action.payload;
+        setPropertyType: (state, action) => {
+            state.propertyType = action.payload;
             state.page = 1;
         },
-        setOccupantType: (state, action) => {
-            state.occupantType = action.payload;
+        setBudgetRange: (state, action) => {
+            state.budgetRange = action.payload;
+            state.page = 1;
+        },
+        setPriority: (state, action) => {
+            state.priority = action.payload;
             state.page = 1;
         },
         setCity: (state, action) => {
             state.city = action.payload;
-            state.page = 1;
-        },
-        setMonthlyBudget: (state, action) => {
-            state.monthlyBudget = action.payload;
-            state.page = 1;
-        },
-        setMoveInPriority: (state, action) => {
-            state.moveInPriority = action.payload;
             state.page = 1;
         },
         setSortBy: (state, action) => {
@@ -71,11 +66,10 @@ export const {
     setLimit,
     setSearch,
     setStatus,
-    setRequirementType,
-    setOccupantType,
+    setPropertyType,
+    setBudgetRange,
+    setPriority,
     setCity,
-    setMonthlyBudget,
-    setMoveInPriority,
     setSortBy,
     setSortOrder,
     resetFilters,

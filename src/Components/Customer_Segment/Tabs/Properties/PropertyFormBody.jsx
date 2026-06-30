@@ -5,7 +5,10 @@ import {
 } from "lucide-react";
 import LocationPicker from "../../../Admin_Segment/Tabs/PropertiesTab/Shared/LocationPicker";
 import { useGetConstantsQuery } from "../../../../REDUX_FEATURES/REDUX_SLICES/constantsApi/constantsApi";
-import { normalizeListingTypesList } from "../../../../utils/listingType";
+import { normalizeListingTypesList, isSellListingType } from "../../../../utils/listingType";
+import { isRentalListingType } from "../../../../utils/propertyFormPayload";
+import RentalDetailsSection from "../../../Shared/PropertyForm/RentalDetailsSection";
+import SaleDetailsSection from "../../../Shared/PropertyForm/SaleDetailsSection";
 
 const inputCls = "w-full h-10 px-3 rounded-lg border border-slate-300 focus:border-blue-600 focus:ring-1 focus:ring-blue-600 outline-none text-sm";
 const labelCls = "block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5";
@@ -56,15 +59,20 @@ const CheckItem = ({ label, checked, onChange }) => (
 );
 
 // Handles both File objects and URL strings
-const ImageUpload = ({ label, file, url, onFileChange, onRemove }) => {
+const ImageUpload = ({ label, file, url, onFileChange, onRemove, accept = "image/*" }) => {
     const inputRef = useRef(null);
     const previewUrl = file instanceof File ? URL.createObjectURL(file) : (url || null);
+    const isVideo = accept.includes("video");
 
     return (
         <div className="relative group">
             {previewUrl ? (
                 <div className="relative aspect-square rounded-lg overflow-hidden border border-slate-200">
-                    <img src={previewUrl} alt={label} className="w-full h-full object-cover" />
+                    {isVideo ? (
+                        <video src={previewUrl} className="w-full h-full object-cover" controls />
+                    ) : (
+                        <img src={previewUrl} alt={label} className="w-full h-full object-cover" />
+                    )}
                     <button
                         type="button"
                         onClick={onRemove}
@@ -83,7 +91,7 @@ const ImageUpload = ({ label, file, url, onFileChange, onRemove }) => {
                     <span className="text-xs text-slate-500">{label}</span>
                 </button>
             )}
-            <input ref={inputRef} type="file" accept="image/*" className="hidden" onChange={(e) => onFileChange(e.target.files[0])} />
+            <input ref={inputRef} type="file" accept={accept} className="hidden" onChange={(e) => onFileChange(e.target.files[0])} />
         </div>
     );
 };
@@ -126,20 +134,7 @@ const DocumentUpload = ({ label, file, url, name, onFileChange, onRemove }) => {
     );
 };
 
-// Backend-accepted state enum (exact match required)
-const VALID_STATES = [
-    "Andaman and Nicobar Islands", "Andhra Pradesh", "Arunachal Pradesh",
-    "Assam", "Bihar", "Chhattisgarh", "Chandigarh",
-    "Dadra and Nagar Haveli and Daman and Diu", "Delhi", "Goa", "Gujarat",
-    "Haryana", "Himachal Pradesh", "Jharkhand", "Jammu and Kashmir",
-    "Karnataka", "Kerala", "Ladakh", "Lakshadweep", "Maharashtra",
-    "Meghalaya", "Manipur", "Madhya Pradesh", "Mizoram", "Nagaland",
-    "Odisha", "Punjab", "Puducherry", "Rajasthan", "Sikkim",
-    "Tamil Nadu", "Telangana", "Tripura", "Uttarakhand",
-    "Uttar Pradesh", "West Bengal",
-];
-
-// Map common geocoding aliases → canonical state name
+// Geocoding aliases → canonical state name from /constants INDIAN_STATE_NAMES
 const STATE_ALIASES = {
     "delhi": "Delhi",
     "ncr": "Delhi",
@@ -195,68 +190,48 @@ const STATE_ALIASES = {
     "assam": "Assam",
 };
 
-/**
- * Normalizes a geocoded state string to the backend-accepted enum value.
- * Steps: 1) exact match (case-insensitive), 2) alias lookup, 3) partial match.
- * Returns the matched canonical value or the original string if no match found.
- */
-const normalizeState = (raw) => {
+const normalizeState = (raw, validStates = []) => {
     if (!raw) return "";
     const trimmed = raw.trim();
-    // 1. Exact case-insensitive match against VALID_STATES
-    const exactMatch = VALID_STATES.find(s => s.toLowerCase() === trimmed.toLowerCase());
+    if (!validStates.length) return trimmed;
+    const exactMatch = validStates.find(s => s.toLowerCase() === trimmed.toLowerCase());
     if (exactMatch) return exactMatch;
-    // 2. Alias map lookup (strip spaces and lowercase)
     const key = trimmed.toLowerCase().replace(/\s+/g, "");
     if (STATE_ALIASES[key]) return STATE_ALIASES[key];
     if (STATE_ALIASES[trimmed.toLowerCase()]) return STATE_ALIASES[trimmed.toLowerCase()];
-    // 3. Partial contains match (geocoder might return long strings)
-    const partialMatch = VALID_STATES.find(s => trimmed.toLowerCase().includes(s.toLowerCase()) || s.toLowerCase().includes(trimmed.toLowerCase()));
+    const partialMatch = validStates.find(s => trimmed.toLowerCase().includes(s.toLowerCase()) || s.toLowerCase().includes(trimmed.toLowerCase()));
     if (partialMatch) return partialMatch;
-    // 4. Return as-is (user can fix via dropdown)
     return trimmed;
 };
 
-// Scheme-matched enum arrays
-const FALLBACK_LISTING_TYPES = ["For Sell", "For Rent", "BUY", "PG"];
-const FALLBACK_PROPERTY_TYPES = [
-    "Flat", "Builder Floor", "Independent House", "Penthouse", "Farmhouse",
-    "Studio Apartment", "Office Space", "Shop", "Showroom", "Warehouse",
-    "Factory", "Co-working Space", "Residential Plot", "Commercial Plot",
-    "Agricultural Land", "Industrial Land",
-];
-
-const OWNERSHIP_TYPES = ["Freehold", "Leasehold", "POA", "Co-operative Society"];
-const PROPERTY_CONDITIONS = ["Brand New", "Excellent", "Good", "Average", "Needs Renovation"];
-const CONSTRUCTION_STATUSES = ["Ready to Move", "Under Construction"];
-const FURNISHING_STATUSES = ["Unfurnished", "Semi-Furnished", "Fully Furnished"];
-const FACING_DIRECTIONS = [
-    "North", "South", "East", "West",
-    "North-East", "North-West", "South-East", "South-West",
-];
-const FLOORING_TYPES = ["Marble", "Granite", "Wooden Flooring", "Tiles"];
-const WATER_SUPPLY_TYPES = ["Municipal Water", "Borewell", "Both"];
-const POWER_BACKUP_TYPES = ["No Backup", "Full Backup"];
-const PARKING_TYPES = ["No Parking", "Open Parking", "Covered Parking", "Stilt Parking"];
-const SECURITY_FEATURES = ["CCTV", "Security Guard", "Gated Community"];
-const AMENITIES = [
-    "Lift", "Gym", "Swimming Pool", "Club House", "Park",
-    "Kids Play Area", "Jogging Track", "Community Hall",
-    "Visitor Parking", "EV Charging", "Temple", "Sports Court",
-];
-const CONNECTIVITY = [
-    "Near Metro", "Near Railway Station", "Near Airport",
-    "Near Highway", "Near Bus Stand",
-];
-const NEARBY_FACILITIES = [
-    "School Nearby", "Hospital Nearby", "Market Nearby",
-    "Mall Nearby", "Bank Nearby", "Park Nearby",
+const DOCUMENT_SLOTS = [
+    { key: "aadhaarCard", label: "Aadhaar Card", type: "Aadhaar Card", category: "identity" },
+    { key: "panCard", label: "PAN Card", type: "PAN Card", category: "identity" },
+    { key: "passport", label: "Passport", type: "Passport", category: "identity" },
+    { key: "drivingLicence", label: "Driving Licence", type: "Driving Licence", category: "identity" },
+    { key: "voterId", label: "Voter ID", type: "Voter ID", category: "identity" },
+    { key: "saleDeed", label: "Sale Deed", type: "Sale Deed", category: "ownership" },
+    { key: "registry", label: "Registry", type: "Registry", category: "ownership" },
+    { key: "conveyanceDeed", label: "Conveyance Deed", type: "Conveyance Deed", category: "ownership" },
+    { key: "mutationCertificate", label: "Mutation Certificate", type: "Mutation Certificate", category: "ownership" },
+    { key: "reraCertificate", label: "RERA Certificate", type: "RERA Certificate", category: "approval" },
+    { key: "occupancyCertificate", label: "Occupancy Certificate", type: "Occupancy Certificate", category: "approval" },
+    { key: "completionCertificate", label: "Completion Certificate", type: "Completion Certificate", category: "approval" },
+    { key: "approvedBuildingPlan", label: "Approved Building Plan", type: "Approved Building Plan", category: "approval" },
+    { key: "taxReceipt", label: "Property Tax Receipt", type: "Property Tax Receipt", category: "taxUtility" },
+    { key: "electricityBill", label: "Electricity Bill", type: "Electricity Bill", category: "taxUtility" },
+    { key: "waterBill", label: "Water Bill", type: "Water Bill", category: "taxUtility" },
+    { key: "encumbrance", label: "Encumbrance Certificate", type: "Encumbrance Certificate", category: "legal" },
+    { key: "noc", label: "NOC", type: "NOC", category: "legal" },
+    { key: "societyShareCertificate", label: "Society Share Certificate", type: "Society Share Certificate", category: "legal" },
 ];
 
 const PropertyFormBody = ({ formData, onChange }) => {
     const { data: constants } = useGetConstantsQuery();
-    const listingTypes = normalizeListingTypesList(constants?.LISTING_TYPES) || FALLBACK_LISTING_TYPES;
-    const propertyTypes = constants?.PROPERTY_TYPES || FALLBACK_PROPERTY_TYPES;
+    const listingTypes = normalizeListingTypesList(constants?.LISTING_TYPES) ?? [];
+    const stateNames = constants?.INDIAN_STATE_NAMES ?? [];
+    const showRental = isRentalListingType(formData.listingType);
+    const showSale = isSellListingType(formData.listingType);
 
     const set = (field) => (val) => onChange(field, val);
     const toggleCheck = (field, item) => {
@@ -279,13 +254,13 @@ const PropertyFormBody = ({ formData, onChange }) => {
                         label="Property Type" required
                         value={formData.propertyType}
                         onChange={set("propertyType")}
-                        options={propertyTypes}
+                        options={constants?.PROPERTY_TYPES ?? []}
                     />
                     <SelectField
                         label="Ownership Type"
                         value={formData.ownershipType}
                         onChange={set("ownershipType")}
-                        options={OWNERSHIP_TYPES}
+                        options={constants?.OWNERSHIP_TYPES ?? []}
                     />
                     <div className="md:col-span-3">
                         <InputField
@@ -316,13 +291,13 @@ const PropertyFormBody = ({ formData, onChange }) => {
                             label="Condition"
                             value={formData.condition}
                             onChange={set("condition")}
-                            options={PROPERTY_CONDITIONS}
+                            options={constants?.PROPERTY_CONDITIONS ?? []}
                         />
                         <SelectField
                             label="Construction Status"
                             value={formData.constructionStatus}
                             onChange={set("constructionStatus")}
-                            options={CONSTRUCTION_STATUSES}
+                            options={constants?.CONSTRUCTION_STATUSES ?? []}
                         />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
@@ -330,13 +305,13 @@ const PropertyFormBody = ({ formData, onChange }) => {
                             label="Furnishing"
                             value={formData.furnishing}
                             onChange={set("furnishing")}
-                            options={FURNISHING_STATUSES}
+                            options={constants?.FURNISHING_STATUSES ?? []}
                         />
                         <SelectField
                             label="Facing"
                             value={formData.facing}
                             onChange={set("facing")}
-                            options={FACING_DIRECTIONS}
+                            options={constants?.FACING_DIRECTIONS ?? []}
                         />
                     </div>
                     <div className="grid grid-cols-3 gap-4">
@@ -354,6 +329,13 @@ const PropertyFormBody = ({ formData, onChange }) => {
                                 onChange={set("price")}
                             />
                         </div>
+                        <InputField
+                            label="ROI (%)"
+                            type="number"
+                            placeholder="0–100"
+                            value={formData.roi ?? ""}
+                            onChange={set("roi")}
+                        />
                     </div>
                     <div className="grid grid-cols-4 gap-4">
                         <InputField label="Bedrooms" type="number" value={formData.bedrooms} onChange={set("bedrooms")} />
@@ -366,7 +348,7 @@ const PropertyFormBody = ({ formData, onChange }) => {
                             label="Flooring Type"
                             value={formData.flooringType}
                             onChange={set("flooringType")}
-                            options={FLOORING_TYPES}
+                            options={constants?.FLOORING_TYPES ?? []}
                         />
                         <InputField
                             label="Maintenance (₹/mo)"
@@ -386,25 +368,25 @@ const PropertyFormBody = ({ formData, onChange }) => {
                             label="Water Supply"
                             value={formData.waterSupply}
                             onChange={set("waterSupply")}
-                            options={WATER_SUPPLY_TYPES}
+                            options={constants?.WATER_SUPPLY_TYPES ?? []}
                         />
                         <SelectField
                             label="Power Backup"
                             value={formData.powerBackup}
                             onChange={set("powerBackup")}
-                            options={POWER_BACKUP_TYPES}
+                            options={constants?.POWER_BACKUP_TYPES ?? []}
                         />
                     </div>
                     <SelectField
                         label="Parking Type"
                         value={formData.parkingType}
                         onChange={set("parkingType")}
-                        options={PARKING_TYPES}
+                        options={constants?.PARKING_TYPES ?? []}
                     />
                     <div>
                         <label className={labelCls}>Security Features</label>
                         <div className="grid grid-cols-2 gap-2 mt-1">
-                            {SECURITY_FEATURES.map(item => (
+                            {(constants?.SECURITY_FEATURES ?? []).map(item => (
                                 <CheckItem
                                     key={item} label={item}
                                     checked={formData.securityFeatures?.includes(item)}
@@ -416,10 +398,24 @@ const PropertyFormBody = ({ formData, onChange }) => {
                 </div>
             </Section>
 
+            {showRental && (
+                <RentalDetailsSection
+                    rentalDetails={formData.rentalDetails}
+                    onChange={onChange}
+                />
+            )}
+
+            {showSale && (
+                <SaleDetailsSection
+                    saleDetails={formData.saleDetails}
+                    onChange={onChange}
+                />
+            )}
+
             {/* 4. Amenities */}
             <Section icon={Waves} title="Amenities">
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                    {AMENITIES.map(item => (
+                    {(constants?.AMENITIES ?? []).map(item => (
                         <CheckItem
                             key={item} label={item}
                             checked={formData.amenities?.includes(item)}
@@ -441,10 +437,12 @@ const PropertyFormBody = ({ formData, onChange }) => {
                         { key: "balcony", label: "Balcony" },
                         { key: "society", label: "Society" },
                         { key: "floorPlan", label: "Floor Plan" },
+                        { key: "video", label: "Video" },
                     ].map(({ key, label }) => (
                         <ImageUpload
                             key={key}
                             label={label}
+                            accept={key === "video" ? "video/*" : "image/*"}
                             file={formData.images?.[key] instanceof File ? formData.images[key] : null}
                             url={typeof formData.images?.[key] === "string" ? formData.images[key] : null}
                             onFileChange={(file) => onChange(`images.${key}`, file)}
@@ -458,14 +456,7 @@ const PropertyFormBody = ({ formData, onChange }) => {
             {/* 6. Documents Upload */}
             <Section icon={FileText} title="Documents Upload" fullWidth>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                    {[
-                        { key: "saleDeed", label: "Sale Deed", type: "Sale Deed", category: "ownership" },
-                        { key: "reraCertificate", label: "RERA Certificate", type: "RERA Certificate", category: "approval" },
-                        { key: "taxReceipt", label: "Tax Receipt", type: "Property Tax Receipt", category: "taxUtility" },
-                        { key: "electricityBill", label: "Electricity Bill", type: "Electricity Bill", category: "taxUtility" },
-                        { key: "occupancyCertificate", label: "Occupancy Certificate", type: "Occupancy Certificate", category: "approval" },
-                        { key: "encumbrance", label: "Encumbrance Certificate", type: "Encumbrance Certificate", category: "legal" },
-                    ].map(({ key, label, type, category }) => (
+                    {DOCUMENT_SLOTS.map(({ key, label, type, category }) => (
                         <DocumentUpload
                             key={key}
                             label={label}
@@ -485,7 +476,7 @@ const PropertyFormBody = ({ formData, onChange }) => {
                     <div>
                         <label className={labelCls}>Connectivity</label>
                         <div className="grid grid-cols-2 gap-2 mt-1">
-                            {CONNECTIVITY.map(item => (
+                            {(constants?.CONNECTIVITY ?? []).map(item => (
                                 <CheckItem
                                     key={item} label={item}
                                     checked={formData.connectivity?.includes(item)}
@@ -497,7 +488,7 @@ const PropertyFormBody = ({ formData, onChange }) => {
                     <div>
                         <label className={labelCls}>Nearby Facilities</label>
                         <div className="grid grid-cols-2 gap-2 mt-1">
-                            {NEARBY_FACILITIES.map(item => (
+                            {(constants?.NEARBY_FACILITIES ?? []).map(item => (
                                 <CheckItem
                                     key={item} label={item}
                                     checked={formData.nearbyFacilities?.includes(item)}
@@ -522,7 +513,7 @@ const PropertyFormBody = ({ formData, onChange }) => {
                                 if (fullAddress) set("fullAddress")(fullAddress);
                                 if (city) set("city")(city);
                                 // Normalize state to backend-accepted enum value
-                                if (state) set("state")(normalizeState(state));
+                                if (state) set("state")(normalizeState(state, stateNames));
                                 if (pincode) set("pincode")(pincode);
                             }}
                         />
@@ -544,7 +535,7 @@ const PropertyFormBody = ({ formData, onChange }) => {
                                 onChange={(e) => set("state")(e.target.value)}
                             >
                                 <option value="">Select State</option>
-                                {VALID_STATES.map((s) => (
+                                {stateNames.map((s) => (
                                     <option key={s} value={s}>{s}</option>
                                 ))}
                             </select>

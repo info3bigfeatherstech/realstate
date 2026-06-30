@@ -12,11 +12,10 @@ import {
     setLimit,
     setSearch,
     setStatus,
-    setRequirementType,
-    setOccupantType,
+    setPropertyType,
+    setBudgetRange,
+    setPriority,
     setCity,
-    setMonthlyBudget,
-    setMoveInPriority,
     resetFilters,
 } from "../../../Admin_Redux/BuyPropertyInquiryApi/buyPropertyInquirySlice";
 import InquiryStatusBadge from "../AccommodationInquiriesTab/Shared/InquiryStatusBadge";
@@ -171,23 +170,34 @@ const BuyPropertyInquiriesTab = () => {
 
                     <select
                         className="h-9 px-2 rounded-lg border border-slate-300 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-blue-100"
-                        value={filters.requirementType || ""}
-                        onChange={(e) => dispatch(setRequirementType(e.target.value))}
+                        value={filters.propertyType || ""}
+                        onChange={(e) => dispatch(setPropertyType(e.target.value))}
                     >
-                        <option value="">All Requirements</option>
-                        {(c.REQUIREMENT_TYPES || []).map((r) => (
-                            <option key={r} value={r}>{r}</option>
+                        <option value="">All Property Types</option>
+                        {(c.BUY_PROPERTY_TYPES || []).map((t) => (
+                            <option key={t} value={t}>{t}</option>
                         ))}
                     </select>
 
                     <select
                         className="h-9 px-2 rounded-lg border border-slate-300 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-blue-100"
-                        value={filters.occupantType || ""}
-                        onChange={(e) => dispatch(setOccupantType(e.target.value))}
+                        value={filters.budgetRange || ""}
+                        onChange={(e) => dispatch(setBudgetRange(e.target.value))}
                     >
-                        <option value="">All Occupants</option>
-                        {(c.OCCUPANT_TYPES || []).map((o) => (
-                            <option key={o} value={o}>{o}</option>
+                        <option value="">All Budgets</option>
+                        {(c.BUY_BUDGET_RANGES || []).map((b) => (
+                            <option key={b} value={b}>{b}</option>
+                        ))}
+                    </select>
+
+                    <select
+                        className="h-9 px-2 rounded-lg border border-slate-300 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-blue-100"
+                        value={filters.priority || ""}
+                        onChange={(e) => dispatch(setPriority(e.target.value))}
+                    >
+                        <option value="">All Timelines</option>
+                        {(c.BUY_PRIORITY_TIMELINES || []).map((p) => (
+                            <option key={p} value={p}>{p}</option>
                         ))}
                     </select>
 
@@ -198,28 +208,6 @@ const BuyPropertyInquiriesTab = () => {
                         value={filters.city || ""}
                         onChange={(e) => dispatch(setCity(e.target.value))}
                     />
-
-                    <select
-                        className="h-9 px-2 rounded-lg border border-slate-300 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-blue-100"
-                        value={filters.monthlyBudget || ""}
-                        onChange={(e) => dispatch(setMonthlyBudget(e.target.value))}
-                    >
-                        <option value="">All Budgets</option>
-                        {(c.MONTHLY_BUDGETS || []).map((b) => (
-                            <option key={b} value={b}>{b}</option>
-                        ))}
-                    </select>
-
-                    <select
-                        className="h-9 px-2 rounded-lg border border-slate-300 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-blue-100"
-                        value={filters.moveInPriority || ""}
-                        onChange={(e) => dispatch(setMoveInPriority(e.target.value))}
-                    >
-                        <option value="">All Move-in</option>
-                        {(c.MOVE_IN_PRIORITIES || []).map((m) => (
-                            <option key={m} value={m}>{m}</option>
-                        ))}
-                    </select>
                 </div>
             </div>
 

@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import PropertyFormBody from "./PropertyFormBody";
 import { isSellListingType, normalizeListingTypeForSubmit } from "../../../../utils/listingType";
+import { buildFullPropertyPayload, EMPTY_RENTAL_DETAILS, EMPTY_SALE_DETAILS } from "../../../../utils/propertyFormPayload";
 import {
     useCreatePropertyMutation,
     useUpdatePropertyMutation,
@@ -22,6 +23,7 @@ const INITIAL_FORM = {
     facing: "North",
     areaValue: "",
     price: "",
+    roi: "",
     bedrooms: "",
     bathrooms: "",
     floorNo: "",
@@ -41,6 +43,8 @@ const INITIAL_FORM = {
     pincode: "",
     latitude: "",
     longitude: "",
+    rentalDetails: { ...EMPTY_RENTAL_DETAILS },
+    saleDetails: { ...EMPTY_SALE_DETAILS },
     images: {},
     documents: {},
 };
@@ -69,57 +73,13 @@ const CreatePropertyPage = () => {
         setError("");
     };
 
-    const buildPayload = () => {
-        const payload = {
-            listingType: normalizeListingTypeForSubmit(formData.listingType),
-            propertyType: formData.propertyType,
-            ownershipType: formData.ownershipType,
-            title: formData.title,
-            description: formData.description,
-            condition: formData.condition,
-            constructionStatus: formData.constructionStatus,
-            furnishing: formData.furnishing,
-            facing: formData.facing,
-            flooringType: formData.flooringType,
-            area: { value: Number(formData.areaValue) || 0, unit: "sqft" },
-            price: Number(formData.price) || 0,
-            maintenance: Number(formData.maintenance) || 0,
-            bedrooms: Number(formData.bedrooms) || 0,
-            bathrooms: Number(formData.bathrooms) || 0,
-            floorNo: Number(formData.floorNo) || 0,
-            totalFloors: Number(formData.totalFloors) || 0,
-            waterSupply: formData.waterSupply,
-            powerBackup: formData.powerBackup,
-            parkingType: formData.parkingType,
-            securityFeatures: formData.securityFeatures,
-            amenities: formData.amenities,
-            connectivity: formData.connectivity,
-            nearbyFacilities: formData.nearbyFacilities,
-            location: {
-                fullAddress: formData.fullAddress,
-                city: formData.city,
-                state: formData.state,
-                pincode: formData.pincode,
-                latitude: formData.latitude ? Number(formData.latitude) : undefined,
-                longitude: formData.longitude ? Number(formData.longitude) : undefined,
-            },
-            status: "pending" // Default status is pending for Super Admin approval
-        };
-
-        if (isSellListingType(formData.listingType)) {
-            payload.saleDetails = { possessionStatus: "Immediate Possession", loanAvailability: "Available" };
-        }
-
-        if (formData.listingType === "For Rent" || formData.listingType === "PG") {
-            payload.rentalDetails = {
-                tenantTypeAllowed: ["Anyone"],
-                occupationPreference: "No Restriction",
-                rentalAgreementDuration: "11 Months",
-                securityDeposit: "2 Months Rent",
-                availability: "Immediate"
-            };
-        }
-
+    const buildPayload = (statusOverride) => {
+        const listingType = normalizeListingTypeForSubmit(formData.listingType);
+        const payload = buildFullPropertyPayload(
+            { ...formData, listingType },
+            { isSell: isSellListingType(formData.listingType) }
+        );
+        if (statusOverride) payload.status = statusOverride;
         return payload;
     };
 
@@ -156,7 +116,7 @@ const CreatePropertyPage = () => {
         setIsUploading(true);
         let propertyId = createdPropertyId;
         try {
-            const payload = buildPayload();
+            const payload = buildPayload("pending");
             if (!propertyId) {
                 const property = await createProperty(payload).unwrap();
                 propertyId = property.data?._id || property._id;
@@ -186,7 +146,7 @@ const CreatePropertyPage = () => {
         setIsUploading(true);
         let propertyId = createdPropertyId;
         try {
-            const payload = buildPayload();
+            const payload = buildPayload("draft");
             payload.status = "draft";
             if (!propertyId) {
                 const property = await createProperty(payload).unwrap();

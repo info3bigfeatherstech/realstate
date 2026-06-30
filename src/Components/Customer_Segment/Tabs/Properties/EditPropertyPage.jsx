@@ -11,7 +11,12 @@ import {
   useDeleteMediaMutation,
   useDeleteDocumentMutation,
 } from "../../../../REDUX_FEATURES/REDUX_SLICES/customerPropertyApi/customerPropertyApi";
-import { normalizeListingTypeForSubmit, formatListingTypeLabel, isSellListingType } from "../../../../utils/listingType";
+import { normalizeListingTypeForSubmit, isSellListingType } from "../../../../utils/listingType";
+import {
+  buildFullPropertyPayload,
+  mapPropertyToFormBase,
+  DOCUMENT_KEY_TO_TYPE,
+} from "../../../../utils/propertyFormPayload";
 
 const EditPropertyPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -33,77 +38,7 @@ const EditPropertyPage = () => {
   const [mediaToDelete, setMediaToDelete] = useState([]);
   const [docsToDelete, setDocsToDelete] = useState([]);
 
-  // Transform backend data to form format
-  const transformApiDataToForm = (property) => {
-    // Transform media array to images object
-    const imagesObj = {};
-    if (property.media && property.media.length > 0) {
-      property.media.forEach((mediaItem) => {
-        imagesObj[mediaItem.type] = mediaItem.url; // Store URL for preview
-      });
-    }
-
-    // Map document type back to keys in the form
-    const docKeysMap = {
-      "Sale Deed": "saleDeed",
-      "RERA Certificate": "reraCertificate",
-      "Property Tax Receipt": "taxReceipt",
-      "Electricity Bill": "electricityBill",
-      "Occupancy Certificate": "occupancyCertificate",
-      "Encumbrance Certificate": "encumbrance",
-    };
-
-    const documentsObj = {};
-    if (property.documents && property.documents.length > 0) {
-      property.documents.forEach((doc) => {
-        const key = docKeysMap[doc.type];
-        if (key) {
-          documentsObj[key] = {
-            file: null,
-            url: doc.url,
-            name: doc.originalFileName || doc.fileName,
-            category: doc.category,
-            type: doc.type,
-          };
-        }
-      });
-    }
-
-    return {
-      listingType: formatListingTypeLabel(property.listingType) || "",
-      propertyType: property.propertyType || "",
-      ownershipType: property.ownershipType || "Freehold",
-      title: property.title || "",
-      description: property.description || "",
-      condition: property.condition || "Brand New",
-      constructionStatus: property.constructionStatus || "Ready to Move",
-      furnishing: property.furnishing || "Unfurnished",
-      facing: property.facing || "North",
-      areaValue: property.area?.value || "",
-      price: property.price || "",
-      bedrooms: property.bedrooms || "",
-      bathrooms: property.bathrooms || "",
-      floorNo: property.floorNo || "",
-      totalFloors: property.totalFloors || "",
-      flooringType: property.flooringType || "Marble",
-      maintenance: property.maintenance || "",
-      waterSupply: property.waterSupply || "Municipal Water",
-      powerBackup: property.powerBackup || "No Backup",
-      parkingType: property.parkingType || "No Parking",
-      securityFeatures: property.securityFeatures || [],
-      amenities: property.amenities || [],
-      connectivity: property.connectivity || [],
-      nearbyFacilities: property.nearbyFacilities || [],
-      fullAddress: property.location?.fullAddress || "",
-      city: property.location?.city || "",
-      state: property.location?.state || "Maharashtra",
-      pincode: property.location?.pincode || "",
-      latitude: property.location?.latitude || "",
-      longitude: property.location?.longitude || "",
-      images: imagesObj,
-      documents: documentsObj,
-    };
-  };
+  const transformApiDataToForm = (property) => mapPropertyToFormBase(property);
 
   useEffect(() => {
     if (propertyData) {
@@ -129,15 +64,7 @@ const EditPropertyPage = () => {
     // Track deleted or replaced documents
     if (field.startsWith("documents.")) {
       const docKey = field.split(".")[1];
-      const docKeysMap = {
-        saleDeed: "Sale Deed",
-        reraCertificate: "RERA Certificate",
-        taxReceipt: "Property Tax Receipt",
-        electricityBill: "Electricity Bill",
-        occupancyCertificate: "Occupancy Certificate",
-        encumbrance: "Encumbrance Certificate",
-      };
-      const docType = docKeysMap[docKey];
+      const docType = DOCUMENT_KEY_TO_TYPE[docKey];
       const originalDoc = propertyData?.documents?.find(d => d.type === docType);
       if (originalDoc && (value === null || (value && value.file instanceof File))) {
         setDocsToDelete(prev => {
@@ -162,56 +89,11 @@ const EditPropertyPage = () => {
   };
 
   const buildUpdatePayload = () => {
-    const payload = {
-      listingType: normalizeListingTypeForSubmit(formData.listingType),
-      propertyType: formData.propertyType,
-      ownershipType: formData.ownershipType,
-      title: formData.title,
-      description: formData.description,
-      condition: formData.condition,
-      constructionStatus: formData.constructionStatus,
-      furnishing: formData.furnishing,
-      facing: formData.facing,
-      flooringType: formData.flooringType,
-      area: { value: Number(formData.areaValue) || 0, unit: "sqft" },
-      price: Number(formData.price) || 0,
-      maintenance: Number(formData.maintenance) || 0,
-      bedrooms: Number(formData.bedrooms) || 0,
-      bathrooms: Number(formData.bathrooms) || 0,
-      floorNo: Number(formData.floorNo) || 0,
-      totalFloors: Number(formData.totalFloors) || 0,
-      waterSupply: formData.waterSupply,
-      powerBackup: formData.powerBackup,
-      parkingType: formData.parkingType,
-      securityFeatures: formData.securityFeatures,
-      amenities: formData.amenities,
-      connectivity: formData.connectivity,
-      nearbyFacilities: formData.nearbyFacilities,
-      location: {
-        fullAddress: formData.fullAddress,
-        city: formData.city,
-        state: formData.state,
-        pincode: formData.pincode,
-        latitude: formData.latitude ? Number(formData.latitude) : undefined,
-        longitude: formData.longitude ? Number(formData.longitude) : undefined,
-      },
-    };
-
-    if (isSellListingType(formData.listingType)) {
-      payload.saleDetails = { possessionStatus: "Immediate Possession", loanAvailability: "Available" };
-    }
-
-    if (formData.listingType === "For Rent" || formData.listingType === "PG") {
-      payload.rentalDetails = {
-        tenantTypeAllowed: ["Anyone"],
-        occupationPreference: "No Restriction",
-        rentalAgreementDuration: "11 Months",
-        securityDeposit: "2 Months Rent",
-        availability: "Immediate"
-      };
-    }
-
-    return payload;
+    const listingType = normalizeListingTypeForSubmit(formData.listingType);
+    return buildFullPropertyPayload(
+      { ...formData, listingType },
+      { isSell: isSellListingType(formData.listingType) }
+    );
   };
 
   const uploadAllMedia = async (propertyId, images) => {

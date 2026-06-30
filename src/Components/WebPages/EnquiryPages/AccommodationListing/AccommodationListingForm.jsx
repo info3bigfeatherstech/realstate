@@ -29,6 +29,8 @@ const INITIAL = {
   businessUse: [],
   sizeValue: "",
   sizeUnit: "Sq. Ft.",
+  floorNumber: "",
+  totalFloors: "",
   bhk: "",
   totalBeds: "",
   availableBeds: "",
@@ -44,6 +46,7 @@ const INITIAL = {
   additionalDocuments: [],
   documentStatus: "",
   availableFrom: "",
+  availableFromDate: "",
   listingUrgency: "",
   remarks: "",
   message: "",
@@ -63,10 +66,15 @@ const AccommodationListingForm = () => {
   });
 
   const set = (field) => (val) => setForm((p) => ({ ...p, [field]: val }));
+  const isSpecificDate = form.availableFrom === "Specific Date";
 
   const handleSubmit = async () => {
     if (!form.fullName || !form.mobile || !form.city || !form.area || !form.listingType || !form.expectedMonthlyRent || !form.legalDocumentType || !form.availableFrom || !form.listingUrgency) {
       toast.error("Please fill all required fields");
+      return;
+    }
+    if (isSpecificDate && !form.availableFromDate) {
+      toast.error("Please select an available from date");
       return;
     }
     try {
@@ -90,6 +98,8 @@ const AccommodationListingForm = () => {
             suitableFor: form.suitableFor,
             businessUse: form.businessUse,
             propertySize: form.sizeValue ? { value: Number(form.sizeValue), unit: form.sizeUnit } : null,
+            floorNumber: form.floorNumber || null,
+            totalFloors: form.totalFloors || null,
             bhk: form.bhk || null,
             totalBeds: form.totalBeds ? Number(form.totalBeds) : null,
             availableBeds: form.availableBeds ? Number(form.availableBeds) : null,
@@ -105,6 +115,9 @@ const AccommodationListingForm = () => {
             additionalDocuments: form.additionalDocuments,
             documentStatus: form.documentStatus || null,
             availableFrom: form.availableFrom,
+            availableFromDate: isSpecificDate && form.availableFromDate
+              ? new Date(form.availableFromDate).toISOString()
+              : null,
             listingUrgency: form.listingUrgency,
           },
         },
@@ -143,7 +156,11 @@ const AccommodationListingForm = () => {
           <SelectField label="Listing Type" required value={form.listingType} onChange={set("listingType")} options={c.LISTING_TYPES} />
           <InputField label="Property Name (optional)" value={form.propertyName} onChange={set("propertyName")} />
           <SelectField label="Property Type" value={form.propertyType} onChange={set("propertyType")} options={c.LISTING_PROPERTY_TYPES} />
+          <InputField label="Property Size" type="number" value={form.sizeValue} onChange={set("sizeValue")} />
+          <SelectField label="Unit" value={form.sizeUnit} onChange={set("sizeUnit")} options={c.AREA_UNITS} />
           <SelectField label="BHK" value={form.bhk} onChange={set("bhk")} options={c.LISTING_BHK_OPTIONS} />
+          <InputField label="Floor No" value={form.floorNumber} onChange={set("floorNumber")} />
+          <InputField label="Total Floors" type="number" value={form.totalFloors} onChange={set("totalFloors")} />
           <InputField label="Total Beds" type="number" value={form.totalBeds} onChange={set("totalBeds")} />
           <InputField label="Available Beds" type="number" value={form.availableBeds} onChange={set("availableBeds")} />
         </div>
@@ -171,6 +188,9 @@ const AccommodationListingForm = () => {
           <InputField label="Rent Per Bed" type="number" value={form.rentPerBed} onChange={set("rentPerBed")} />
           <SelectField label="Furnishing" value={form.furnishingStatus} onChange={set("furnishingStatus")} options={["Fully Furnished", "Semi-Furnished", "Unfurnished"]} />
           <SelectField label="Available From" required value={form.availableFrom} onChange={set("availableFrom")} options={c.AVAILABLE_FROM_OPTIONS} />
+          {isSpecificDate && (
+            <InputField label="Available From Date" required type="date" value={form.availableFromDate} onChange={set("availableFromDate")} />
+          )}
           <SelectField label="Listing Urgency" required value={form.listingUrgency} onChange={set("listingUrgency")} options={c.LISTING_URGENCY_OPTIONS} />
         </div>
         <div className="mt-4">
@@ -185,6 +205,9 @@ const AccommodationListingForm = () => {
           <SelectField label="Legal Document Type" required value={form.legalDocumentType} onChange={set("legalDocumentType")} options={c.LEGAL_DOCUMENT_TYPES} />
           <SelectField label="Title Status" value={form.titleStatus} onChange={set("titleStatus")} options={c.TITLE_STATUSES} />
           <SelectField label="Document Status" value={form.documentStatus} onChange={set("documentStatus")} options={c.DOCUMENT_STATUSES} />
+        </div>
+        <div className="mt-4">
+          <CheckboxGroup label="Additional Documents" options={c.ADDITIONAL_DOCUMENTS} selected={form.additionalDocuments} onChange={(v) => setForm((p) => ({ ...p, additionalDocuments: toggleArrayValue(p.additionalDocuments, v) }))} />
         </div>
         <div className="grid gap-4 mt-4">
           <TextAreaField label="Remarks" value={form.remarks} onChange={set("remarks")} />

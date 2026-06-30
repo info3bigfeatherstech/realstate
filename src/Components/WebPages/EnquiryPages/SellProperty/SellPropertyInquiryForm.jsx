@@ -132,6 +132,8 @@ const SellPropertyInquiryForm = () => {
           <SelectField label="BHK" value={form.bhk} onChange={set("bhk")} options={c.SELL_BHK_OPTIONS} />
           <InputField label="Property Size" required type="number" value={form.sizeValue} onChange={set("sizeValue")} />
           <SelectField label="Unit" value={form.sizeUnit} onChange={set("sizeUnit")} options={c.AREA_UNITS} />
+          <InputField label="Floor Number" value={form.floorNumber} onChange={set("floorNumber")} />
+          <InputField label="Total Floors" type="number" value={form.totalFloors} onChange={set("totalFloors")} />
           <SelectField label="Facing" value={form.facing} onChange={set("facing")} options={c.FACING_DIRECTIONS} />
           <SelectField label="Parking" value={form.parkingAvailable} onChange={set("parkingAvailable")} options={c.YES_NO} />
           <InputField label="Expected Selling Price (₹)" required type="number" value={form.expectedSellingPrice} onChange={set("expectedSellingPrice")} />
