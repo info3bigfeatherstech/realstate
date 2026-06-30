@@ -53,6 +53,9 @@ function ArrowIcon() {
 }
 
 function NavLink({ item, isActive }) {
+    const isFree = item.name.includes("(FREE)");
+    const displayName = isFree ? item.name.replace("(FREE)", "").trim() : item.name;
+
     return (
         <a
             href={item.path}
@@ -62,12 +65,46 @@ function NavLink({ item, isActive }) {
                 : "text-white hover:bg-white/10"
                 }`}
         >
-            <span>{item.name}</span>
+            <span className="flex items-center gap-1.5">
+                {displayName}
+                {isFree && (
+                    <span className="inline-flex items-center gap-1 bg-[#efdfb6]/15 px-2 py-0.5 rounded-md border border-[#D4AF37]/45 shadow-[0_0_12px_rgba(212,175,55,0.3)] select-none">
+                        <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path 
+                                d="M12 2L14.8 8.4L21.2 9.6L16.2 13.9L17.8 20.3L12 16.7L6.2 20.3L7.8 13.9L2.8 9.6L9.2 8.4L12 2Z" 
+                                fill="#D4AF37"
+                            >
+                                <animate 
+                                    attributeName="transform" 
+                                    type="scale" 
+                                    values="1; 1.25; 1" 
+                                    keyTimes="0; 0.5; 1" 
+                                    dur="1.2s" 
+                                    repeatCount="indefinite" 
+                                    transform-origin="12 12"
+                                />
+                                <animate 
+                                    attributeName="opacity" 
+                                    values="0.6; 1; 0.6" 
+                                    dur="1.2s" 
+                                    repeatCount="indefinite"
+                                />
+                            </path>
+                        </svg>
+                        <span className="text-[10px] font-black text-[#D4AF37] tracking-wider uppercase animate-pulse">
+                            Free
+                        </span>
+                    </span>
+                )}
+            </span>
         </a>
     );
 }
 
 function MobileNavLink({ item, isActive, onClick }) {
+    const isFree = item.name.includes("(FREE)");
+    const displayName = isFree ? item.name.replace("(FREE)", "").trim() : item.name;
+
     return (
         <a
             href={item.path}
@@ -75,7 +112,38 @@ function MobileNavLink({ item, isActive, onClick }) {
             className={`flex items-center justify-between rounded-2xl px-5 py-4 transition-all duration-300 ${isActive ? "bg-black text-white" : "bg-[#f5f5f5] text-black"
                 }`}
         >
-            <span className="font-medium text-[16px]">{item.name}</span>
+            <span className="font-medium text-[16px] flex items-center gap-1.5">
+                {displayName}
+                {isFree && (
+                    <span className="inline-flex items-center gap-1 bg-[#efdfb6]/15 px-2 py-0.5 rounded-md border border-[#D4AF37]/45 shadow-[0_0_12px_rgba(212,175,55,0.3)] select-none">
+                        <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path 
+                                d="M12 2L14.8 8.4L21.2 9.6L16.2 13.9L17.8 20.3L12 16.7L6.2 20.3L7.8 13.9L2.8 9.6L9.2 8.4L12 2Z" 
+                                fill="#D4AF37"
+                            >
+                                <animate 
+                                    attributeName="transform" 
+                                    type="scale" 
+                                    values="1; 1.25; 1" 
+                                    keyTimes="0; 0.5; 1" 
+                                    dur="1.2s" 
+                                    repeatCount="indefinite" 
+                                    transform-origin="12 12"
+                                />
+                                <animate 
+                                    attributeName="opacity" 
+                                    values="0.6; 1; 0.6" 
+                                    dur="1.2s" 
+                                    repeatCount="indefinite"
+                                />
+                            </path>
+                        </svg>
+                        <span className="text-[10px] font-black text-[#D4AF37] tracking-wider uppercase animate-pulse">
+                            Free
+                        </span>
+                    </span>
+                )}
+            </span>
             <ArrowIcon />
         </a>
     );

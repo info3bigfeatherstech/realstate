@@ -16,6 +16,7 @@ import Home from "./Components/WebPages/Home";
 import Navbar from "./Components/Common/Navbar";
 import Footer from "./Components/Common/Footer";
 import PropertyDetailPage from "./Components/UserSide/PropertyDetailPage/PropertyDetailPage";
+import PropertiesRender from "./Components/UserSide/PropertiesRender/PropertiesRender";
 import ContactUs from "./Components/WebPages/ContactUs/ContactUs";
 import Eliteservices from "./Components/WebPages/Utilities/Eliteservices";
 import Accommodation from "./Components/WebPages/EnquiryPages/Accommodation/Accommodation";
@@ -24,6 +25,7 @@ import CustomerSignupPage from "./Components/WebPages/CustomerAuth/SignupPage";
 import CustomerDashboard from "./Components/Customer_Segment/CustomerDashboard";
 import CustomerProtectedRoute from "./Components/Customer_Segment/CustomerProtectedRoute";
 import VerifyOtpPage from "./Components/WebPages/CustomerAuth/VerifyOtpPage";
+import GeneralInquiry from "./Components/WebPages/EnquiryPages/GeneralInquiry/GeneralInquiry";
 
 
 // ─── Routes where Navbar & Footer should NOT appear ──────────────────────────
@@ -130,10 +132,11 @@ function App() {
 
           {/* public web routes */}
           <Route path="/" element={<Home />} />
+          <Route path="/properties" element={<PropertiesRender />} />
           <Route path="/property/:id" element={<PropertyDetailPage />} />
           <Route path="/contact" element={<ContactUs />} />
           <Route path="/eliteservices" element={<Eliteservices />} />
-          <Route path="/enquiry" element={<Accommodation />} />
+          <Route path="/enquiry" element={< GeneralInquiry/>} />
 
           {/* Customer Routes Start */}
           <Route path="/customer/login" element={<CustomerLoginPage />} />

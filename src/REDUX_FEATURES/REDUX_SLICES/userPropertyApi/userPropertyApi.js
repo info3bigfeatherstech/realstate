@@ -1,6 +1,6 @@
 // src/User/api/userPropertyApi.js
 import { createApi } from "@reduxjs/toolkit/query/react";
-import axiosInstance from "../../../SERVICES/Axiosinstance";
+import axiosInstance from "../../../SERVICES/CustomerAxiosInstance";
 
 const axiosBaseQuery = () => async ({ url, method, params }) => {
     try {

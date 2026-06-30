@@ -4,9 +4,14 @@ import './index.css'
 import App from './App.jsx'
 import store from './REDUX_FEATURES/REDUX_STORE/store.js'
 import { Provider } from 'react-redux'
-import { setStore } from './SERVICES/Axiosinstance.js'  // ✅ ADD THIS
+// src/main.jsx me:
 
-setStore(store);  // ✅ ADD THIS - Connect axios with Redux store
+import { setStore } from './SERVICES/Axiosinstance.js'
+import { setCustomerStore } from './SERVICES/CustomerAxiosInstance.js' // 1. Isse import karein
+
+setStore(store);
+setCustomerStore(store); // 2. Isse connect karein
+
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
