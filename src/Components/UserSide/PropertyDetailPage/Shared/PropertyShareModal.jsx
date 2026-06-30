@@ -1,154 +1,192 @@
-import React, { useState } from "react";
-import { X, Copy, Check, Loader2 } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Heart, Share2, Loader2, Check } from "lucide-react";
 import { useGetPropertyShareUrlsQuery } from "../../../../REDUX_FEATURES/REDUX_SLICES/userSocialApi/userSocialApi";
+import { getSocialIconSvg } from "../../../Shared/SocialIcons";
 import { toast } from "../../../Shared/ToastConfig";
-const PLATFORM_ICONS = {
-  facebook: "📘",
-  instagram: "📸",
-  youtube: "▶️",
-  linkedin: "💼",
-  twitter: "🐦",
-  whatsapp: "💬",
-  telegram: "✈️",
-  other: "🔗",
+
+const PLATFORM_BG = {
+  whatsapp: "bg-[#25D366]",
+  facebook: "bg-[#1877F2]",
+  instagram: "bg-gradient-to-br from-[#F58529] via-[#DD2A7B] to-[#8134AF]",
+  telegram: "bg-[#29B6F6]",
+  youtube: "bg-[#FF0000]",
+  linkedin: "bg-[#0A66C2]",
+  twitter: "bg-[#111]",
 };
-const PLATFORM_COLORS = {
-  facebook:
-    "hover:bg-blue-50 text-[#1877F2] border-blue-100 hover:border-blue-200",
-  instagram:
-    "hover:bg-pink-50 text-[#E4405F] border-pink-100 hover:border-pink-200",
-  youtube: "hover:bg-red-50 text-[#FF0000] border-red-100 hover:border-red-200",
-  linkedin:
-    "hover:bg-sky-50 text-[#0A66C2] border-sky-100 hover:border-sky-200",
-  twitter:
-    "hover:bg-slate-50 text-[#1DA1F2] border-slate-100 hover:border-slate-300",
-  whatsapp:
-    "hover:bg-green-50 text-[#25D366] border-green-100 hover:border-green-200",
-  telegram:
-    "hover:bg-blue-50 text-[#0088cc] border-blue-100 hover:border-blue-200",
-  other:
-    "hover:bg-slate-50 text-slate-700 border-slate-200 hover:border-slate-300",
-};
-const PropertyShareModal = ({ isOpen, onClose, propertyId }) => {
-  const { data, isLoading, isError } = useGetPropertyShareUrlsQuery(
-    propertyId,
-    { skip: !propertyId || !isOpen },
+
+const DISPLAY_ORDER = ["whatsapp", "facebook", "instagram", "telegram"];
+
+function buildShareLinks(apiLinks, propertyUrl, propertyTitle) {
+  if (!propertyUrl) return apiLinks || [];
+
+  const title = propertyTitle || "Check out this property";
+  const encodedUrl = encodeURIComponent(propertyUrl);
+  const encodedTitle = encodeURIComponent(title);
+
+  const defaults = {
+    whatsapp: {
+      platform: "whatsapp",
+      label: "WhatsApp",
+      url: `https://api.whatsapp.com/send?text=${encodeURIComponent(`${title} ${propertyUrl}`)}`,
+    },
+    facebook: {
+      platform: "facebook",
+      label: "Facebook",
+      url: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
+    },
+    telegram: {
+      platform: "telegram",
+      label: "Telegram",
+      url: `https://t.me/share/url?url=${encodedUrl}&text=${encodedTitle}`,
+    },
+    instagram: {
+      platform: "instagram",
+      label: "Instagram",
+      url: propertyUrl,
+      copyOnly: true,
+    },
+  };
+
+  const apiMap = Object.fromEntries((apiLinks || []).map((link) => [link.platform, link]));
+
+  return DISPLAY_ORDER.map((platform) => apiMap[platform] || defaults[platform]).filter(Boolean);
+}
+
+function CopyLinkIcon() {
+  return (
+    <svg className="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="8" y="8" width="12" height="12" rx="2" stroke="white" strokeWidth="2" />
+      <path d="M6 16V6a2 2 0 0 1 2-2h10" stroke="white" strokeWidth="2" strokeLinecap="round" />
+    </svg>
   );
+}
+
+export default function PropertyShareModal({ propertyId, liked, onWishlistToggle }) {
+  const [isOpen, setIsOpen] = useState(false);
   const [copied, setCopied] = useState(false);
-  if (!isOpen) return null;
-  const shareData = data || {};
-  const shareLinks = shareData.shareLinks || [];
-  const propertyUrl = shareData.propertyUrl || "";
-  const handleCopyLink = async () => {
-    if (!propertyUrl) return;
+  const wrapperRef = useRef(null);
+
+  const { data, isLoading } = useGetPropertyShareUrlsQuery(propertyId, {
+    skip: !propertyId,
+  });
+
+  const shareLinks = data?.shareLinks || [];
+  const propertyUrl = data?.propertyUrl || "";
+  const propertyTitle = data?.propertyTitle || "";
+
+  const sortedLinks = buildShareLinks(shareLinks, propertyUrl, propertyTitle);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleClickOutside = (e) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isOpen]);
+
+  const handleCopyLink = async (url = propertyUrl) => {
+    if (!url) return;
     try {
-      await navigator.clipboard.writeText(propertyUrl);
+      await navigator.clipboard.writeText(url);
       setCopied(true);
-      toast.success("Property link copied to clipboard!");
-      setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
+      toast.success("Link copied!");
+      setTimeout(() => {
+        setCopied(false);
+        setIsOpen(false);
+      }, 1200);
+    } catch {
       toast.error("Failed to copy link");
     }
   };
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in">
-      {" "}
-      <div className="relative w-full max-w-sm bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden p-6 transform transition-all duration-300 scale-100 flex flex-col gap-5">
-        {" "}
-        {/* Header */}{" "}
-        <div className="flex items-center justify-between pb-1">
-          {" "}
-          <h3 className="text-lg font-bold text-slate-800">
-            {" "}
-            Share Property{" "}
-          </h3>{" "}
-          <button
-            onClick={onClose}
-            className="p-1 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
-          >
-            {" "}
-            <X className="w-5 h-5" />{" "}
-          </button>{" "}
-        </div>{" "}
-        {/* Content */}{" "}
-        {isLoading ? (
-          <div className="flex flex-col items-center justify-center py-8 gap-2">
-            {" "}
-            <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />{" "}
-            <span className="text-xs text-slate-400">
-              Generating sharing links...
-            </span>{" "}
+    <div ref={wrapperRef} className="relative flex items-center gap-3">
+      <button
+        type="button"
+        onClick={onWishlistToggle}
+        className="flex flex-1 items-center justify-center gap-2 rounded-full border border-[#E5E5E5] bg-white py-3.5 text-[14px] font-semibold text-[#666] transition hover:border-[#CCC] hover:text-[#111]"
+      >
+        <Heart
+          size={16}
+          strokeWidth={2}
+          color={liked ? "#E53E3E" : "#888"}
+          fill={liked ? "#E53E3E" : "none"}
+        />
+        Wishlist
+      </button>
+
+      <div className="relative flex-1">
+        {isOpen && (
+          <div className="absolute bottom-[calc(100%+10px)] right-0 z-50 animate-in fade-in slide-in-from-bottom-2 duration-200">
+            <div className="flex items-center gap-2.5 rounded-full border border-[#EBEBEB] bg-white px-3 py-2.5 shadow-[0_8px_30px_rgba(0,0,0,0.12)]">
+              {isLoading ? (
+                <Loader2 className="h-5 w-5 animate-spin text-[#888]" />
+              ) : (
+                <>
+                  {sortedLinks.map((link) => {
+                    const icon = getSocialIconSvg(link.platform);
+                    const bg = PLATFORM_BG[link.platform] || "bg-[#555]";
+
+                    if (link.copyOnly) {
+                      return (
+                        <button
+                          key={link.platform}
+                          type="button"
+                          title={link.label}
+                          onClick={() => handleCopyLink(link.url)}
+                          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-white transition-transform hover:scale-105 active:scale-95 ${bg}`}
+                        >
+                          <span className="flex h-[18px] w-[18px] items-center justify-center">
+                            {icon}
+                          </span>
+                        </button>
+                      );
+                    }
+
+                    return (
+                      <a
+                        key={link.platform}
+                        href={link.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        title={link.label}
+                        onClick={() => setIsOpen(false)}
+                        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-white transition-transform hover:scale-105 active:scale-95 ${bg}`}
+                      >
+                        <span className="flex h-[18px] w-[18px] items-center justify-center">
+                          {icon}
+                        </span>
+                      </a>
+                    );
+                  })}
+                  {propertyUrl && (
+                    <button
+                      type="button"
+                      onClick={handleCopyLink}
+                      title="Copy link"
+                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#374151] text-white transition-transform hover:scale-105 active:scale-95"
+                    >
+                      {copied ? <Check size={18} strokeWidth={2.5} /> : <CopyLinkIcon />}
+                    </button>
+                  )}
+                </>
+              )}
+            </div>
           </div>
-        ) : isError ? (
-          <div className="text-center py-6 text-sm text-slate-500">
-            {" "}
-            Failed to generate property share links. Please try again.{" "}
-          </div>
-        ) : shareLinks.length === 0 ? (
-          <div className="text-center py-6 text-sm text-slate-500">
-            {" "}
-            No sharing platforms configured. Copy the direct link below.{" "}
-          </div>
-        ) : (
-          <div className="grid grid-cols-2 gap-3">
-            {" "}
-            {shareLinks.map((link) => {
-              const colorClass =
-                PLATFORM_COLORS[link.platform] || PLATFORM_COLORS.other;
-              return (
-                <a
-                  key={link.platform}
-                  href={link.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`flex flex-col items-center gap-2 p-3 rounded-2xl border bg-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md cursor-pointer ${colorClass}`}
-                >
-                  {" "}
-                  <span className="text-2xl select-none">
-                    {" "}
-                    {link.icon || PLATFORM_ICONS[link.platform] || "🔗"}{" "}
-                  </span>{" "}
-                  <span className="text-xs font-semibold capitalize tracking-wide truncate max-w-full">
-                    {" "}
-                    {link.label}{" "}
-                  </span>{" "}
-                </a>
-              );
-            })}{" "}
-          </div>
-        )}{" "}
-        {/* Direct Link Copy section */}{" "}
-        {propertyUrl && (
-          <div className="flex flex-col gap-2 mt-2 pt-4 border-t border-slate-100">
-            {" "}
-            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-              {" "}
-              Direct Link{" "}
-            </span>{" "}
-            <div className="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 p-1.5 pl-3">
-              {" "}
-              <input
-                type="text"
-                readOnly
-                value={propertyUrl}
-                className="w-full text-xs bg-transparent outline-none text-slate-600 font-mono select-all"
-              />{" "}
-              <button
-                onClick={handleCopyLink}
-                className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border transition-all duration-300 cursor-pointer ${copied ? "bg-green-600 text-white border-green-600" : "bg-white text-slate-500 border-slate-200 hover:text-slate-800 hover:bg-slate-50"}`}
-              >
-                {" "}
-                {copied ? (
-                  <Check className="w-3.5 h-3.5" />
-                ) : (
-                  <Copy className="w-3.5 h-3.5" />
-                )}{" "}
-              </button>{" "}
-            </div>{" "}
-          </div>
-        )}{" "}
-      </div>{" "}
+        )}
+
+        <button
+          type="button"
+          onClick={() => setIsOpen((v) => !v)}
+          className="flex w-full items-center justify-center gap-2 rounded-full bg-[#1B2537] py-3.5 text-[14px] font-bold text-white transition hover:bg-[#2a3548] active:scale-[0.99]"
+        >
+          <Share2 size={16} strokeWidth={2.5} />
+          Share
+        </button>
+      </div>
     </div>
   );
-};
-export default PropertyShareModal;
+}

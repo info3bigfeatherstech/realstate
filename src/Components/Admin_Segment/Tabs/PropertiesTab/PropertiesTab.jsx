@@ -3,8 +3,9 @@ import React, { useState, useRef, useEffect } from "react";
 import ReactDOM from "react-dom";
 import {
   Pencil, Trash2, Eye, Plus, Search, ChevronDown,
-  ChevronLeft, ChevronRight, Loader2
+  ChevronLeft, ChevronRight, Loader2, Flame
 } from "lucide-react";
+import FomoSettingsModal from "./Shared/FomoSettingsModal";
 import { useSearchParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -210,6 +211,7 @@ const PropertiesTab = () => {
   const meta = data?.meta || { total: 0, page: 1, limit: 10, totalPages: 1 };
 
   const [propertyToDelete, setPropertyToDelete] = useState(null);
+  const [fomoProperty, setFomoProperty] = useState(null);
 
   // Handles status change triggered from the clickable StatusBadge
   const handleStatusChange = async (id, newStatus) => {
@@ -274,6 +276,13 @@ const PropertiesTab = () => {
   return (
     <div className="space-y-5">
       <DeleteConfirmModal />
+      {fomoProperty && (
+        <FomoSettingsModal
+          property={fomoProperty}
+          onClose={() => setFomoProperty(null)}
+          onSaveSuccess={refetch}
+        />
+      )}
 
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-bold text-slate-800">Property Listings</h2>
@@ -379,9 +388,10 @@ const PropertiesTab = () => {
 
                       <td className="px-4 py-4">
                         <div className="flex items-center justify-end gap-1">
-                          <button onClick={() => setSearchParams({ tab: "edit-property", id: prop._id })} className="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 cursor-pointer"><Pencil className="w-4 h-4" /></button>
-                          <button onClick={() => setPropertyToDelete(prop._id)} className="p-1.5 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 cursor-pointer"><Trash2 className="w-4 h-4" /></button>
-                          <button onClick={() => setSearchParams({ tab: "property-detail", id: prop._id })} className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 cursor-pointer"><Eye className="w-4 h-4" /></button>
+                          <button onClick={() => setSearchParams({ tab: "edit-property", id: prop._id })} className="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 cursor-pointer" title="Edit"><Pencil className="w-4 h-4" /></button>
+                          <button onClick={() => setPropertyToDelete(prop._id)} className="p-1.5 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 cursor-pointer" title="Delete"><Trash2 className="w-4 h-4" /></button>
+                          <button onClick={() => setFomoProperty(prop)} className="p-1.5 rounded-lg text-slate-400 hover:text-amber-600 hover:bg-amber-50 cursor-pointer" title="FOMO Settings"><Flame className="w-4 h-4" /></button>
+                          <button onClick={() => setSearchParams({ tab: "property-detail", id: prop._id })} className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 cursor-pointer" title="View"><Eye className="w-4 h-4" /></button>
                         </div>
                       </td>
                     </tr>

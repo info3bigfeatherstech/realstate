@@ -3,10 +3,10 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
     ArrowLeft, MapPin, BedDouble, Bath, Maximize2,
-    Heart, Share2, Building2, ShieldCheck, CheckCircle2,
-    ChevronLeft, ChevronRight, Phone, Mail, Tag, Copy, Check,
+    Building2, ShieldCheck, CheckCircle2,
+    ChevronLeft, ChevronRight, Phone, Mail, Tag, Copy, Check, Eye,
 } from "lucide-react";
-import { useGetPropertyByIdQuery } from "../../../REDUX_FEATURES/REDUX_SLICES/userPropertyApi/userPropertyApi";
+import { useGetPropertyByIdQuery, useGetPropertyFomoQuery } from "../../../REDUX_FEATURES/REDUX_SLICES/userPropertyApi/userPropertyApi";
 import PropertyMap from "./PropertyMap";
 import { formatListingTypeLabel } from "../../../utils/listingType";
 import PropertyShareModal from "./Shared/PropertyShareModal";
@@ -122,9 +122,9 @@ export default function PropertyDetailPage() {
     const { id } = useParams();
     const navigate = useNavigate();
     const { data: response, isLoading } = useGetPropertyByIdQuery(id);
+    const { data: fomoData } = useGetPropertyFomoQuery(id, { skip: !id });
     const [liked, setLiked] = useState(false);
     const [copied, setCopied] = useState(false);
-    const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -178,7 +178,7 @@ export default function PropertyDetailPage() {
         <div className="min-h-screen bg-[#F8F8F6] font-['satoshi',sans-serif]">
 
             {/* ── Sticky Top Bar ── */}
-            <div className="sticky top-0 z-30 flex items-center justify-between border-b border-[#EBEBEB] bg-white/95 px-5 py-3 backdrop-blur-md md:px-10">
+            <div className="sticky top-0 z-30 flex items-center border-b border-[#EBEBEB] bg-white/95 px-5 py-3 backdrop-blur-md md:px-10">
                 <button
                     onClick={() => navigate(-1)}
                     className="flex items-center gap-2 text-[14px] font-semibold text-[#555] transition-colors hover:text-[#111]"
@@ -186,20 +186,6 @@ export default function PropertyDetailPage() {
                     <ArrowLeft size={17} strokeWidth={2.5} />
                     <span>Back</span>
                 </button>
-                <div className="flex items-center gap-2">
-                    <button
-                        onClick={() => setLiked(l => !l)}
-                        className="flex h-9 w-9 items-center justify-center rounded-full border border-[#E5E5E5] bg-white transition hover:border-red-200 hover:bg-red-50"
-                    >
-                        <Heart size={15} strokeWidth={2.5} color={liked ? "#E53E3E" : "#555"} fill={liked ? "#E53E3E" : "none"} />
-                    </button>
-                    <button 
-                        onClick={() => setIsShareModalOpen(true)}
-                        className="flex h-9 w-9 items-center justify-center rounded-full border border-[#E5E5E5] bg-white transition hover:border-[#111]"
-                    >
-                        <Share2 size={15} strokeWidth={2.5} className="text-[#555]" />
-                    </button>
-                </div>
             </div>
 
             {/* ── Page Content ── */}
@@ -289,6 +275,37 @@ export default function PropertyDetailPage() {
                                 </p>
                             )}
                         </div>
+
+                        {(fomoData?.activeViewersMessage || fomoData?.todayViewsMessage) && (
+                            <div className="flex flex-col gap-2.5">
+                                {fomoData.activeViewersMessage && (
+                                    <div className="flex items-center gap-2.5 rounded-2xl border border-orange-100 bg-orange-50/80 px-4 py-3">
+                                        <span className="relative flex h-2.5 w-2.5 shrink-0">
+                                            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75" />
+                                            <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-red-500" />
+                                        </span>
+                                        <span className="text-[13px] font-semibold text-orange-900">
+                                            {fomoData.activeViewersMessage}
+                                        </span>
+                                    </div>
+                                )}
+                                {fomoData.todayViewsMessage && (
+                                    <div className="flex items-center gap-2.5 rounded-2xl border border-white/60 bg-white/70 px-4 py-3 shadow-sm backdrop-blur-md">
+                                        <Eye size={15} className="shrink-0 text-[#666]" strokeWidth={2.5} />
+                                        <span className="text-[13px] font-semibold text-[#444]">
+                                            {fomoData.todayViewsMessage}
+                                        </span>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
+                        {/* Wishlist + Share */}
+                        <PropertyShareModal
+                            propertyId={id}
+                            liked={liked}
+                            onWishlistToggle={() => setLiked((l) => !l)}
+                        />
 
                         {/* Quick details */}
                         <div className="rounded-2xl border border-[#EBEBEB] bg-white px-5 py-1">
@@ -460,13 +477,6 @@ export default function PropertyDetailPage() {
                     </button>
                 </div>
             </div>
-
-            {/* Share Modal */}
-            <PropertyShareModal
-                isOpen={isShareModalOpen}
-                onClose={() => setIsShareModalOpen(false)}
-                propertyId={id}
-            />
         </div>
     );
 }

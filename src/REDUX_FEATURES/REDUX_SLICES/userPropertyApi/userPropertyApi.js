@@ -27,7 +27,16 @@ export const userPropertyApi = createApi({
             query: (listingId) => ({ url: `/user/properties/listing/${listingId}`, method: "GET" }),
             transformResponse: (response) => response.data,
         }),
+        getPropertyFomo: builder.query({
+            query: (id) => ({ url: `/user/fomo/property/${id}`, method: "GET" }),
+            transformResponse: (response) => response.data,
+        }),
     }),
 });
 
-export const { useGetPropertiesQuery, useGetPropertyByIdQuery, useGetPropertyByListingIdQuery } = userPropertyApi;
+export const {
+    useGetPropertiesQuery,
+    useGetPropertyByIdQuery,
+    useGetPropertyByListingIdQuery,
+    useGetPropertyFomoQuery,
+} = userPropertyApi;
