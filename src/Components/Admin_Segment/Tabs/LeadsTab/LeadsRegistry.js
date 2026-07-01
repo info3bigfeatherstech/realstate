@@ -20,11 +20,11 @@ export const LEADS_REGISTRY = [
     label: "Site Visits",
     component: SiteVisitsTab,
   },
-  {
-    id: "accommodationinquiries",
-    label: "Accommodation Inquiries",
-    component: AccommodationInquiriesTab,
-  },
+  // {
+  //   id: "accommodationinquiries",
+  //   label: "Accommodation Inquiries",
+  //   component: AccommodationInquiriesTab,
+  // },
   {
     id: "buypropertyinquiries",
     label: "Buy Property Inquiries",
