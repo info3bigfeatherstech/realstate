@@ -134,7 +134,7 @@ const SellPropertyInquiryForm = () => {
           <SelectField label="Unit" value={form.sizeUnit} onChange={set("sizeUnit")} options={c.AREA_UNITS} />
           <InputField label="Floor Number" value={form.floorNumber} onChange={set("floorNumber")} />
           <InputField label="Total Floors" type="number" value={form.totalFloors} onChange={set("totalFloors")} />
-          <SelectField label="Facing" value={form.facing} onChange={set("facing")} options={c.FACING_DIRECTIONS} />
+          <SelectField label="Facing" value={form.facing} onChange={set("facing")} options={c.INQUIRY_FACING_DIRECTIONS} />
           <SelectField label="Parking" value={form.parkingAvailable} onChange={set("parkingAvailable")} options={c.YES_NO} />
           <InputField label="Expected Selling Price (₹)" required type="number" value={form.expectedSellingPrice} onChange={set("expectedSellingPrice")} />
           <SelectField label="Property Condition" value={form.propertyCondition} onChange={set("propertyCondition")} options={c.SELL_PROPERTY_CONDITIONS} />
@@ -156,8 +156,8 @@ const SellPropertyInquiryForm = () => {
       <div className="bg-white border rounded-xl p-6 shadow-sm">
         <SectionHeader icon={FileText} title="Legal & Documents" />
         <div className="grid md:grid-cols-2 gap-4">
-          <SelectField label="Ownership Type" value={form.ownershipType} onChange={set("ownershipType")} options={c.OWNERSHIP_TYPES} />
-          <SelectField label="Legal Document Type" required value={form.legalDocumentType} onChange={set("legalDocumentType")} options={c.LEGAL_DOCUMENT_TYPES} />
+          <SelectField label="Ownership Type" value={form.ownershipType} onChange={set("ownershipType")} options={c.INQUIRY_OWNERSHIP_TYPES} />
+          <SelectField label="Legal Document Type" required value={form.legalDocumentType} onChange={set("legalDocumentType")} options={c.INQUIRY_LEGAL_DOCUMENT_TYPES} />
           <SelectField label="Title Status" value={form.titleStatus} onChange={set("titleStatus")} options={c.TITLE_STATUSES} />
           <SelectField label="Document Status" value={form.documentStatus} onChange={set("documentStatus")} options={c.DOCUMENT_STATUSES} />
           <SelectField label="Sale Timeline" required value={form.priority} onChange={set("priority")} options={c.SELL_PRIORITY_TIMELINES} />

@@ -153,7 +153,7 @@ const AccommodationListingForm = () => {
       <div className="bg-white border rounded-xl p-6 shadow-sm">
         <SectionHeader icon={Home} title="Listing Details" />
         <div className="grid md:grid-cols-2 gap-4">
-          <SelectField label="Listing Type" required value={form.listingType} onChange={set("listingType")} options={c.LISTING_TYPES} />
+          <SelectField label="Listing Type" required value={form.listingType} onChange={set("listingType")} options={c.INQUIRY_LISTING_TYPES} />
           <InputField label="Property Name (optional)" value={form.propertyName} onChange={set("propertyName")} />
           <SelectField label="Property Type" value={form.propertyType} onChange={set("propertyType")} options={c.LISTING_PROPERTY_TYPES} />
           <InputField label="Property Size" type="number" value={form.sizeValue} onChange={set("sizeValue")} />
@@ -201,8 +201,8 @@ const AccommodationListingForm = () => {
       <div className="bg-white border rounded-xl p-6 shadow-sm">
         <SectionHeader icon={FileText} title="Legal & Uploads" />
         <div className="grid md:grid-cols-2 gap-4">
-          <SelectField label="Ownership Type" value={form.ownershipType} onChange={set("ownershipType")} options={c.OWNERSHIP_TYPES} />
-          <SelectField label="Legal Document Type" required value={form.legalDocumentType} onChange={set("legalDocumentType")} options={c.LEGAL_DOCUMENT_TYPES} />
+          <SelectField label="Ownership Type" value={form.ownershipType} onChange={set("ownershipType")} options={c.INQUIRY_OWNERSHIP_TYPES} />
+          <SelectField label="Legal Document Type" required value={form.legalDocumentType} onChange={set("legalDocumentType")} options={c.INQUIRY_LEGAL_DOCUMENT_TYPES} />
           <SelectField label="Title Status" value={form.titleStatus} onChange={set("titleStatus")} options={c.TITLE_STATUSES} />
           <SelectField label="Document Status" value={form.documentStatus} onChange={set("documentStatus")} options={c.DOCUMENT_STATUSES} />
         </div>
