@@ -153,7 +153,7 @@ const AccommodationListingInquiriesTab = () => {
                         onChange={(e) => dispatch(setListingType(e.target.value))}
                     >
                         <option value="">All Listing Types</option>
-                        {(c.LISTING_TYPES || []).map((t) => (
+                        {(c.INQUIRY_LISTING_TYPES || []).map((t) => (
                             <option key={t} value={t}>{t}</option>
                         ))}
                     </select>
