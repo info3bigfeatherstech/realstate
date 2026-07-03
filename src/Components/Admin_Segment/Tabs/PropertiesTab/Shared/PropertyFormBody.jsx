@@ -12,29 +12,7 @@ import SaleDetailsSection from "../../../../Shared/PropertyForm/SaleDetailsSecti
 
 // Geocoding aliases → canonical state name from /constants INDIAN_STATE_NAMES
 const STATE_ALIASES = {
-    "delhi": "Delhi", "ncr": "Delhi", "up": "Uttar Pradesh",
-    "uttarpradesh": "Uttar Pradesh", "mp": "Madhya Pradesh",
-    "madhyapradesh": "Madhya Pradesh", "hp": "Himachal Pradesh",
-    "himachalpradesh": "Himachal Pradesh", "j&k": "Jammu and Kashmir",
-    "jammuandkashmir": "Jammu and Kashmir", "jk": "Jammu and Kashmir",
-    "tn": "Tamil Nadu", "tamilnadu": "Tamil Nadu",
-    "wb": "West Bengal", "westbengal": "West Bengal",
-    "ap": "Andhra Pradesh", "andhrapradesh": "Andhra Pradesh",
-    "ts": "Telangana", "ka": "Karnataka", "mh": "Maharashtra",
-    "rj": "Rajasthan", "gj": "Gujarat", "pb": "Punjab",
-    "hr": "Haryana", "br": "Bihar", "jh": "Jharkhand",
-    "uk": "Uttarakhand", "uttarakhand": "Uttarakhand",
-    "cg": "Chhattisgarh", "chhattisgarh": "Chhattisgarh",
-    "or": "Odisha", "kl": "Kerala", "ar": "Arunachal Pradesh",
-    "as": "Assam", "mn": "Manipur", "ml": "Meghalaya",
-    "mz": "Mizoram", "nl": "Nagaland", "sk": "Sikkim", "tr": "Tripura",
-    "pondicherry": "Puducherry", "pondicheri": "Puducherry",
-    "daman": "Dadra and Nagar Haveli and Daman and Diu",
-    "diu": "Dadra and Nagar Haveli and Daman and Diu",
-    "andaman": "Andaman and Nicobar Islands",
-    "nicobar": "Andaman and Nicobar Islands",
-    "lakshadweep": "Lakshadweep", "ladakh": "Ladakh",
-    "chandigarh": "Chandigarh", "goa": "Goa", "odisha": "Odisha", "assam": "Assam",
+    "delhi": "Delhi",
 };
 
 const normalizeState = (raw, validStates = []) => {
@@ -201,7 +179,7 @@ const DOCUMENT_SLOTS = [
 const PropertyFormBody = ({ formData, onChange }) => {
     const { data: constants } = useGetConstantsQuery();
     const listingTypes = normalizeListingTypesList(constants?.LISTING_TYPES) ?? [];
-    const stateNames = constants?.INDIAN_STATE_NAMES ?? [];
+    const stateNames = ["Delhi"];
     const showRental = isRentalListingType(formData.listingType);
     const showSale = isSellListingType(formData.listingType);
 
@@ -476,7 +454,7 @@ const PropertyFormBody = ({ formData, onChange }) => {
             {/* 8. Location Details */}
             <Section icon={MapPin} title="Location Details" fullWidth>
                 <div className="space-y-5">
-                    <div>
+                    {/*<div>
                         <label className={labelCls}>Pick Location on Map</label>
                         <p className="text-xs text-slate-400 mb-2">Search for an address or click anywhere on the map — all fields below will auto-fill.</p>
                         <LocationPicker
@@ -490,7 +468,7 @@ const PropertyFormBody = ({ formData, onChange }) => {
                                 if (pincode) set("pincode")(pincode);
                             }}
                         />
-                    </div>
+                    </div>*/}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                         <div className="md:col-span-3">
                             <InputField
@@ -513,9 +491,9 @@ const PropertyFormBody = ({ formData, onChange }) => {
                                 ))}
                             </select>
                         </Field>
-                        <InputField label="Pincode" required placeholder="Auto-filled" value={formData.pincode} onChange={set("pincode")} />
-                        <InputField label="Latitude" placeholder="Auto-filled" value={formData.latitude} onChange={set("latitude")} />
-                        <InputField label="Longitude" placeholder="Auto-filled" value={formData.longitude} onChange={set("longitude")} />
+                        <InputField label="Pincode" required placeholder="Enter pincode" value={formData.pincode} onChange={set("pincode")} />
+                        <InputField label="Latitude" placeholder="optional" value={formData.latitude} onChange={set("latitude")} />
+                        <InputField label="Longitude" placeholder="optional" value={formData.longitude} onChange={set("longitude")} />
                     </div>
                 </div>
             </Section>

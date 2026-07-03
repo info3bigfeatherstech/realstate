@@ -305,3 +305,26 @@ export const buildFullPropertyPayload = (formData, { isSell }) => {
 
   return payload;
 };
+
+const REQUIRED_PROPERTY_FIELDS = [
+  { key: "listingType", label: "Listing Type" },
+  { key: "propertyType", label: "Property Type" },
+  { key: "title", label: "Listing Title" },
+  { key: "price", label: "Price" },
+  { key: "fullAddress", label: "Full Address" },
+  { key: "city", label: "City" },
+  { key: "state", label: "State" },
+  { key: "pincode", label: "Pincode" },
+];
+
+export const getPropertyRequiredFieldErrors = (formData) => {
+  const missing = REQUIRED_PROPERTY_FIELDS
+    .filter(({ key }) => {
+      const value = formData?.[key];
+      return value === undefined || value === null || String(value).trim() === "";
+    })
+    .map(({ label }) => label);
+
+  if (!missing.length) return null;
+  return `Please fill required fields: ${missing.join(", ")}`;
+};

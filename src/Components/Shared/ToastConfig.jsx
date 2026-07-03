@@ -19,6 +19,15 @@ const withDefaults = (options = {}) => ({
     ...options,
 });
 
+/** Build a user-facing message from RTK Query / axios API errors. */
+export const formatApiErrorMessage = (err, fallback = "Something went wrong") => {
+    const details = err?.data?.details;
+    if (Array.isArray(details) && details.length > 0) {
+        return details.map((d) => d.message || d).join(", ");
+    }
+    return err?.data?.message || err?.message || fallback;
+};
+
 /** Use this everywhere instead of importing react-toastify directly. */
 export const toast = {
     success: (message, options) => notify.success(message, withDefaults(options)),

@@ -4,7 +4,8 @@ import { useSearchParams } from "react-router-dom";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import PropertyFormBody from "./PropertyFormBody";
 import { isSellListingType, normalizeListingTypeForSubmit } from "../../../../../utils/listingType";
-import { buildFullPropertyPayload, EMPTY_RENTAL_DETAILS, EMPTY_SALE_DETAILS } from "../../../../../utils/propertyFormPayload";
+import { buildFullPropertyPayload, EMPTY_RENTAL_DETAILS, EMPTY_SALE_DETAILS, getPropertyRequiredFieldErrors } from "../../../../../utils/propertyFormPayload";
+import { toast, formatApiErrorMessage } from "../../../../Shared/ToastConfig";
 import {
     useCreatePropertyMutation,
     useUpdatePropertyMutation,
@@ -15,13 +16,13 @@ import {
 const INITIAL_FORM = {
     listingType: "",
     propertyType: "",
-    ownershipType: "Freehold",
+    ownershipType: "",
     title: "",
     description: "",
-    condition: "Brand New",
-    constructionStatus: "Ready to Move",
-    furnishing: "Unfurnished",
-    facing: "North",
+    condition: "",
+    constructionStatus: "",
+    furnishing: "",
+    facing: "",
     areaValue: "",
     price: "",
     roi: "",
@@ -29,17 +30,17 @@ const INITIAL_FORM = {
     bathrooms: "",
     floorNo: "",
     totalFloors: "",
-    flooringType: "Marble",
+    flooringType: "",
     maintenance: "",
-    waterSupply: "Municipal Water",
-    powerBackup: "No Backup",
-    parkingType: "No Parking",
+    waterSupply: "",
+    powerBackup: "",
+    parkingType: "",
     securityFeatures: [],
     amenities: [],
     connectivity: [],
     nearbyFacilities: [],
     fullAddress: "",
-    city: "",
+    city: "Delhi",
     state: "Delhi",
     pincode: "",
     latitude: "",
@@ -57,7 +58,6 @@ const AddPropertyPage = () => {
     const [uploadMedia] = useUploadMediaMutation();
     const [uploadDocument] = useUploadDocumentMutation();
     const [formData, setFormData] = useState(INITIAL_FORM);
-    const [error, setError] = useState("");
     const [isUploading, setIsUploading] = useState(false);
     const [createdPropertyId, setCreatedPropertyId] = useState(null);
 
@@ -71,7 +71,6 @@ const AddPropertyPage = () => {
         } else {
             setFormData((prev) => ({ ...prev, [field]: value }));
         }
-        setError("");
     };
 
     const buildPayload = () => {
@@ -109,8 +108,9 @@ const AddPropertyPage = () => {
     };
 
     const handlePublish = async () => {
-        if (!formData.listingType || !formData.propertyType || !formData.title || !formData.price || !formData.fullAddress || !formData.city) {
-            setError("Please fill all required fields");
+        const validationError = getPropertyRequiredFieldErrors(formData);
+        if (validationError) {
+            toast.error(validationError, { autoClose: 5000 });
             return;
         }
 
@@ -137,7 +137,7 @@ const AddPropertyPage = () => {
             setCreatedPropertyId(null);
             setSearchParams({ tab: "properties" });
         } catch (err) {
-            setError(err.data?.message || "Failed to create property");
+            toast.error(formatApiErrorMessage(err, "Failed to create property"), { autoClose: 5000 });
         } finally {
             setIsUploading(false);
         }
@@ -168,7 +168,7 @@ const AddPropertyPage = () => {
             setCreatedPropertyId(null);
             setSearchParams({ tab: "properties" });
         } catch (err) {
-            setError(err.data?.message || "Failed to save draft");
+            toast.error(formatApiErrorMessage(err, "Failed to save draft"), { autoClose: 5000 });
         } finally {
             setIsUploading(false);
         }
@@ -187,12 +187,6 @@ const AddPropertyPage = () => {
                     <p className="text-sm text-slate-500">Fill all required fields marked with <span className="text-red-500">*</span></p>
                 </div>
             </div>
-
-            {error && (
-                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
-                    {error}
-                </div>
-            )}
 
             <div className="pb-28">
                 <PropertyFormBody formData={formData} onChange={handleChange} />

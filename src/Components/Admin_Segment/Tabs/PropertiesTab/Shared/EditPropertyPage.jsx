@@ -17,7 +17,9 @@ import {
   buildFullPropertyPayload,
   mapPropertyToFormBase,
   DOCUMENT_KEY_TO_TYPE,
+  getPropertyRequiredFieldErrors,
 } from "../../../../../utils/propertyFormPayload";
+import { toast, formatApiErrorMessage } from "../../../../Shared/ToastConfig";
 
 const EditPropertyPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -34,7 +36,6 @@ const EditPropertyPage = () => {
   const [deleteDocument] = useDeleteDocumentMutation();
 
   const [formData, setFormData] = useState(null);
-  const [error, setError] = useState("");
   const [isUpdatingAll, setIsUpdatingAll] = useState(false);
   const [mediaToDelete, setMediaToDelete] = useState([]);
   const [docsToDelete, setDocsToDelete] = useState([]);
@@ -86,7 +87,6 @@ const EditPropertyPage = () => {
     } else {
       setFormData((prev) => ({ ...prev, [field]: value }));
     }
-    setError("");
   };
 
   const buildUpdatePayload = () => {
@@ -124,8 +124,9 @@ const EditPropertyPage = () => {
   };
 
   const handleUpdate = async () => {
-    if (!formData.listingType || !formData.propertyType || !formData.title || !formData.price || !formData.fullAddress || !formData.city) {
-      setError("Please fill all required fields");
+    const validationError = getPropertyRequiredFieldErrors(formData);
+    if (validationError) {
+      toast.error(validationError, { autoClose: 5000 });
       return;
     }
 
@@ -153,7 +154,7 @@ const EditPropertyPage = () => {
 
       setSearchParams({ tab: "properties" });
     } catch (err) {
-      setError(err.data?.message || "Failed to update property");
+      toast.error(formatApiErrorMessage(err, "Failed to update property"), { autoClose: 5000 });
     } finally {
       setIsUpdatingAll(false);
     }
@@ -185,7 +186,7 @@ const EditPropertyPage = () => {
 
       setSearchParams({ tab: "properties" });
     } catch (err) {
-      setError(err.data?.message || "Failed to save draft");
+      toast.error(formatApiErrorMessage(err, "Failed to save draft"), { autoClose: 5000 });
     } finally {
       setIsUpdatingAll(false);
     }
@@ -214,12 +215,6 @@ const EditPropertyPage = () => {
           </p>
         </div>
       </div>
-
-      {error && (
-        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
-          {error}
-        </div>
-      )}
 
       <div className="pb-28">
         <PropertyFormBody formData={formData} onChange={handleChange} mode="edit" />
