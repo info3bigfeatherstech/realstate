@@ -7,6 +7,7 @@ import userPropertyReducer from "../REDUX_SLICES/userPropertyApi/userPropertySli
 import { userPropertyApi } from "../REDUX_SLICES/userPropertyApi/userPropertyApi";
 import { eliteServiceApi } from "../../Components/Admin_Segment/Admin_Redux/EliteServiceApi/eliteServiceApi";
 import eliteServiceReducer from "../../Components/Admin_Segment/Admin_Redux/EliteServiceApi/eliteServiceSlice";
+import { eliteConfigApi } from "../../Components/Admin_Segment/Admin_Redux/EliteConfigApi/eliteConfigApi";
 
 import { userEliteServiceApi } from "../REDUX_SLICES/userEliteServiceApi/userEliteServiceApi";
 import userEliteServiceReducer from "../REDUX_SLICES/userEliteServiceApi/userEliteServiceSlice";
@@ -62,6 +63,7 @@ export const store = configureStore({
         [userPropertyApi.reducerPath]: userPropertyApi.reducer,
         eliteService: eliteServiceReducer,
         [eliteServiceApi.reducerPath]: eliteServiceApi.reducer,
+        [eliteConfigApi.reducerPath]: eliteConfigApi.reducer,
         userEliteService: userEliteServiceReducer,
         [userEliteServiceApi.reducerPath]: userEliteServiceApi.reducer,
         [constantsApi.reducerPath]: constantsApi.reducer,
@@ -112,6 +114,7 @@ export const store = configureStore({
             propertyApi.middleware,
             userPropertyApi.middleware,
             eliteServiceApi.middleware,
+            eliteConfigApi.middleware,
             userEliteServiceApi.middleware,
             constantsApi.middleware,
             userAccommodationInquiryApi.middleware,

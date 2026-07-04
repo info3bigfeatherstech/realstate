@@ -3,7 +3,6 @@ import React from "react";
 import { User, MapPin, Phone, Briefcase } from "lucide-react";
 
 // ─── Schema-matched enums ─────────────────────────────────────────────────────
-const ELITE_SERVICE_ROLES = ["Plumber", "Electrician", "Carpenter", "Painter"];
 const ELITE_SERVICE_STATUSES = ["Available", "Busy"];
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -70,7 +69,7 @@ const SectionHeader = ({ icon: Icon, title }) => (
   </div>
 );
 
-const EliteServiceFormBody = ({ formData, onChange }) => {
+const EliteServiceFormBody = ({ formData, onChange, roles = [] }) => {
   const set = (field) => (val) => onChange(field, val);
 
   return (
@@ -85,7 +84,7 @@ const EliteServiceFormBody = ({ formData, onChange }) => {
             required
             value={formData.role}
             onChange={set("role")}
-            options={ELITE_SERVICE_ROLES}
+            options={roles}
           />
           <SelectField
             label="Status"

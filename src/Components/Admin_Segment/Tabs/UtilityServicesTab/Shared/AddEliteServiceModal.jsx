@@ -13,7 +13,7 @@ const INITIAL_FORM = {
   status: "Available",
 };
 
-const AddEliteServiceModal = ({ onClose }) => {
+const AddEliteServiceModal = ({ onClose, roles = [] }) => {
   const [createEliteService, { isLoading }] = useCreateEliteServiceMutation();
 
   const [formData, setFormData] = useState(INITIAL_FORM);
@@ -88,7 +88,11 @@ const AddEliteServiceModal = ({ onClose }) => {
 
           {/* Form */}
           <div className="mt-5">
-            <EliteServiceFormBody formData={formData} onChange={handleChange} />
+            <EliteServiceFormBody
+              formData={formData}
+              onChange={handleChange}
+              roles={roles}
+            />
           </div>
 
           {/* Footer */}

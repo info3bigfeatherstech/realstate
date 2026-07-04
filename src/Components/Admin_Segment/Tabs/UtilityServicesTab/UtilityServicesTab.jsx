@@ -23,10 +23,8 @@ import {
 } from "../../Admin_Redux/EliteServiceApi/eliteServiceSlice";
 import AddEliteServiceModal from "./Shared/AddEliteServiceModal";
 import EditEliteServiceModal from "./Shared/EditEliteServiceModal";
-
-// ─── Schema-matched enums ─────────────────────────────────────────────────────
-const ELITE_SERVICE_ROLES = ["Plumber", "Electrician", "Carpenter", "Painter"];
-// ─────────────────────────────────────────────────────────────────────────────
+import ManageEliteRolesModal from "./Shared/ManageEliteRolesModal";
+import { useGetEliteRolesQuery } from "../../Admin_Redux/EliteConfigApi/eliteConfigApi";
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
@@ -54,12 +52,19 @@ const RoleBadge = ({ role }) => {
     Carpenter: "bg-orange-100 text-orange-700",
     Painter: "bg-purple-100 text-purple-700",
   };
+  const palette = [
+    "bg-blue-100 text-blue-700",
+    "bg-yellow-100 text-yellow-700",
+    "bg-orange-100 text-orange-700",
+    "bg-purple-100 text-purple-700",
+    "bg-teal-100 text-teal-700",
+    "bg-pink-100 text-pink-700",
+  ];
+  const color =
+    colors[role] ||
+    palette[role.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0) % palette.length];
   return (
-    <span
-      className={`px-2.5 py-1 rounded-lg text-xs font-semibold ${
-        colors[role] || "bg-gray-100 text-gray-700"
-      }`}
-    >
+    <span className={`px-2.5 py-1 rounded-lg text-xs font-semibold ${color}`}>
       {role}
     </span>
   );
@@ -109,6 +114,7 @@ const UtilityServicesTab = () => {
 
   const { data, isLoading, isFetching, refetch } =
     useGetEliteServicesQuery(queryParams);
+  const { data: eliteRoles = [] } = useGetEliteRolesQuery();
   const [deleteEliteService, { isLoading: isDeleting }] =
     useDeleteEliteServiceMutation();
   const [updateStatus, { isLoading: isUpdatingStatus }] =
@@ -121,6 +127,7 @@ const UtilityServicesTab = () => {
 
   // ── Modal state (Add / Edit) ────────────────────────────────────────────────
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showRolesModal, setShowRolesModal] = useState(false);
   const [editServiceId, setEditServiceId] = useState(null);
 
   // ── Handlers ────────────────────────────────────────────────────────────────
@@ -158,7 +165,7 @@ const UtilityServicesTab = () => {
   // If your backend returns stats in meta, use those. Otherwise these are page-level.
   const availableCount = services.filter((s) => s.status === "Available").length;
   const busyCount = services.filter((s) => s.status === "Busy").length;
-  const uniqueRoles = new Set(services.map((s) => s.role)).size;
+  const uniqueRoles = eliteRoles.length;
 
   // ── Delete Confirm Modal ────────────────────────────────────────────────────
   const DeleteConfirmModal = () => {
@@ -201,12 +208,23 @@ const UtilityServicesTab = () => {
       <DeleteConfirmModal />
 
       {showAddModal && (
-        <AddEliteServiceModal onClose={() => setShowAddModal(false)} />
+        <AddEliteServiceModal
+          roles={eliteRoles}
+          onClose={() => setShowAddModal(false)}
+        />
+      )}
+
+      {showRolesModal && (
+        <ManageEliteRolesModal
+          onClose={() => setShowRolesModal(false)}
+          onRolesUpdated={() => refetch()}
+        />
       )}
 
       {editServiceId && (
         <EditEliteServiceModal
           serviceId={editServiceId}
+          roles={eliteRoles}
           onClose={() => setEditServiceId(null)}
         />
       )}
@@ -214,13 +232,22 @@ const UtilityServicesTab = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-bold text-slate-800">Utility Services</h2>
-        <button
-          onClick={() => setShowAddModal(true)}
-          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2.5 rounded-xl cursor-pointer"
-        >
-          <Plus className="w-4 h-4" />
-          Add New Provider
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setShowRolesModal(true)}
+            className="flex items-center gap-2 bg-white hover:bg-slate-50 text-slate-700 text-sm font-semibold px-4 py-2.5 rounded-xl border border-slate-200 cursor-pointer"
+          >
+            <Plus className="w-4 h-4" />
+            Add Roles
+          </button>
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2.5 rounded-xl cursor-pointer"
+          >
+            <Plus className="w-4 h-4" />
+            Add New Provider
+          </button>
+        </div>
       </div>
 
       {/* Stats Cards */}
@@ -292,7 +319,7 @@ const UtilityServicesTab = () => {
           className="px-4 py-2.5 text-sm border border-slate-200 rounded-xl bg-white cursor-pointer"
         >
           <option value="">All Roles</option>
-          {ELITE_SERVICE_ROLES.map((r) => (
+          {eliteRoles.map((r) => (
             <option key={r} value={r}>
               {r}
             </option>

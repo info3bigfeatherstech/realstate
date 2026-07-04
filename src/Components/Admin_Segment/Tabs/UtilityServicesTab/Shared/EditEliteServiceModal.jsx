@@ -7,7 +7,7 @@ import {
   useUpdateEliteServiceMutation,
 } from "../../../Admin_Redux/EliteServiceApi/eliteServiceApi";
 
-const EditEliteServiceModal = ({ serviceId, onClose }) => {
+const EditEliteServiceModal = ({ serviceId, onClose, roles = [] }) => {
   const { data: serviceData, isLoading: isLoadingService } =
     useGetEliteServiceByIdQuery(serviceId, { skip: !serviceId });
 
@@ -111,7 +111,11 @@ const EditEliteServiceModal = ({ serviceId, onClose }) => {
             <>
               {/* Form */}
               <div className="mt-5">
-                <EliteServiceFormBody formData={formData} onChange={handleChange} />
+                <EliteServiceFormBody
+                  formData={formData}
+                  onChange={handleChange}
+                  roles={roles}
+                />
               </div>
 
               {/* Footer */}

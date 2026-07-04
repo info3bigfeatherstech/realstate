@@ -1,21 +1,23 @@
 // src/Components/UserSide/Utilities/UtilityServices.jsx
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useGetUserEliteServicesQuery } from "../../../REDUX_FEATURES/REDUX_SLICES/userEliteServiceApi/userEliteServiceApi";
+import { useGetUserEliteServicesQuery, useGetUserEliteServiceRolesQuery } from "../../../REDUX_FEATURES/REDUX_SLICES/userEliteServiceApi/userEliteServiceApi";
 import {
   setPage,
   setSearch,
   setRole,
 } from "../../../REDUX_FEATURES/REDUX_SLICES/userEliteServiceApi/userEliteServiceSlice";
 
-// Available Filter Tabs Configuration (values must match backend `role` enum exactly)
-const tabs = [
-    // { label: "All Services", value: "" },
-    { label: "Plumbers", value: "Plumber" },
-    { label: "Electricians", value: "Electrician" },
-    { label: "Carpenters", value: "Carpenter" },
-    { label: "Painters", value: "Painter" }
-];
+// Available Filter Tabs — loaded dynamically from backend config
+const formatRoleLabel = (role) => {
+    if (role.endsWith("s") || role.endsWith("x") || role.endsWith("z") || role.endsWith("ch") || role.endsWith("sh")) {
+        return `${role}es`;
+    }
+    if (role.endsWith("y") && !/[aeiou]y$/i.test(role)) {
+        return `${role.slice(0, -1)}ies`;
+    }
+    return `${role}s`;
+};
 
 export default function Eliteservices() {
     const dispatch = useDispatch();
@@ -43,9 +45,11 @@ export default function Eliteservices() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [searchInput]);
 
-    useEffect(()=>{
-
-    },[])
+    const { data: roleOptions = [] } = useGetUserEliteServiceRolesQuery();
+    const tabs = roleOptions.map((roleValue) => ({
+        label: formatRoleLabel(roleValue),
+        value: roleValue,
+    }));
 
     const queryParams = {
         page,
