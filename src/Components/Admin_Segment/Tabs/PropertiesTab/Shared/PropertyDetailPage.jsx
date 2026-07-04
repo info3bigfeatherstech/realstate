@@ -5,7 +5,7 @@ import {
     ChevronLeft, ChevronRight, FileText, Download, CheckCircle2, Loader2
 } from "lucide-react";
 import { useGetPropertyByIdQuery, useDeletePropertyMutation } from "../../../Admin_Redux/PropertyApi/propertyApi";
-import PropertyMap from "../../../../UserSide/PropertyDetailPage/PropertyMap";
+// import PropertyMap from "../../../../UserSide/PropertyDetailPage/PropertyMap";
 import { isSellListingType, formatListingTypeLabel } from "../../../../../utils/listingType";
 
 
@@ -362,11 +362,12 @@ const PropertyDetailPage = () => {
                         {location?.longitude && <DetailCard label="Longitude" value={location.longitude} />}
                     </div>
                     {location?.latitude && location?.longitude ? (
-                        <PropertyMap
-                            lat={parseFloat(location.latitude)}
-                            lng={parseFloat(location.longitude)}
-                            title={property.title}
-                        />
+                        null
+                        // <PropertyMap
+                        //     lat={parseFloat(location.latitude)}
+                        //     lng={parseFloat(location.longitude)}
+                        //     title={property.title}
+                        // />
                     ) : (
                         <div className="w-full h-64 rounded-xl overflow-hidden relative bg-slate-200 flex items-center justify-center border border-slate-200">
                             <div className="absolute inset-0 bg-gradient-to-br from-slate-300 to-slate-400" />

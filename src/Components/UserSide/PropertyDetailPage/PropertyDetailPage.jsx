@@ -7,7 +7,7 @@ import {
     ChevronLeft, ChevronRight, Phone, Mail, Tag, Copy, Check, Eye,
 } from "lucide-react";
 import { useGetPropertyByIdQuery, useGetPropertyFomoQuery } from "../../../REDUX_FEATURES/REDUX_SLICES/userPropertyApi/userPropertyApi";
-import PropertyMap from "./PropertyMap";
+// import PropertyMap from "./PropertyMap";
 import { formatListingTypeLabel } from "../../../utils/listingType";
 import PropertyShareModal from "./Shared/PropertyShareModal";
 
@@ -453,11 +453,11 @@ export default function PropertyDetailPage() {
                                 </p>
                             )}
 
-                            <PropertyMap
+                            {/* <PropertyMap
                                 lat={property.location.latitude}
                                 lng={property.location.longitude}
                                 title={property.title}
-                            />
+                            /> */}
                         </div>
                     )}
 

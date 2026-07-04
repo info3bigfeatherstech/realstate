@@ -6,7 +6,7 @@ import { useLogoutMutation } from "../../REDUX_FEATURES/REDUX_SLICES/customerAut
 import { clearCredentials } from "../../REDUX_FEATURES/REDUX_SLICES/customerAuth/customerAuthSlice";
 import { CUSTOMER_TAB_REGISTRY } from "./CustomerTabRegistry";
 import { CUSTOMER_ROLE_PERMISSIONS, CUSTOMER_ROLE_LABELS } from "./CustomerRoles";
-import LOGO from "../../assets/m.png";
+import LOGO from "../../assets/logoinh.png";
 import { toast } from "../Shared/ToastConfig";
 
 const CustomerDashboard = () => {
@@ -20,8 +20,8 @@ const CustomerDashboard = () => {
   const activeRole = user?.accountType || "seeker";
   const allowedTabIds = CUSTOMER_ROLE_PERMISSIONS[activeRole] || [];
   const allowedTabsAll = CUSTOMER_TAB_REGISTRY.filter((tab) => allowedTabIds.includes(tab.id));
-const sidebarTabs = allowedTabsAll.filter((tab) => !tab.hideInSidebar);
-const defaultTab = sidebarTabs[0]?.id || "my-inquiries";
+  const sidebarTabs = allowedTabsAll.filter((tab) => !tab.hideInSidebar);
+  const defaultTab = sidebarTabs[0]?.id || "my-inquiries";
 
 
   const tabFromUrl = searchParams.get("tab");
@@ -79,11 +79,11 @@ const defaultTab = sidebarTabs[0]?.id || "my-inquiries";
       `}>
         {/* Logo and Profile Header Section */}
         <div className="w-full pt-4 pb-6 px-4 border-b border-slate-900 flex flex-col items-center">
-          <div className="w-full h-[120px] flex items-center justify-center overflow-hidden">
+          <div className="w-full h-[150px] flex items-center justify-center overflow-hidden">
             <img
               src={LOGO}
               alt="Mehta Estates Logo"
-              className="w-full h-full object-contain scale-110 filter drop-shadow-md transition-transform duration-300 hover:scale-115"
+              className="w-full h-full object-contain scale-125 filter drop-shadow-md transition-transform duration-300 hover:scale-130"
             />
           </div>
 

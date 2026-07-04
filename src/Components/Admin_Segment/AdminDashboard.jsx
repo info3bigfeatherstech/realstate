@@ -6,7 +6,7 @@ import { ROLE_PERMISSIONS, ROLE_LABELS, ROLES } from "./roles";
 import { useDispatch, useSelector } from "react-redux";
 import { clearCredentials } from "../../REDUX_FEATURES/REDUX_SLICES/auth/authSlice";
 import { useLogoutMutation } from "../../REDUX_FEATURES/REDUX_SLICES/auth/authApi";
-import LOGO from "../../assets/m.png";
+import LOGO from "../../assets/logoinh.png";
 
 const AdminDashboard = () => {
   const [searchParams, setSearchParams] = useSearchParams();

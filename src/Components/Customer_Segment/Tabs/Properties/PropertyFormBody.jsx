@@ -229,7 +229,7 @@ const DOCUMENT_SLOTS = [
 const PropertyFormBody = ({ formData, onChange }) => {
     const { data: constants } = useGetConstantsQuery();
     const listingTypes = normalizeListingTypesList(constants?.LISTING_TYPES) ?? [];
-    const stateNames = constants?.INDIAN_STATE_NAMES ?? [];
+    const stateNames = ["Delhi"];
     const showRental = isRentalListingType(formData.listingType);
     const showSale = isSellListingType(formData.listingType);
 
@@ -275,6 +275,7 @@ const PropertyFormBody = ({ formData, onChange }) => {
                             <textarea
                                 rows="4"
                                 className="w-full p-3 rounded-lg border border-slate-300 focus:border-blue-600 outline-none text-sm"
+                                placeholder="Enter Description"
                                 value={formData.description}
                                 onChange={(e) => onChange("description", e.target.value)}
                             />
@@ -325,6 +326,7 @@ const PropertyFormBody = ({ formData, onChange }) => {
                             <InputField
                                 label="Price (₹)" required
                                 type="number"
+                                placeholder="Enter Price"
                                 value={formData.price}
                                 onChange={set("price")}
                             />
@@ -503,7 +505,7 @@ const PropertyFormBody = ({ formData, onChange }) => {
             {/* 8. Location Details */}
             <Section icon={MapPin} title="Location Details" fullWidth>
                 <div className="space-y-5">
-                    <div>
+                    {/* <div>
                         <label className={labelCls}>Pick Location on Map</label>
                         <p className="text-xs text-slate-400 mb-2">Search for an address or click anywhere on the map — all fields below will auto-fill.</p>
                         <LocationPicker
@@ -517,12 +519,12 @@ const PropertyFormBody = ({ formData, onChange }) => {
                                 if (pincode) set("pincode")(pincode);
                             }}
                         />
-                    </div>
+                    </div> */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                         <div className="md:col-span-3">
                             <InputField
                                 label="Full Address" required
-                                placeholder="Auto-filled from map or type manually"
+                                placeholder="Enter Full Address"
                                 value={formData.fullAddress}
                                 onChange={set("fullAddress")}
                             />
@@ -540,9 +542,9 @@ const PropertyFormBody = ({ formData, onChange }) => {
                                 ))}
                             </select>
                         </Field>
-                        <InputField label="Pincode" required placeholder="Auto-filled" value={formData.pincode} onChange={set("pincode")} />
-                        <InputField label="Latitude" placeholder="Auto-filled" value={formData.latitude} onChange={set("latitude")} />
-                        <InputField label="Longitude" placeholder="Auto-filled" value={formData.longitude} onChange={set("longitude")} />
+                        <InputField label="Pincode" required placeholder="Enter Pincode" value={formData.pincode} onChange={set("pincode")} />
+                        <InputField label="Latitude" placeholder="optional" value={formData.latitude} onChange={set("latitude")} />
+                        <InputField label="Longitude" placeholder="optional" value={formData.longitude} onChange={set("longitude")} />
                     </div>
                 </div>
             </Section>

@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, Link } from "react-router-dom";
 import { Heart, Menu, X, ChevronDown } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
 import { useLogoutMutation } from "../../REDUX_FEATURES/REDUX_SLICES/customerAuth/customerAuthApi";
 import { clearCredentials as clearCustomerCredentials } from "../../REDUX_FEATURES/REDUX_SLICES/customerAuth/customerAuthSlice";
-import LOGO from "../../assets/m.png";
+import LOGO from "../../assets/logoinh.png";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -27,13 +27,13 @@ const OTHER_SERVICES = [
     { name: "Utility/HelpLines", path: "/services/utility-helplines" }
 ];
 
-const NAVBAR_BG = "#0f0301";
-const LOGO_CONTENT_TOP_RATIO = 825 / 4500;
-const LOGO_CONTENT_HEIGHT_RATIO = 2480 / 4500;
+const NAVBAR_BG = "#000000";
+const LOGO_CONTENT_TOP_RATIO = 1090 / 3200;
+const LOGO_CONTENT_HEIGHT_RATIO = 1088 / 3200;
 const LOGO_VISIBLE_HEIGHT = {
-    base: 68,
-    sm: 76,
-    xl: 88,
+    base: 76,
+    sm: 80,
+    xl: 96,
 };
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
@@ -57,8 +57,8 @@ function NavLink({ item, isActive }) {
     const displayName = isFree ? item.name.replace("(FREE)", "").trim() : item.name;
 
     return (
-        <a
-            href={item.path}
+        <Link 
+            to={item.path}
             // Added translate-y-[2px] to push text down perfectly on Y-axis
             className={`group relative flex items-center justify-center rounded-full px-4 py-2.5 text-[15px] lg:text-[16px] font-medium leading-none translate-y-[2px] transition-all duration-300 ${isActive
                 ? "bg-[#efefef] text-black"
@@ -97,7 +97,7 @@ function NavLink({ item, isActive }) {
                     </span>
                 )}
             </span>
-        </a>
+        </Link>
     );
 }
 
@@ -106,8 +106,8 @@ function MobileNavLink({ item, isActive, onClick }) {
     const displayName = isFree ? item.name.replace("(FREE)", "").trim() : item.name;
 
     return (
-        <a
-            href={item.path}
+        <Link 
+            to={item.path}
             onClick={onClick}
             className={`flex items-center justify-between rounded-2xl px-5 py-4 transition-all duration-300 ${isActive ? "bg-black text-white" : "bg-[#f5f5f5] text-black"
                 }`}
@@ -145,7 +145,7 @@ function MobileNavLink({ item, isActive, onClick }) {
                 )}
             </span>
             <ArrowIcon />
-        </a>
+        </Link>
     );
 }
 
@@ -225,17 +225,17 @@ export default function Navbar() {
                 style={{ backgroundColor: scrolled ? `${NAVBAR_BG}f2` : NAVBAR_BG }}
             >
                 <div className="w-full px-5 md:px-10 lg:px-16">
-                    <div className="h-[88px] flex items-center justify-between transition-all duration-300">
+                    <div className="h-[115px] flex items-center justify-between transition-all duration-300">
 
                         {/* Left/Logo Group - Taking 50% width on desktop to align nav items to center */}
                         <div className="flex items-center xl:flex-1">
-                            <a
-                                href="/"
+                            <Link 
+                                to="/"
                                 className="flex shrink-0 items-center select-none"
                                 style={{ backgroundColor: NAVBAR_BG }}
                             >
                                 <LogoMark visibleHeight={logoVisibleHeight} />
-                            </a>
+                            </Link>
                         </div>
 
                         {/* Desktop Navigation Group (Starts from center to right end) */}
@@ -244,7 +244,7 @@ export default function Navbar() {
                             <div className="flex items-center gap-1.5">
                                 {/* 1. List Property (FREE) */}
                                 <NavLink
-                                    item={{ name: "List Property (FREE)", path: "#" }}
+                                    item={{ name: "List Property (FREE)", path: "/customer/login" }}
                                     isActive={false}
                                 />
 
@@ -258,13 +258,13 @@ export default function Navbar() {
                                     {/* Dropdown Menu Container */}
                                     <div className="absolute left-0 top-full mt-1 w-64 origin-top-left rounded-2xl bg-white p-2 shadow-xl ring-1 ring-black/5 opacity-0 scale-95 pointer-events-none transition-all duration-200 group-hover/dropdown:opacity-100 group-hover/dropdown:scale-100 group-hover/dropdown:pointer-events-auto z-[60]">
                                         {OTHER_SERVICES.map((service) => (
-                                            <a
+                                            <Link 
                                                 key={service.name}
-                                                href={service.path}
+                                                to={service.path}
                                                 className="block rounded-xl px-4 py-3 text-[14px] font-medium text-slate-800 hover:bg-slate-50 transition-colors"
                                             >
                                                 {service.name}
-                                            </a>
+                                            </Link>
                                         ))}
                                     </div>
                                 </div>
@@ -382,7 +382,7 @@ export default function Navbar() {
 
                     {/* 1. List Property (FREE) */}
                     <MobileNavLink
-                        item={{ name: "List Property (FREE)", path: "#" }}
+                        item={{ name: "List Property (FREE)", path: "/customer/login" }}
                         isActive={false}
                         onClick={() => setMenuOpen(false)}
                     />
@@ -399,14 +399,14 @@ export default function Navbar() {
 
                         <div className={`flex flex-col bg-stone-50 border-t border-black/5 transition-all duration-300 ${mobileServicesOpen ? "max-h-60 opacity-100 py-2" : "max-h-0 opacity-0 pointer-events-none"}`}>
                             {OTHER_SERVICES.map((service) => (
-                                <a
+                                <Link
                                     key={service.name}
-                                    href={service.path}
+                                    to={service.path}
                                     onClick={() => setMenuOpen(false)}
                                     className="block px-8 py-3 text-[14px] font-medium text-zinc-700 hover:text-black transition-colors"
                                 >
                                     {service.name}
-                                </a>
+                                </Link>
                             ))}
                         </div>
                     </div>
