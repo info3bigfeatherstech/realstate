@@ -226,6 +226,7 @@ const PropertyFormBody = ({ formData, onChange }) => {
                             <textarea
                                 rows="4"
                                 className="w-full p-3 rounded-lg border border-slate-300 focus:border-blue-600 outline-none text-sm"
+                                placeholder="Enter property description"
                                 value={formData.description}
                                 onChange={(e) => onChange("description", e.target.value)}
                             />
@@ -473,12 +474,12 @@ const PropertyFormBody = ({ formData, onChange }) => {
                         <div className="md:col-span-3">
                             <InputField
                                 label="Full Address" required
-                                placeholder="Auto-filled from map or type manually"
+                                placeholder="Enter Your Address"
                                 value={formData.fullAddress}
                                 onChange={set("fullAddress")}
                             />
                         </div>
-                        <InputField label="City" required placeholder="Auto-filled" value={formData.city} onChange={set("city")} />
+                        <InputField label="City" required placeholder="Enter City" value={formData.city} onChange={set("city")} />
                         <Field label="State" required>
                             <select
                                 className={inputCls}
@@ -504,7 +505,7 @@ const PropertyFormBody = ({ formData, onChange }) => {
 
 export default PropertyFormBody;
 
-// down code is working but missing some fields user upper code 
+// down code is working but missing some fields user upper code
 // import React, { useState, useRef } from "react";
 // import {
 //     Info, Building2, Zap, Waves, Camera, FileText, MapPin,

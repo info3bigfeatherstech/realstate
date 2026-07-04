@@ -22,9 +22,9 @@ export const SETTINGS_REGISTRY = [
     label: "Badge Settings",
     component: BadgeSettingsTab,
   },
-  {
-    id: "socialsettings",
-    label: "Social Settings",
-    component: SocialSettingsTab,
-  },
+  // {
+  //   id: "socialsettings",
+  //   label: "Social Settings",
+  //   component: SocialSettingsTab,
+  // },
 ];
