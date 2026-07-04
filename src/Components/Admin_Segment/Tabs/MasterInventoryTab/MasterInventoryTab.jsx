@@ -148,7 +148,7 @@ const MasterInventoryTab = () => {
                         </svg>
                         Manage Categories
                     </button>
-                    <button
+                    {/* <button
                         onClick={handleSeed}
                         disabled={isSeeding}
                         className="px-4 py-2.5 text-sm font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-xl transition-all flex items-center gap-2 cursor-pointer disabled:opacity-55"
@@ -157,7 +157,7 @@ const MasterInventoryTab = () => {
                             <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 7.89H18" />
                         </svg>
                         {isSeeding ? "Seeding..." : "Seed Defaults"}
-                    </button>
+                    </button> */}
                     <button
                         onClick={handleOpenCreateModal}
                         className="px-4 py-2.5 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-md shadow-blue-500/10 hover:shadow-blue-500/20 transition-all flex items-center gap-2 cursor-pointer"
