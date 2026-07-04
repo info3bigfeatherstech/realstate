@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setCredentials, setAuthChecked } from "../../../REDUX_FEATURES/REDUX_SLICES/auth/authSlice";
 import { useLoginMutation } from "../../../REDUX_FEATURES/REDUX_SLICES/auth/authApi";
-import { Eye, EyeOff } from "lucide-react";  // ✅ ADD THIS
+import { Eye, EyeOff } from "lucide-react";
+import { getApiErrorMessage } from "../../Shared/apiErrorUtils";
 
 const LoginPage = () => {
     const navigate = useNavigate();
@@ -81,7 +82,7 @@ const LoginPage = () => {
 
                     {error && (
                         <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm">
-                            {error.data?.message || "Login failed. Please try again."}
+                            {getApiErrorMessage(error, "Login failed. Please try again.")}
                         </div>
                     )}
 
@@ -172,7 +173,7 @@ export default LoginPage;
 
 //                     {error && (
 //                         <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm">
-//                             {error.data?.message || "Login failed. Please try again."}
+//                             {getApiErrorMessage(error, "Login failed. Please try again.")}
 //                         </div>
 //                     )}
 

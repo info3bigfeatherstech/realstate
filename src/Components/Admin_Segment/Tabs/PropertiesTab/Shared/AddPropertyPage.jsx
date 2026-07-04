@@ -5,7 +5,7 @@ import { ArrowLeft, Loader2 } from "lucide-react";
 import PropertyFormBody from "./PropertyFormBody";
 import { isSellListingType, normalizeListingTypeForSubmit } from "../../../../../utils/listingType";
 import { buildFullPropertyPayload, EMPTY_RENTAL_DETAILS, EMPTY_SALE_DETAILS, getPropertyRequiredFieldErrors } from "../../../../../utils/propertyFormPayload";
-import { toast, formatApiErrorMessage } from "../../../../Shared/ToastConfig";
+import { toast, getApiErrorMessage } from "../../../../Shared/ToastConfig";
 import {
     useCreatePropertyMutation,
     useUpdatePropertyMutation,
@@ -137,7 +137,7 @@ const AddPropertyPage = () => {
             setCreatedPropertyId(null);
             setSearchParams({ tab: "properties" });
         } catch (err) {
-            toast.error(formatApiErrorMessage(err, "Failed to create property"), { autoClose: 5000 });
+            toast.error(getApiErrorMessage(err, "Failed to create property"), { autoClose: 5000 });
         } finally {
             setIsUploading(false);
         }
@@ -168,7 +168,7 @@ const AddPropertyPage = () => {
             setCreatedPropertyId(null);
             setSearchParams({ tab: "properties" });
         } catch (err) {
-            toast.error(formatApiErrorMessage(err, "Failed to save draft"), { autoClose: 5000 });
+            toast.error(getApiErrorMessage(err, "Failed to save draft"), { autoClose: 5000 });
         } finally {
             setIsUploading(false);
         }

@@ -5,7 +5,7 @@ import {
   useGetCustomersQuery,
   useUpdateCustomerStatusMutation,
 } from "../../../Admin_Redux/CustomerApi/customerAdminApi";
-import { toast } from "../../../../Shared/ToastConfig";
+import { toast, getApiErrorMessage } from "../../../../Shared/ToastConfig";
 
 const ACCOUNT_LABELS = { seeker: "Seeker", owner: "Owner", agent: "Agent" };
 
@@ -23,7 +23,7 @@ const PublicCustomersTab = () => {
       await updateStatus({ id, isActive: !isActive }).unwrap();
       toast.success("Customer updated");
     } catch (err) {
-      toast.error(err?.data?.message || "Update failed");
+      toast.error(getApiErrorMessage(err, "Update failed"));
     }
   };
 

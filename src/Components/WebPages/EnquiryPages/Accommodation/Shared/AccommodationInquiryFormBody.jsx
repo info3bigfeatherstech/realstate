@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { useGetConstantsQuery } from "../../../../../REDUX_FEATURES/REDUX_SLICES/constantsApi/constantsApi";
 import { useSubmitAccommodationInquiryMutation } from "../../../../../REDUX_FEATURES/REDUX_SLICES/userAccommodationInquiryApi/userAccommodationInquiryApi";
-import { toast } from "../../../../Shared/ToastConfig";
+import { toast, getApiErrorMessage } from "../../../../Shared/ToastConfig";
 
 const RENTAL_TYPES = ["Rental Property"];
 const SHARING_TYPES = ["PG Accommodation", "Co-Living Accommodation"];
@@ -165,12 +165,7 @@ const AccommodationInquiryFormBody = () => {
         handleReset();
       }
     } catch (err) {
-      const details = err?.data?.details;
-      if (Array.isArray(details) && details.length) {
-        toast.error(details.map((d) => d.message || d).join(", "));
-      } else {
-        toast.error(err?.data?.message || "Failed to submit inquiry");
-      }
+      toast.error(getApiErrorMessage(err, "Failed to submit inquiry"));
     }
   };
 

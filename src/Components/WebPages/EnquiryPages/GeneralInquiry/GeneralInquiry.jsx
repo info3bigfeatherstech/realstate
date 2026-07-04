@@ -11,7 +11,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { useSubmitGeneralInquiryMutation } from "../../../../REDUX_FEATURES/REDUX_SLICES/userGeneralInquiryApi/userGeneralInquiryApi";
-import { toast } from "../../../Shared/ToastConfig";
+import { toast, getApiErrorMessage } from "../../../Shared/ToastConfig";
 import {
   InputField,
   TextAreaField,
@@ -73,10 +73,7 @@ const GeneralInquiry = () => {
         email: user?.email || "",
       });
     } catch (err) {
-      const detailsMsg = err?.data?.details?.map((d) => d.message).join(", ");
-      const errMsg =
-        detailsMsg || err?.data?.message || "Failed to submit inquiry";
-      toast.error(errMsg);
+      toast.error(getApiErrorMessage(err, "Failed to submit inquiry"));
     }
   };
 

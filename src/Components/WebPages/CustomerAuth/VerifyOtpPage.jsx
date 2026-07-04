@@ -7,7 +7,7 @@ import {
   useResendOtpMutation,
 } from "../../../REDUX_FEATURES/REDUX_SLICES/customerAuth/customerAuthApi";
 import { setCustomerCredentials } from "../../../REDUX_FEATURES/REDUX_SLICES/customerAuth/customerAuthSlice";
-import { toast } from "../../Shared/ToastConfig";
+import { toast, getApiErrorMessage } from "../../Shared/ToastConfig";
 import { getReturnUrl } from "../../../utils/inquiryFormDraft";
 
 const inputCls =
@@ -38,7 +38,7 @@ const VerifyOtpPage = () => {
       toast.success("Email verified! Welcome.");
       navigate(returnUrl, { replace: true });
     } catch (err) {
-      toast.error(err?.data?.message || "Invalid OTP");
+      toast.error(getApiErrorMessage(err, "Invalid OTP"));
     }
   };
 
@@ -51,7 +51,7 @@ const VerifyOtpPage = () => {
         toast.success("OTP resent — check your email inbox and spam folder");
       }
     } catch (err) {
-      toast.error(err?.data?.message || "Failed to resend OTP");
+      toast.error(getApiErrorMessage(err, "Failed to resend OTP"));
     }
   };
 

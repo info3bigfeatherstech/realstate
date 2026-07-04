@@ -9,7 +9,7 @@ import {
     useDeleteEntireInventoryMutation,
     useGetInventorySummaryQuery,
 } from "../../../../REDUX_FEATURES/REDUX_SLICES/customerInventoryApi/customerInventoryApi";
-import { toast } from "../../../Shared/ToastConfig";
+import { toast, getApiErrorMessage } from "../../../Shared/ToastConfig";
 import {
     Plus, Trash2, Pencil, Search, Loader2, RefreshCw, AlertCircle,
     Package, Layers, CheckCircle2, ChevronDown, X, ShieldAlert
@@ -153,7 +153,7 @@ const PropertyInventoryTab = () => {
             setIsAddModalOpen(false);
             handleRefresh();
         } catch (error) {
-            toast.error(error?.data?.message || "Failed to save inventory.");
+            toast.error(getApiErrorMessage(error, "Failed to save inventory."));
         }
     };
 
@@ -198,7 +198,7 @@ const PropertyInventoryTab = () => {
             setIsEditModalOpen(false);
             handleRefresh();
         } catch (error) {
-            toast.error(error?.data?.message || "Failed to update item.");
+            toast.error(getApiErrorMessage(error, "Failed to update item."));
         }
     };
 
@@ -214,7 +214,7 @@ const PropertyInventoryTab = () => {
             toast.success("Item deleted successfully!");
             handleRefresh();
         } catch (error) {
-            toast.error(error?.data?.message || "Failed to delete item.");
+            toast.error(getApiErrorMessage(error, "Failed to delete item."));
         }
     };
 
@@ -226,7 +226,7 @@ const PropertyInventoryTab = () => {
             setIsDeleteAllModalOpen(false);
             handleRefresh();
         } catch (error) {
-            toast.error(error?.data?.message || "Failed to delete inventory.");
+            toast.error(getApiErrorMessage(error, "Failed to delete inventory."));
         }
     };
 
@@ -755,7 +755,7 @@ export default PropertyInventoryTab;
 //     useDeleteEntireInventoryMutation,
 //     useGetInventorySummaryQuery,
 // } from "../../../../REDUX_FEATURES/REDUX_SLICES/customerInventoryApi/customerInventoryApi";
-// import { toast } from "../../../Shared/ToastConfig";
+// import { toast, getApiErrorMessage } from "../../../Shared/ToastConfig";
 // import {
 //     Plus, Trash2, Pencil, Search, Loader2, RefreshCw, AlertCircle,
 //     Package, Layers, CheckCircle2, ChevronDown, Check, X, ShieldAlert
@@ -903,7 +903,7 @@ export default PropertyInventoryTab;
 //             setIsAddModalOpen(false);
 //             handleRefresh();
 //         } catch (error) {
-//             toast.error(error?.data?.message || "Failed to save inventory.");
+//             toast.error(getApiErrorMessage(error, "Failed to save inventory."));
 //         }
 //     };
 
@@ -949,7 +949,7 @@ export default PropertyInventoryTab;
 //             setIsEditModalOpen(false);
 //             handleRefresh();
 //         } catch (error) {
-//             toast.error(error?.data?.message || "Failed to update item.");
+//             toast.error(getApiErrorMessage(error, "Failed to update item."));
 //         }
 //     };
 
@@ -965,7 +965,7 @@ export default PropertyInventoryTab;
 //             toast.success("Item deleted successfully!");
 //             handleRefresh();
 //         } catch (error) {
-//             toast.error(error?.data?.message || "Failed to delete item.");
+//             toast.error(getApiErrorMessage(error, "Failed to delete item."));
 //         }
 //     };
 
@@ -977,7 +977,7 @@ export default PropertyInventoryTab;
 //             setIsDeleteAllModalOpen(false);
 //             handleRefresh();
 //         } catch (error) {
-//             toast.error(error?.data?.message || "Failed to delete inventory.");
+//             toast.error(getApiErrorMessage(error, "Failed to delete inventory."));
 //         }
 //     };
 

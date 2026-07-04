@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { User, MapPin, Home, IndianRupee, Calendar, Loader2 } from "lucide-react";
 import { useGetConstantsQuery } from "../../../../REDUX_FEATURES/REDUX_SLICES/constantsApi/constantsApi";
 import { useSubmitInquiryMutation } from "../../../../REDUX_FEATURES/REDUX_SLICES/customerInquiryApi/customerInquiryApi";
-import { toast } from "../../../Shared/ToastConfig";
+import { toast, getApiErrorMessage } from "../../../Shared/ToastConfig";
 import {
   InputField,
   SelectField,
@@ -77,7 +77,7 @@ const BuyPropertyInquiryForm = () => {
       toast.success(`Inquiry submitted! Ref: ${result?.inquiryRef}`);
       setForm({ ...INITIAL, fullName: user?.fullName, mobile: user?.mobile, email: user?.email });
     } catch (err) {
-      toast.error(err?.data?.message || "Submission failed");
+      toast.error(getApiErrorMessage(err, "Submission failed"));
     }
   };
 

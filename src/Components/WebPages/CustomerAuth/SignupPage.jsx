@@ -5,7 +5,7 @@ import { Loader2, UserPlus, Eye, EyeOff, Building2, CheckCircle2 } from "lucide-
 import { useRegisterMutation } from "../../../REDUX_FEATURES/REDUX_SLICES/customerAuth/customerAuthApi";
 import { setPendingVerificationEmail } from "../../../REDUX_FEATURES/REDUX_SLICES/customerAuth/customerAuthSlice";
 import { useDispatch } from "react-redux";
-import { toast } from "../../Shared/ToastConfig";
+import { toast, getApiErrorMessage } from "../../Shared/ToastConfig";
 import { getReturnUrl } from "../../../utils/inquiryFormDraft";
 
 const ACCOUNT_TYPES = [
@@ -48,7 +48,7 @@ const SignupPage = () => {
       }
       navigate("/customer/verify-otp", { state: { email: form.email, returnUrl } });
     } catch (err) {
-      toast.error(err?.data?.message || "Registration failed");
+      toast.error(getApiErrorMessage(err, "Registration failed"));
     }
   };
 
@@ -237,7 +237,7 @@ export default SignupPage;
 // import { useRegisterMutation } from "../../../REDUX_FEATURES/REDUX_SLICES/customerAuth/customerAuthApi";
 // import { setPendingVerificationEmail } from "../../../REDUX_FEATURES/REDUX_SLICES/customerAuth/customerAuthSlice";
 // import { useDispatch } from "react-redux";
-// import { toast } from "../../Shared/ToastConfig";
+// import { toast, getApiErrorMessage } from "../../Shared/ToastConfig";
 // import { getReturnUrl } from "../../../utils/inquiryFormDraft";
 
 // const ACCOUNT_TYPES = [
@@ -278,7 +278,7 @@ export default SignupPage;
 //       }
 //       navigate("/customer/verify-otp", { state: { email: form.email, returnUrl } });
 //     } catch (err) {
-//       toast.error(err?.data?.message || "Registration failed");
+//       toast.error(getApiErrorMessage(err, "Registration failed"));
 //     }
 //   };
 
@@ -393,7 +393,7 @@ export default SignupPage;
 // import { useRegisterMutation } from "../../../REDUX_FEATURES/REDUX_SLICES/customerAuth/customerAuthApi";
 // import { setPendingVerificationEmail } from "../../../REDUX_FEATURES/REDUX_SLICES/customerAuth/customerAuthSlice";
 // import { useDispatch } from "react-redux";
-// import { toast } from "../../Shared/ToastConfig";
+// import { toast, getApiErrorMessage } from "../../Shared/ToastConfig";
 // import { getReturnUrl } from "../../../utils/inquiryFormDraft";
 
 // const ACCOUNT_TYPES = [
@@ -433,7 +433,7 @@ export default SignupPage;
 //       }
 //       navigate("/verify-otp", { state: { email: form.email, returnUrl } });
 //     } catch (err) {
-//       toast.error(err?.data?.message || "Registration failed");
+//       toast.error(getApiErrorMessage(err, "Registration failed"));
 //     }
 //   };
 

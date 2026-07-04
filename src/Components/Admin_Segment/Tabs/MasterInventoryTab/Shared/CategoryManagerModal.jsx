@@ -17,7 +17,7 @@ import {
   useToggleInventoryCategoryStatusMutation,
   useDeleteInventoryCategoryMutation,
 } from "../../../Admin_Redux/InventoryCategoryApi/inventoryCategoryApi";
-import { toast } from "../../../../Shared/ToastConfig";
+import { toast, getApiErrorMessage } from "../../../../Shared/ToastConfig";
 
 export default function CategoryManagerModal({ onClose, onCategoriesUpdated }) {
   const {
@@ -60,7 +60,7 @@ export default function CategoryManagerModal({ onClose, onCategoriesUpdated }) {
       if (onCategoriesUpdated) onCategoriesUpdated();
     } catch (error) {
       console.error("Failed to create category:", error);
-      toast.error(error?.data?.message || "Failed to create category");
+      toast.error(getApiErrorMessage(error, "Failed to create category"));
     }
   };
 
@@ -93,7 +93,7 @@ export default function CategoryManagerModal({ onClose, onCategoriesUpdated }) {
       if (onCategoriesUpdated) onCategoriesUpdated();
     } catch (error) {
       console.error("Failed to update category:", error);
-      toast.error(error?.data?.message || "Failed to update category");
+      toast.error(getApiErrorMessage(error, "Failed to update category"));
     }
   };
 
@@ -114,7 +114,7 @@ export default function CategoryManagerModal({ onClose, onCategoriesUpdated }) {
       if (onCategoriesUpdated) onCategoriesUpdated();
     } catch (error) {
       console.error("Failed to toggle status:", error);
-      toast.error(error?.data?.message || "Failed to change category status");
+      toast.error(getApiErrorMessage(error, "Failed to change category status"));
     }
   };
 
@@ -137,7 +137,7 @@ export default function CategoryManagerModal({ onClose, onCategoriesUpdated }) {
       if (onCategoriesUpdated) onCategoriesUpdated();
     } catch (error) {
       console.error("Failed to delete category:", error);
-      toast.error(error?.data?.message || "Failed to delete category");
+      toast.error(getApiErrorMessage(error, "Failed to delete category"));
     }
   };
 

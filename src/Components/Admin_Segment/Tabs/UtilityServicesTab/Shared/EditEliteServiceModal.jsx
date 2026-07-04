@@ -6,6 +6,7 @@ import {
   useGetEliteServiceByIdQuery,
   useUpdateEliteServiceMutation,
 } from "../../../Admin_Redux/EliteServiceApi/eliteServiceApi";
+import { getApiErrorMessage } from "../../../../Shared/ToastConfig";
 
 const EditEliteServiceModal = ({ serviceId, onClose, roles = [] }) => {
   const { data: serviceData, isLoading: isLoadingService } =
@@ -68,7 +69,7 @@ const EditEliteServiceModal = ({ serviceId, onClose, roles = [] }) => {
       await updateEliteService({ id: serviceId, ...buildPayload() }).unwrap();
       onClose();
     } catch (err) {
-      setError(err.data?.message || "Failed to update service provider.");
+      setError(getApiErrorMessage(err, "Failed to update service provider."));
     }
   };
 
@@ -97,7 +98,7 @@ const EditEliteServiceModal = ({ serviceId, onClose, roles = [] }) => {
 
           {/* Error Banner */}
           {error && (
-            <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
+            <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm whitespace-pre-line">
               {error}
             </div>
           )}

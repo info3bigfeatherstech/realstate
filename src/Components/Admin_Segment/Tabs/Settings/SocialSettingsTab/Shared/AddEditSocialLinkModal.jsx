@@ -4,7 +4,7 @@ import {
   useCreateSocialLinkMutation,
   useUpdateSocialLinkMutation,
 } from "../../../../Admin_Redux/AdminSocialApi/adminSocialApi";
-import { toast } from "../../../../../Shared/ToastConfig";
+import { toast, getApiErrorMessage } from "../../../../../Shared/ToastConfig";
 
 export const PLATFORM_OPTIONS = [
   {
@@ -273,7 +273,7 @@ const AddEditSocialLinkModal = ({ isOpen, onClose, linkToEdit }) => {
       }
       onClose();
     } catch (err) {
-      toast.error(err?.data?.message || "Failed to save social link");
+      toast.error(getApiErrorMessage(err, "Failed to save social link"));
     }
   };
 

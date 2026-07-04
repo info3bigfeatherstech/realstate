@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { X, Loader2 } from "lucide-react";
 import EliteServiceFormBody from "./EliteServiceFormBody";
 import { useCreateEliteServiceMutation } from "../../../Admin_Redux/EliteServiceApi/eliteServiceApi";
+import { getApiErrorMessage } from "../../../../Shared/ToastConfig";
 
 const INITIAL_FORM = {
   role: "",
@@ -52,7 +53,7 @@ const AddEliteServiceModal = ({ onClose, roles = [] }) => {
       await createEliteService(buildPayload()).unwrap();
       onClose();
     } catch (err) {
-      setError(err.data?.message || "Failed to create service provider.");
+      setError(getApiErrorMessage(err, "Failed to create service provider."));
     }
   };
 
@@ -81,7 +82,7 @@ const AddEliteServiceModal = ({ onClose, roles = [] }) => {
 
           {/* Error Banner */}
           {error && (
-            <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
+            <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm whitespace-pre-line">
               {error}
             </div>
           )}

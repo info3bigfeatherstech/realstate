@@ -9,7 +9,7 @@ import {
   useGetCustomerStatsQuery,
   useUpdateCustomerStatusMutation,
 } from "../../../Admin_Redux/CustomerApi/customerAdminApi";
-import { toast } from "../../../../Shared/ToastConfig";
+import { toast, getApiErrorMessage } from "../../../../Shared/ToastConfig";
 
 // Role Badge Component
 const RoleBadge = ({ role }) => {
@@ -64,7 +64,7 @@ const VerifiedUsersTab = () => {
       toast.success(`User ${newStatus ? 'activated' : 'suspended'} successfully`);
       refetch();
     } catch (err) {
-      toast.error(err?.data?.message || "Failed to update status");
+      toast.error(getApiErrorMessage(err, "Failed to update status"));
     }
   };
 

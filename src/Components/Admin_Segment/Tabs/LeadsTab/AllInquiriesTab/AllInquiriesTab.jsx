@@ -7,7 +7,7 @@ import {
   useDeleteInquiryMutation,
 } from "../../../Admin_Redux/InquiryApi/inquiryApi";
 import { useGetConstantsQuery } from "../../../../../REDUX_FEATURES/REDUX_SLICES/constantsApi/constantsApi";
-import { toast } from "../../../../Shared/ToastConfig";
+import { toast, getApiErrorMessage } from "../../../../Shared/ToastConfig";
 
 const FORM_LABELS = {
   accommodation_requirement: "Accommodation Req.",
@@ -32,7 +32,7 @@ const AllInquiriesTab = () => {
       await updateInquiry({ id, status }).unwrap();
       toast.success("Status updated");
     } catch (err) {
-      toast.error(err?.data?.message || "Update failed");
+      toast.error(getApiErrorMessage(err, "Update failed"));
     }
   };
 
@@ -42,7 +42,7 @@ const AllInquiriesTab = () => {
       await deleteInquiry(id).unwrap();
       toast.success("Inquiry deleted");
     } catch (err) {
-      toast.error(err?.data?.message || "Delete failed");
+      toast.error(getApiErrorMessage(err, "Delete failed"));
     }
   };
 

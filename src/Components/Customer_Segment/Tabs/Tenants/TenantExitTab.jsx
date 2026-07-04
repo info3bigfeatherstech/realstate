@@ -7,7 +7,7 @@ import {
     useGetTenantExitSummaryQuery,
 } from "../../../../REDUX_FEATURES/REDUX_SLICES/tenantExitApi/tenantExitApi";
 import { useGetPropertiesQuery } from "../../../../REDUX_FEATURES/REDUX_SLICES/customerPropertyApi/customerPropertyApi";
-import { toast } from "../../../Shared/ToastConfig";
+import { toast, getApiErrorMessage } from "../../../Shared/ToastConfig";
 
 const EXIT_REASONS = ["Lease End", "Relocation", "Upgrade", "Personal Reasons", "Other"];
 const HANDOVER_STATUSES = ["Completed Successfully", "Pending Verification", "Damage Dispute", "Deposit Hold"];
@@ -148,7 +148,7 @@ const TenantExitTab = () => {
             refetchExits();
             refetchSummary();
         } catch (err) {
-            toast.error(err?.data?.message || "Failed to submit check-out");
+            toast.error(getApiErrorMessage(err, "Failed to submit check-out"));
         }
     };
 

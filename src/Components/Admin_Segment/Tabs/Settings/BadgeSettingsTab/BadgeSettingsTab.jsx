@@ -5,7 +5,7 @@ import {
   useToggleBadgeTierStatusMutation,
   useDeleteBadgeTierMutation,
 } from "../../../Admin_Redux/AdminBadgeApi/adminBadgeApi";
-import { toast } from "../../../../Shared/ToastConfig";
+import { toast, getApiErrorMessage } from "../../../../Shared/ToastConfig";
 import AddEditTierModal from "./Shared/AddEditTierModal";
 
 const BadgeSettingsTab = () => {
@@ -43,7 +43,7 @@ const BadgeSettingsTab = () => {
         `Tier status updated to ${nextStatus ? "Active" : "Inactive"}`
       );
     } catch (err) {
-      toast.error(err?.data?.message || "Failed to update tier status");
+      toast.error(getApiErrorMessage(err, "Failed to update tier status"));
     }
   };
 
@@ -59,7 +59,7 @@ const BadgeSettingsTab = () => {
       await deleteTier(tier.level).unwrap();
       toast.success("Badge tier deleted successfully");
     } catch (err) {
-      toast.error(err?.data?.message || "Failed to delete badge tier");
+      toast.error(getApiErrorMessage(err, "Failed to delete badge tier"));
     }
   };
 

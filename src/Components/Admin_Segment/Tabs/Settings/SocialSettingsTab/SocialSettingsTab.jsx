@@ -5,7 +5,7 @@ import {
   useToggleSocialLinkStatusMutation,
   useDeleteSocialLinkMutation,
 } from "../../../Admin_Redux/AdminSocialApi/adminSocialApi";
-import { toast } from "../../../../Shared/ToastConfig";
+import { toast, getApiErrorMessage } from "../../../../Shared/ToastConfig";
 import AddEditSocialLinkModal, {
   PLATFORM_OPTIONS,
 } from "./Shared/AddEditSocialLinkModal";
@@ -56,7 +56,7 @@ const SocialSettingsTab = () => {
         `${PLATFORM_LABELS[link.platform] || link.platform} status updated to ${nextStatus ? "Active" : "Inactive"}`,
       );
     } catch (err) {
-      toast.error(err?.data?.message || "Failed to update status");
+      toast.error(getApiErrorMessage(err, "Failed to update status"));
     }
   };
 
@@ -72,7 +72,7 @@ const SocialSettingsTab = () => {
       await deleteSocialLink(link._id).unwrap();
       toast.success("Social link deleted successfully");
     } catch (err) {
-      toast.error(err?.data?.message || "Failed to delete social link");
+      toast.error(getApiErrorMessage(err, "Failed to delete social link"));
     }
   };
 

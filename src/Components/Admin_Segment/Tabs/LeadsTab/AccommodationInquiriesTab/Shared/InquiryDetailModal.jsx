@@ -8,7 +8,7 @@ import {
 } from "../../../../Admin_Redux/AccommodationInquiryApi/accommodationInquiryApi";
 import { useGetUsersQuery } from "../../../../../../REDUX_FEATURES/REDUX_SLICES/auth/authApi";
 import InquiryStatusBadge from "./InquiryStatusBadge";
-import { toast } from "../../../../../Shared/ToastConfig";
+import { toast, getApiErrorMessage } from "../../../../../Shared/ToastConfig";
 const ADMIN_STATUSES = ["new", "contacted", "converted", "lost", "closed"];
 const DetailRow = ({ label, value }) => (
   <div>
@@ -61,7 +61,7 @@ const InquiryDetailModal = ({ inquiryId, onClose, onDeleted }) => {
       }).unwrap();
       toast.success("Inquiry updated successfully");
     } catch (err) {
-      toast.error(err?.data?.message || "Failed to update inquiry");
+      toast.error(getApiErrorMessage(err, "Failed to update inquiry"));
     }
   };
   const handleDelete = async () => {
@@ -72,7 +72,7 @@ const InquiryDetailModal = ({ inquiryId, onClose, onDeleted }) => {
       onDeleted?.();
       onClose();
     } catch (err) {
-      toast.error(err?.data?.message || "Failed to delete inquiry");
+      toast.error(getApiErrorMessage(err, "Failed to delete inquiry"));
     }
   };
   if (!inquiryId) return null;

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Flame, Loader2, Eye, ShieldCheck, HelpCircle } from "lucide-react";
 import { useGetPropertyFomoQuery } from "../../../../../REDUX_FEATURES/REDUX_SLICES/userPropertyApi/userPropertyApi";
 import { useUpdatePropertyMutation } from "../../../Admin_Redux/PropertyApi/propertyApi";
-import { toast } from "../../../../Shared/ToastConfig";
+import { toast, getApiErrorMessage } from "../../../../Shared/ToastConfig";
 export default function FomoSettingsModal({
   property,
   onClose,
@@ -44,7 +44,7 @@ export default function FomoSettingsModal({
       onClose();
     } catch (error) {
       console.error("Failed to update FOMO settings:", error);
-      toast.error(error?.data?.message || "Failed to update FOMO settings");
+      toast.error(getApiErrorMessage(error, "Failed to update FOMO settings"));
     }
   };
   return (

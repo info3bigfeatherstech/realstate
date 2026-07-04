@@ -9,7 +9,7 @@ import {
 } from "../../Admin_Redux/InventoryItemApi/inventoryItemApi";
 import { useGetInventoryCategoriesQuery } from "../../Admin_Redux/InventoryCategoryApi/inventoryCategoryApi";
 import CategoryManagerModal from "./Shared/CategoryManagerModal";
-import { toast } from "../../../Shared/ToastConfig";
+import { toast, getApiErrorMessage } from "../../../Shared/ToastConfig";
 
 const MasterInventoryTab = () => {
     // Search and filters
@@ -91,7 +91,7 @@ const MasterInventoryTab = () => {
             }
             setIsModalOpen(false);
         } catch (err) {
-            toast.error(err?.data?.message || "Failed to save item");
+            toast.error(getApiErrorMessage(err, "Failed to save item"));
         }
     };
 
@@ -103,7 +103,7 @@ const MasterInventoryTab = () => {
             }).unwrap();
             toast.success(`Item ${item.isActive ? "deactivated" : "activated"} successfully`);
         } catch (err) {
-            toast.error(err?.data?.message || "Failed to toggle status");
+            toast.error(getApiErrorMessage(err, "Failed to toggle status"));
         }
     };
 
@@ -113,7 +113,7 @@ const MasterInventoryTab = () => {
             await deleteItem(id).unwrap();
             toast.success("Item deleted successfully");
         } catch (err) {
-            toast.error(err?.data?.message || "Failed to delete item");
+            toast.error(getApiErrorMessage(err, "Failed to delete item"));
         }
     };
 
@@ -123,7 +123,7 @@ const MasterInventoryTab = () => {
             toast.success("Default inventory items seeded successfully!");
             refetch();
         } catch (err) {
-            toast.error(err?.data?.message || "Failed to seed default items");
+            toast.error(getApiErrorMessage(err, "Failed to seed default items"));
         }
     };
 

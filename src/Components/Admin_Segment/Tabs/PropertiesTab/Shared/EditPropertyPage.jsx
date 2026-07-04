@@ -19,7 +19,7 @@ import {
   DOCUMENT_KEY_TO_TYPE,
   getPropertyRequiredFieldErrors,
 } from "../../../../../utils/propertyFormPayload";
-import { toast, formatApiErrorMessage } from "../../../../Shared/ToastConfig";
+import { toast, getApiErrorMessage } from "../../../../Shared/ToastConfig";
 
 const EditPropertyPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -154,7 +154,7 @@ const EditPropertyPage = () => {
 
       setSearchParams({ tab: "properties" });
     } catch (err) {
-      toast.error(formatApiErrorMessage(err, "Failed to update property"), { autoClose: 5000 });
+      toast.error(getApiErrorMessage(err, "Failed to update property"), { autoClose: 5000 });
     } finally {
       setIsUpdatingAll(false);
     }
@@ -186,7 +186,7 @@ const EditPropertyPage = () => {
 
       setSearchParams({ tab: "properties" });
     } catch (err) {
-      toast.error(formatApiErrorMessage(err, "Failed to save draft"), { autoClose: 5000 });
+      toast.error(getApiErrorMessage(err, "Failed to save draft"), { autoClose: 5000 });
     } finally {
       setIsUpdatingAll(false);
     }

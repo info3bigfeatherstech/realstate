@@ -25,6 +25,7 @@ import AddEliteServiceModal from "./Shared/AddEliteServiceModal";
 import EditEliteServiceModal from "./Shared/EditEliteServiceModal";
 import ManageEliteRolesModal from "./Shared/ManageEliteRolesModal";
 import { useGetEliteRolesQuery } from "../../Admin_Redux/EliteConfigApi/eliteConfigApi";
+import { toast, getApiErrorMessage } from "../../../Shared/ToastConfig";
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
@@ -137,7 +138,7 @@ const UtilityServicesTab = () => {
     try {
       await updateStatus({ id, status: newStatus }).unwrap();
     } catch (err) {
-      console.error("Failed to update status:", err);
+      toast.error(getApiErrorMessage(err, "Failed to update provider status."));
     }
   };
 
@@ -147,7 +148,7 @@ const UtilityServicesTab = () => {
       setServiceToDelete(null);
       dispatch(clearSelectedIds());
     } catch (err) {
-      console.error("Failed to delete:", err);
+      toast.error(getApiErrorMessage(err, "Failed to delete provider."));
     }
   };
 

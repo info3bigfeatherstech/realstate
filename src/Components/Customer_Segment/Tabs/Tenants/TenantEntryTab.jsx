@@ -6,7 +6,7 @@ import {
     useGetTenantSummaryQuery,
 } from "../../../../REDUX_FEATURES/REDUX_SLICES/tenantEntryApi/tenantEntryApi";
 import { useGetPropertyInventoryQuery } from "../../../../REDUX_FEATURES/REDUX_SLICES/customerInventoryApi/customerInventoryApi";
-import { toast } from "../../../Shared/ToastConfig";
+import { toast, getApiErrorMessage } from "../../../Shared/ToastConfig";
 const OCCUPANT_TYPES = ["Family", "Bachelor", "Student", "Working Professional"];
 const CONDITIONS = ["Excellent", "Good", "Minor Damage", "Major Damage"];
 const TenantEntryTab = () => {
@@ -200,7 +200,7 @@ const TenantEntryTab = () => {
             refetchEntries();
             refetchSummary();
         } catch (err) {
-            toast.error(err?.data?.message || "Failed to create tenant check-in");
+            toast.error(getApiErrorMessage(err, "Failed to create tenant check-in"));
         }
     };
     const resetForm = () => {

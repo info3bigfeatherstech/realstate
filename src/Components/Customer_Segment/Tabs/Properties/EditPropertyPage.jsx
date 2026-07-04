@@ -17,6 +17,7 @@ import {
   mapPropertyToFormBase,
   DOCUMENT_KEY_TO_TYPE,
 } from "../../../../utils/propertyFormPayload";
+import { getApiErrorMessage } from "../../../Shared/ToastConfig";
 
 const EditPropertyPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -152,7 +153,7 @@ const EditPropertyPage = () => {
 
       setSearchParams({ tab: "my-properties" });
     } catch (err) {
-      setError(err.data?.message || "Failed to update property");
+      setError(getApiErrorMessage(err, "Failed to update property"));
     } finally {
       setIsUpdatingAll(false);
     }
@@ -184,7 +185,7 @@ const EditPropertyPage = () => {
 
       setSearchParams({ tab: "my-properties" });
     } catch (err) {
-      setError(err.data?.message || "Failed to save draft");
+      setError(getApiErrorMessage(err, "Failed to save draft"));
     } finally {
       setIsUpdatingAll(false);
     }
@@ -215,7 +216,7 @@ const EditPropertyPage = () => {
       </div>
 
       {error && (
-        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
+        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm whitespace-pre-line">
           {error}
         </div>
       )}

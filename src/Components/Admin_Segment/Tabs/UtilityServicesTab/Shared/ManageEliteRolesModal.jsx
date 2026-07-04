@@ -15,7 +15,7 @@ import {
   useUpdateEliteRoleMutation,
   useDeleteEliteRoleMutation,
 } from "../../../Admin_Redux/EliteConfigApi/eliteConfigApi";
-import { toast } from "../../../../Shared/ToastConfig";
+import { toast, getApiErrorMessage } from "../../../../Shared/ToastConfig";
 
 const ManageEliteRolesModal = ({ onClose, onRolesUpdated }) => {
   const { data: roles = [], isLoading, refetch } = useGetEliteRolesQuery();
@@ -47,7 +47,7 @@ const ManageEliteRolesModal = ({ onClose, onRolesUpdated }) => {
       setNewRoleName("");
       notifyUpdated();
     } catch (error) {
-      toast.error(error?.data?.message || "Failed to add role");
+      toast.error(getApiErrorMessage(error, "Failed to add role"));
     }
   };
 
@@ -78,7 +78,7 @@ const ManageEliteRolesModal = ({ onClose, onRolesUpdated }) => {
       setEditRoleName("");
       notifyUpdated();
     } catch (error) {
-      toast.error(error?.data?.message || "Failed to update role");
+      toast.error(getApiErrorMessage(error, "Failed to update role"));
     }
   };
 
@@ -90,7 +90,7 @@ const ManageEliteRolesModal = ({ onClose, onRolesUpdated }) => {
       setRoleToDelete(null);
       notifyUpdated();
     } catch (error) {
-      toast.error(error?.data?.message || "Failed to delete role");
+      toast.error(getApiErrorMessage(error, "Failed to delete role"));
     }
   };
 

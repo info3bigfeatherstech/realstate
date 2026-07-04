@@ -4,7 +4,7 @@ import {
   useAddBadgeTierMutation,
   useUpdateBadgeTierMutation,
 } from "../../../../Admin_Redux/AdminBadgeApi/adminBadgeApi";
-import { toast } from "../../../../../Shared/ToastConfig";
+import { toast, getApiErrorMessage } from "../../../../../Shared/ToastConfig";
 const AddEditTierModal = ({ isOpen, onClose, tierToEdit }) => {
   const [addBadgeTier, { isLoading: isAdding }] = useAddBadgeTierMutation();
   const [updateBadgeTier, { isLoading: isUpdating }] =
@@ -72,7 +72,7 @@ const AddEditTierModal = ({ isOpen, onClose, tierToEdit }) => {
       }
       onClose();
     } catch (err) {
-      toast.error(err?.data?.message || "Failed to save badge tier");
+      toast.error(getApiErrorMessage(err, "Failed to save badge tier"));
     }
   };
   if (!isOpen) return null;

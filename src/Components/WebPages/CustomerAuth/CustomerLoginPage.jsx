@@ -5,7 +5,7 @@ import { Loader2, LogIn, Building2, Eye, EyeOff, ShieldCheck } from "lucide-reac
 import { useLoginMutation } from "../../../REDUX_FEATURES/REDUX_SLICES/customerAuth/customerAuthApi";
 import { setCustomerCredentials } from "../../../REDUX_FEATURES/REDUX_SLICES/customerAuth/customerAuthSlice";
 import { useDispatch } from "react-redux";
-import { toast } from "../../Shared/ToastConfig";
+import { toast, getApiErrorMessage } from "../../Shared/ToastConfig";
 import { getReturnUrl } from "../../../utils/inquiryFormDraft";
 
 const inputCls =
@@ -35,7 +35,7 @@ const CustomerLoginPage = () => {
         navigate("/customer/verify-otp", { state: { email: form.email, returnUrl } });
         return;
       }
-      toast.error(err?.data?.message || "Login failed");
+      toast.error(getApiErrorMessage(err, "Login failed"));
     }
   };
 
@@ -150,7 +150,7 @@ export default CustomerLoginPage;
 // import { useLoginMutation } from "../../../REDUX_FEATURES/REDUX_SLICES/customerAuth/customerAuthApi";
 // import { setCustomerCredentials } from "../../../REDUX_FEATURES/REDUX_SLICES/customerAuth/customerAuthSlice";
 // import { useDispatch } from "react-redux";
-// import { toast } from "../../Shared/ToastConfig";
+// import { toast, getApiErrorMessage } from "../../Shared/ToastConfig";
 // import { getReturnUrl } from "../../../utils/inquiryFormDraft";
 
 // const inputCls =
@@ -177,7 +177,7 @@ export default CustomerLoginPage;
 //         navigate("/customer/verify-otp", { state: { email: form.email, returnUrl } });
 //         return;
 //       }
-//       toast.error(err?.data?.message || "Login failed");
+//       toast.error(getApiErrorMessage(err, "Login failed"));
 //     }
 //   };
 

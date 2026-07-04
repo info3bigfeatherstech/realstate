@@ -10,6 +10,7 @@ import {
     useUploadMediaMutation,
     useUploadDocumentMutation
 } from "../../../../REDUX_FEATURES/REDUX_SLICES/customerPropertyApi/customerPropertyApi";
+import { getApiErrorMessage } from "../../../Shared/ToastConfig";
 
 const INITIAL_FORM = {
     listingType: "",
@@ -136,7 +137,7 @@ const CreatePropertyPage = () => {
             setCreatedPropertyId(null);
             setSearchParams({ tab: "my-properties" });
         } catch (err) {
-            setError(err.data?.message || "Failed to create property");
+            setError(getApiErrorMessage(err, "Failed to create property"));
         } finally {
             setIsUploading(false);
         }
@@ -167,7 +168,7 @@ const CreatePropertyPage = () => {
             setCreatedPropertyId(null);
             setSearchParams({ tab: "my-properties" });
         } catch (err) {
-            setError(err.data?.message || "Failed to save draft");
+            setError(getApiErrorMessage(err, "Failed to save draft"));
         } finally {
             setIsUploading(false);
         }
@@ -188,7 +189,7 @@ const CreatePropertyPage = () => {
             </div>
 
             {error && (
-                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
+                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm whitespace-pre-line">
                     {error}
                 </div>
             )}

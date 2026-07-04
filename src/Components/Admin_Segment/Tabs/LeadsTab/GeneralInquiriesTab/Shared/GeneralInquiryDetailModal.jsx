@@ -5,7 +5,7 @@ import {
   useUpdateInquiryStatusMutation,
   useDeleteInquiryMutation,
 } from "../../../../Admin_Redux/GeneralInquiryApi/generalInquiryApi";
-import { toast } from "../../../../../Shared/ToastConfig";
+import { toast, getApiErrorMessage } from "../../../../../Shared/ToastConfig";
 const DetailRow = ({ label, value }) => (
   <div>
     {" "}
@@ -60,7 +60,7 @@ const GeneralInquiryDetailModal = ({ inquiryId, onClose, onDeleted }) => {
       toast.success("General inquiry updated successfully");
       onClose();
     } catch (err) {
-      toast.error(err?.data?.message || "Failed to update inquiry");
+      toast.error(getApiErrorMessage(err, "Failed to update inquiry"));
     }
   };
   const handleDelete = async () => {
@@ -71,7 +71,7 @@ const GeneralInquiryDetailModal = ({ inquiryId, onClose, onDeleted }) => {
       onDeleted?.();
       onClose();
     } catch (err) {
-      toast.error(err?.data?.message || "Failed to delete inquiry");
+      toast.error(getApiErrorMessage(err, "Failed to delete inquiry"));
     }
   };
   if (!inquiryId) return null;
