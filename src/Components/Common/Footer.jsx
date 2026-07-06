@@ -1,5 +1,5 @@
 import { MapPin, Phone, Mail, ArrowUpRight } from "lucide-react";
-import LOGO from "../../assets/m.png";
+import LOGO from "../../assets/logoinh-removebg-preview.png";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
