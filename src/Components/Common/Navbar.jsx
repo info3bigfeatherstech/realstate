@@ -24,6 +24,7 @@ const NAV_LINKS = [
 const OTHER_SERVICES = [
     { name: "Constructions / Renovations", path: "/services/constructions-renovations" },
     { name: "Documentation", path: "/services/documentation" },
+    { name: "Loan", path: "/services/loan" },
     { name: "Utility/HelpLines", path: "/services/utility-helplines" }
 ];
 

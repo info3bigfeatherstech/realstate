@@ -9,6 +9,9 @@ import { normalizeListingTypesList, isSellListingType } from "../../../../../uti
 import { isRentalListingType } from "../../../../../utils/propertyFormPayload";
 import RentalDetailsSection from "../../../../Shared/PropertyForm/RentalDetailsSection";
 import SaleDetailsSection from "../../../../Shared/PropertyForm/SaleDetailsSection";
+import SelectFieldWithOther, { NumberInputField } from "../../../../Shared/PropertyForm/SelectFieldWithOther";
+import { OTHER_OPTION } from "../../../../../utils/propertyFormPayload";
+import { getPropertyTypeOptions, getTitleOptions } from "../../../../../utils/propertyFormConstants";
 
 // Geocoding aliases → canonical state name from /constants INDIAN_STATE_NAMES
 const STATE_ALIASES = {
@@ -40,20 +43,35 @@ const Field = ({ label, required, children }) => (
     </div>
 );
 
-const SelectField = ({ label, required, value, onChange, options }) => (
-    <Field label={label} required={required}>
-        <select className={inputCls} value={value} onChange={(e) => onChange(e.target.value)}>
-            <option value="">Select</option>
-            {options.map((o) => <option key={o} value={o}>{o}</option>)}
-        </select>
-    </Field>
-);
-
 const InputField = ({ label, required, type = "text", placeholder, value, onChange }) => (
     <Field label={label} required={required}>
         <input className={inputCls} type={type} placeholder={placeholder} value={value} onChange={(e) => onChange(e.target.value)} />
     </Field>
 );
+
+const OtherSelect = ({ label, required, fieldKey, formData, onChange, options, onSelectChange }) => {
+    const otherValues = formData.otherValues || {};
+    return (
+        <SelectFieldWithOther
+            label={label}
+            required={required}
+            value={formData[fieldKey] ?? ""}
+            otherValue={otherValues[fieldKey] ?? ""}
+            onChange={(val) => {
+                if (onSelectChange) {
+                    onSelectChange(val);
+                } else {
+                    onChange(fieldKey, val);
+                    if (val !== OTHER_OPTION) {
+                        onChange("otherValues", { ...otherValues, [fieldKey]: "" });
+                    }
+                }
+            }}
+            onOtherChange={(val) => onChange("otherValues", { ...otherValues, [fieldKey]: val })}
+            options={options}
+        />
+    );
+};
 
 const Section = ({ icon: Icon, title, defaultOpen = true, children, fullWidth = false }) => {
     const [open, setOpen] = useState(defaultOpen);
@@ -179,14 +197,39 @@ const DOCUMENT_SLOTS = [
 const PropertyFormBody = ({ formData, onChange }) => {
     const { data: constants } = useGetConstantsQuery();
     const listingTypes = normalizeListingTypesList(constants?.LISTING_TYPES) ?? [];
-    const stateNames = ["Delhi"];
+    const stateNames = constants?.INDIAN_STATE_NAMES ?? ["Delhi"];
     const showRental = isRentalListingType(formData.listingType);
     const showSale = isSellListingType(formData.listingType);
+    const propertyTypeOptions = getPropertyTypeOptions(
+        constants?.PROPERTY_TYPES ?? [],
+        formData.listingType
+    );
+    const titleOptions = getTitleOptions(formData.listingType);
 
     const set = (field) => (val) => onChange(field, val);
     const toggleCheck = (field, item) => {
         const current = formData[field] || [];
         onChange(field, current.includes(item) ? current.filter(x => x !== item) : [...current, item]);
+    };
+
+    const handleListingTypeChange = (val) => {
+        const otherValues = formData.otherValues || {};
+        onChange("listingType", val);
+        if (val !== OTHER_OPTION) {
+            onChange("otherValues", { ...otherValues, listingType: "" });
+        }
+        const nextPropTypes = getPropertyTypeOptions(constants?.PROPERTY_TYPES ?? [], val);
+        const currentProp = formData.propertyType;
+        if (currentProp && currentProp !== OTHER_OPTION && !nextPropTypes.includes(currentProp)) {
+            onChange("propertyType", "");
+            onChange("otherValues", { ...otherValues, propertyType: "" });
+        }
+        const nextTitleOpts = getTitleOptions(val);
+        const currentTitle = formData.title;
+        if (currentTitle && currentTitle !== OTHER_OPTION && !nextTitleOpts.includes(currentTitle)) {
+            onChange("title", "");
+            onChange("otherValues", { ...otherValues, title: "" });
+        }
     };
 
     return (
@@ -195,30 +238,38 @@ const PropertyFormBody = ({ formData, onChange }) => {
             {/* 1. Basic Listing Info */}
             <Section icon={Info} title="Basic Listing Info" fullWidth>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                    <SelectField
-                        label="Listing Type" required
-                        value={formData.listingType}
-                        onChange={set("listingType")}
+                    <OtherSelect
+                        label="Listing Type"
+                        required
+                        fieldKey="listingType"
+                        formData={formData}
+                        onChange={onChange}
                         options={listingTypes}
+                        onSelectChange={handleListingTypeChange}
                     />
-                    <SelectField
-                        label="Property Type" required
-                        value={formData.propertyType}
-                        onChange={set("propertyType")}
-                        options={constants?.PROPERTY_TYPES ?? []}
+                    <OtherSelect
+                        label="Property Type"
+                        required
+                        fieldKey="propertyType"
+                        formData={formData}
+                        onChange={onChange}
+                        options={propertyTypeOptions}
                     />
-                    <SelectField
+                    <OtherSelect
                         label="Ownership Type"
-                        value={formData.ownershipType}
-                        onChange={set("ownershipType")}
+                        fieldKey="ownershipType"
+                        formData={formData}
+                        onChange={onChange}
                         options={constants?.OWNERSHIP_TYPES ?? []}
                     />
                     <div className="md:col-span-3">
-                        <InputField
-                            label="Listing Title" required
-                            placeholder="Enter property title"
-                            value={formData.title}
-                            onChange={set("title")}
+                        <OtherSelect
+                            label="Listing Title"
+                            required
+                            fieldKey="title"
+                            formData={formData}
+                            onChange={onChange}
+                            options={titleOptions}
                         />
                     </div>
                     <div className="md:col-span-3">
@@ -239,72 +290,74 @@ const PropertyFormBody = ({ formData, onChange }) => {
             <Section icon={Building2} title="Property Details">
                 <div className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
-                        <SelectField
+                        <OtherSelect
                             label="Condition"
-                            value={formData.condition}
-                            onChange={set("condition")}
+                            fieldKey="condition"
+                            formData={formData}
+                            onChange={onChange}
                             options={constants?.PROPERTY_CONDITIONS ?? []}
                         />
-                        <SelectField
+                        <OtherSelect
                             label="Construction Status"
-                            value={formData.constructionStatus}
-                            onChange={set("constructionStatus")}
+                            fieldKey="constructionStatus"
+                            formData={formData}
+                            onChange={onChange}
                             options={constants?.CONSTRUCTION_STATUSES ?? []}
                         />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
-                        <SelectField
+                        <OtherSelect
                             label="Furnishing"
-                            value={formData.furnishing}
-                            onChange={set("furnishing")}
+                            fieldKey="furnishing"
+                            formData={formData}
+                            onChange={onChange}
                             options={constants?.FURNISHING_STATUSES ?? []}
                         />
-                        <SelectField
+                        <OtherSelect
                             label="Facing"
-                            value={formData.facing}
-                            onChange={set("facing")}
+                            fieldKey="facing"
+                            formData={formData}
+                            onChange={onChange}
                             options={constants?.FACING_DIRECTIONS ?? []}
                         />
                     </div>
                     <div className="grid grid-cols-3 gap-4">
-                        <InputField
+                        <NumberInputField
                             label="Area (sq ft)"
-                            type="number"
                             value={formData.areaValue}
                             onChange={set("areaValue")}
                         />
                         <div className="col-span-2">
-                            <InputField
+                            <NumberInputField
                                 label="Price (₹)" required
-                                type="number"
                                 value={formData.price}
                                 onChange={set("price")}
                             />
                         </div>
-                        <InputField
+                        <NumberInputField
                             label="ROI (%)"
-                            type="number"
                             placeholder="0–100"
                             value={formData.roi ?? ""}
                             onChange={set("roi")}
+                            max={100}
                         />
                     </div>
                     <div className="grid grid-cols-4 gap-4">
-                        <InputField label="Bedrooms" type="number" value={formData.bedrooms} onChange={set("bedrooms")} />
-                        <InputField label="Bathrooms" type="number" value={formData.bathrooms} onChange={set("bathrooms")} />
-                        <InputField label="Floor No" type="number" value={formData.floorNo} onChange={set("floorNo")} />
-                        <InputField label="Total Floors" type="number" value={formData.totalFloors} onChange={set("totalFloors")} />
+                        <NumberInputField label="Bedrooms" value={formData.bedrooms} onChange={set("bedrooms")} />
+                        <NumberInputField label="Bathrooms" value={formData.bathrooms} onChange={set("bathrooms")} />
+                        <NumberInputField label="Floor No" value={formData.floorNo} onChange={set("floorNo")} />
+                        <NumberInputField label="Total Floors" value={formData.totalFloors} onChange={set("totalFloors")} />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
-                        <SelectField
+                        <OtherSelect
                             label="Flooring Type"
-                            value={formData.flooringType}
-                            onChange={set("flooringType")}
+                            fieldKey="flooringType"
+                            formData={formData}
+                            onChange={onChange}
                             options={constants?.FLOORING_TYPES ?? []}
                         />
-                        <InputField
+                        <NumberInputField
                             label="Maintenance (₹/mo)"
-                            type="number"
                             value={formData.maintenance}
                             onChange={set("maintenance")}
                         />
@@ -316,23 +369,26 @@ const PropertyFormBody = ({ formData, onChange }) => {
             <Section icon={Zap} title="Utilities & Parking">
                 <div className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
-                        <SelectField
+                        <OtherSelect
                             label="Water Supply"
-                            value={formData.waterSupply}
-                            onChange={set("waterSupply")}
+                            fieldKey="waterSupply"
+                            formData={formData}
+                            onChange={onChange}
                             options={constants?.WATER_SUPPLY_TYPES ?? []}
                         />
-                        <SelectField
+                        <OtherSelect
                             label="Power Backup"
-                            value={formData.powerBackup}
-                            onChange={set("powerBackup")}
+                            fieldKey="powerBackup"
+                            formData={formData}
+                            onChange={onChange}
                             options={constants?.POWER_BACKUP_TYPES ?? []}
                         />
                     </div>
-                    <SelectField
+                    <OtherSelect
                         label="Parking Type"
-                        value={formData.parkingType}
-                        onChange={set("parkingType")}
+                        fieldKey="parkingType"
+                        formData={formData}
+                        onChange={onChange}
                         options={constants?.PARKING_TYPES ?? []}
                     />
                     <div>
@@ -473,25 +529,21 @@ const PropertyFormBody = ({ formData, onChange }) => {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                         <div className="md:col-span-3">
                             <InputField
-                                label="Full Address" required
+                                label="Full Address"
                                 placeholder="Enter Your Address"
                                 value={formData.fullAddress}
                                 onChange={set("fullAddress")}
                             />
                         </div>
                         <InputField label="City" required placeholder="Enter City" value={formData.city} onChange={set("city")} />
-                        <Field label="State" required>
-                            <select
-                                className={inputCls}
-                                value={formData.state}
-                                onChange={(e) => set("state")(e.target.value)}
-                            >
-                                <option value="">Select State</option>
-                                {stateNames.map((s) => (
-                                    <option key={s} value={s}>{s}</option>
-                                ))}
-                            </select>
-                        </Field>
+                        <OtherSelect
+                            label="State"
+                            required
+                            fieldKey="state"
+                            formData={formData}
+                            onChange={onChange}
+                            options={stateNames}
+                        />
                         <InputField label="Pincode" required placeholder="Enter pincode" value={formData.pincode} onChange={set("pincode")} />
                         <InputField label="Latitude" placeholder="optional" value={formData.latitude} onChange={set("latitude")} />
                         <InputField label="Longitude" placeholder="optional" value={formData.longitude} onChange={set("longitude")} />

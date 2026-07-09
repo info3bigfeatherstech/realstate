@@ -13,6 +13,7 @@ import {
   useDeleteDocumentMutation,
 } from "../../../Admin_Redux/PropertyApi/propertyApi";
 import { normalizeListingTypeForSubmit, isSellListingType } from "../../../../../utils/listingType";
+import { useGetConstantsQuery } from "../../../../../REDUX_FEATURES/REDUX_SLICES/constantsApi/constantsApi";
 import {
   buildFullPropertyPayload,
   mapPropertyToFormBase,
@@ -25,6 +26,7 @@ const EditPropertyPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const propertyId = searchParams.get("id");
   const dispatch = useDispatch();
+  const { data: constants } = useGetConstantsQuery();
 
   const { data: propertyData, isLoading: isLoadingProperty } = useGetPropertyByIdQuery(propertyId, {
     skip: !propertyId,
@@ -40,13 +42,13 @@ const EditPropertyPage = () => {
   const [mediaToDelete, setMediaToDelete] = useState([]);
   const [docsToDelete, setDocsToDelete] = useState([]);
 
-  const transformApiDataToForm = (property) => mapPropertyToFormBase(property);
+  const transformApiDataToForm = (property) => mapPropertyToFormBase(property, constants);
 
   useEffect(() => {
     if (propertyData) {
       setFormData(transformApiDataToForm(propertyData));
     }
-  }, [propertyData]);
+  }, [propertyData, constants]);
 
   const handleChange = (field, value) => {
     // Track deleted or replaced media

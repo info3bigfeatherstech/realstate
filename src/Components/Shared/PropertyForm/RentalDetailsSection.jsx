@@ -1,35 +1,11 @@
 import React from "react";
 import { KeyRound } from "lucide-react";
 import { useGetConstantsQuery } from "../../../REDUX_FEATURES/REDUX_SLICES/constantsApi/constantsApi";
+import SelectFieldWithOther, { NumberInputField } from "./SelectFieldWithOther";
+import { OTHER_OPTION } from "../../../utils/propertyFormPayload";
 
-const inputCls =
-  "w-full h-10 px-3 rounded-lg border border-slate-300 focus:border-blue-600 focus:ring-1 focus:ring-blue-600 outline-none text-sm";
 const labelCls =
   "block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5";
-
-const Field = ({ label, children }) => (
-  <div>
-    <label className={labelCls}>{label}</label>
-    {children}
-  </div>
-);
-
-const SelectField = ({ label, value, onChange, options }) => (
-  <Field label={label}>
-    <select className={inputCls} value={value} onChange={(e) => onChange(e.target.value)}>
-      <option value="">Select</option>
-      {(options || []).map((o) => (
-        <option key={o} value={o}>{o}</option>
-      ))}
-    </select>
-  </Field>
-);
-
-const InputField = ({ label, type = "text", value, onChange }) => (
-  <Field label={label}>
-    <input className={inputCls} type={type} value={value} onChange={(e) => onChange(e.target.value)} />
-  </Field>
-);
 
 const CheckItem = ({ label, checked, onChange }) => (
   <label className="flex items-center gap-2 cursor-pointer">
@@ -48,18 +24,49 @@ const Section = ({ title, children }) => (
   </div>
 );
 
+const inputCls =
+  "w-full h-10 px-3 rounded-lg border border-slate-300 focus:border-blue-600 focus:ring-1 focus:ring-blue-600 outline-none text-sm";
+
+const DateField = ({ label, value, onChange }) => (
+  <div>
+    <label className={labelCls}>{label}</label>
+    <input className={inputCls} type="date" value={value} onChange={(e) => onChange(e.target.value)} />
+  </div>
+);
+
+const OtherRentalSelect = ({ label, fieldKey, rentalDetails, onChange, options }) => {
+  const otherValues = rentalDetails.otherValues || {};
+  return (
+    <SelectFieldWithOther
+      label={label}
+      value={rentalDetails[fieldKey] || ""}
+      otherValue={otherValues[fieldKey] || ""}
+      onChange={(val) => {
+        onChange(`rentalDetails.${fieldKey}`, val);
+        if (val !== OTHER_OPTION) {
+          onChange("rentalDetails.otherValues", { ...otherValues, [fieldKey]: "" });
+        }
+      }}
+      onOtherChange={(val) =>
+        onChange("rentalDetails.otherValues", { ...otherValues, [fieldKey]: val })
+      }
+      options={options}
+    />
+  );
+};
+
 const RentalDetailsSection = ({ rentalDetails = {}, onChange }) => {
   const { data: constants } = useGetConstantsQuery();
-
-  const set = (field) => (val) => onChange(`rentalDetails.${field}`, val);
 
   const toggleArray = (field, item) => {
     const current = rentalDetails[field] || [];
     const next = current.includes(item)
       ? current.filter((x) => x !== item)
       : [...current, item];
-    set(field)(next);
+    onChange(`rentalDetails.${field}`, next);
   };
+
+  const securityDeposit = rentalDetails.securityDeposit || "";
 
   return (
     <Section title="Rental Details">
@@ -79,103 +86,112 @@ const RentalDetailsSection = ({ rentalDetails = {}, onChange }) => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <SelectField
+          <OtherRentalSelect
             label="Occupation Preference"
-            value={rentalDetails.occupationPreference || ""}
-            onChange={set("occupationPreference")}
+            fieldKey="occupationPreference"
+            rentalDetails={rentalDetails}
+            onChange={onChange}
             options={constants?.OCCUPATION_PREFERENCES}
           />
-          <SelectField
+          <OtherRentalSelect
             label="Rental Agreement Duration"
-            value={rentalDetails.rentalAgreementDuration || ""}
-            onChange={set("rentalAgreementDuration")}
+            fieldKey="rentalAgreementDuration"
+            rentalDetails={rentalDetails}
+            onChange={onChange}
             options={constants?.RENTAL_AGREEMENT_DURATIONS}
           />
-          <SelectField
+          <OtherRentalSelect
             label="Minimum Stay Duration"
-            value={rentalDetails.minimumStayDuration || ""}
-            onChange={set("minimumStayDuration")}
+            fieldKey="minimumStayDuration"
+            rentalDetails={rentalDetails}
+            onChange={onChange}
             options={constants?.MINIMUM_STAY_DURATIONS}
           />
-          <SelectField
+          <OtherRentalSelect
             label="Lock-in Period"
-            value={rentalDetails.lockInPeriod || ""}
-            onChange={set("lockInPeriod")}
+            fieldKey="lockInPeriod"
+            rentalDetails={rentalDetails}
+            onChange={onChange}
             options={constants?.LOCK_IN_PERIODS}
           />
-          <SelectField
+          <OtherRentalSelect
             label="Availability"
-            value={rentalDetails.availability || ""}
-            onChange={set("availability")}
+            fieldKey="availability"
+            rentalDetails={rentalDetails}
+            onChange={onChange}
             options={constants?.AVAILABILITY_OPTIONS}
           />
           {rentalDetails.availability === "Specific Date" && (
-            <InputField
+            <DateField
               label="Availability Date"
-              type="date"
               value={rentalDetails.availabilityDate || ""}
-              onChange={set("availabilityDate")}
+              onChange={(val) => onChange("rentalDetails.availabilityDate", val)}
             />
           )}
-          <SelectField
+          <OtherRentalSelect
             label="Food Preference"
-            value={rentalDetails.foodPreference || ""}
-            onChange={set("foodPreference")}
+            fieldKey="foodPreference"
+            rentalDetails={rentalDetails}
+            onChange={onChange}
             options={constants?.FOOD_PREFERENCES}
           />
-          <SelectField
+          <OtherRentalSelect
             label="Security Deposit"
-            value={rentalDetails.securityDeposit || ""}
-            onChange={set("securityDeposit")}
+            fieldKey="securityDeposit"
+            rentalDetails={rentalDetails}
+            onChange={onChange}
             options={constants?.SECURITY_DEPOSIT_OPTIONS}
           />
-          {rentalDetails.securityDeposit === "Custom Amount" && (
-            <InputField
+          {securityDeposit === "Custom Amount" && (
+            <NumberInputField
               label="Security Deposit Custom Amount (₹)"
-              type="number"
               value={rentalDetails.securityDepositCustomAmount ?? ""}
-              onChange={set("securityDepositCustomAmount")}
+              onChange={(val) => onChange("rentalDetails.securityDepositCustomAmount", val)}
             />
           )}
-          <SelectField
+          <OtherRentalSelect
             label="Preferred Move-in Date"
-            value={rentalDetails.preferredMoveInDate || ""}
-            onChange={set("preferredMoveInDate")}
+            fieldKey="preferredMoveInDate"
+            rentalDetails={rentalDetails}
+            onChange={onChange}
             options={constants?.AVAILABILITY_OPTIONS}
           />
           {rentalDetails.preferredMoveInDate === "Specific Date" && (
-            <InputField
+            <DateField
               label="Preferred Move-in Date (Specific)"
-              type="date"
               value={rentalDetails.preferredMoveInDateSpecific || ""}
-              onChange={set("preferredMoveInDateSpecific")}
+              onChange={(val) => onChange("rentalDetails.preferredMoveInDateSpecific", val)}
             />
           )}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <SelectField
+          <OtherRentalSelect
             label="Pets"
-            value={rentalDetails.pets || ""}
-            onChange={set("pets")}
+            fieldKey="pets"
+            rentalDetails={rentalDetails}
+            onChange={onChange}
             options={constants?.ALLOWANCE_POLICY_OPTIONS}
           />
-          <SelectField
+          <OtherRentalSelect
             label="Smoking"
-            value={rentalDetails.smoking || ""}
-            onChange={set("smoking")}
+            fieldKey="smoking"
+            rentalDetails={rentalDetails}
+            onChange={onChange}
             options={constants?.ALLOWANCE_POLICY_OPTIONS}
           />
-          <SelectField
+          <OtherRentalSelect
             label="Alcohol"
-            value={rentalDetails.alcohol || ""}
-            onChange={set("alcohol")}
+            fieldKey="alcohol"
+            rentalDetails={rentalDetails}
+            onChange={onChange}
             options={constants?.ALLOWANCE_POLICY_OPTIONS}
           />
-          <SelectField
+          <OtherRentalSelect
             label="Guest Policy"
-            value={rentalDetails.guestPolicy || ""}
-            onChange={set("guestPolicy")}
+            fieldKey="guestPolicy"
+            rentalDetails={rentalDetails}
+            onChange={onChange}
             options={constants?.GUEST_POLICY_OPTIONS}
           />
         </div>
@@ -211,7 +227,7 @@ const RentalDetailsSection = ({ rentalDetails = {}, onChange }) => {
         <CheckItem
           label="Government Employee Preferred"
           checked={Boolean(rentalDetails.governmentEmployeePreferred)}
-          onChange={set("governmentEmployeePreferred")}
+          onChange={(val) => onChange("rentalDetails.governmentEmployeePreferred", val)}
         />
       </div>
     </Section>

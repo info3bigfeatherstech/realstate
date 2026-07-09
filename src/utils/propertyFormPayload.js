@@ -1,4 +1,24 @@
 import { formatListingTypeLabel } from "./listingType";
+import { OTHER_OPTION, getTitleOptions } from "./propertyFormConstants";
+
+export { OTHER_OPTION };
+
+export const resolveOtherField = (value, otherValues = {}, key) => {
+  if (value === OTHER_OPTION) {
+    return (otherValues?.[key] ?? "").trim();
+  }
+  return value ?? "";
+};
+
+export const splitOtherField = (savedValue, options = []) => {
+  if (!savedValue) return { value: "", other: "" };
+  const baseOptions = (options ?? []).filter((o) => o !== OTHER_OPTION);
+  if (baseOptions.includes(savedValue)) return { value: savedValue, other: "" };
+  return { value: OTHER_OPTION, other: savedValue };
+};
+
+const resolveFormField = (value, otherValues, key) =>
+  toNullIfEmpty(resolveOtherField(value, otherValues, key));
 
 export const EMPTY_RENTAL_DETAILS = {
   tenantTypeAllowed: [],
@@ -20,11 +40,13 @@ export const EMPTY_RENTAL_DETAILS = {
   preferredMoveInDate: "",
   preferredMoveInDateSpecific: "",
   governmentEmployeePreferred: false,
+  otherValues: {},
 };
 
 export const EMPTY_SALE_DETAILS = {
   possessionStatus: "",
   loanAvailability: "",
+  otherValues: {},
 };
 
 const toNullIfEmpty = (value) => (value === "" || value === undefined ? null : value);
@@ -78,6 +100,7 @@ export const mapRentalDetailsToForm = (rentalDetails) => {
     governmentEmployeePreferred: Boolean(
       rentalDetails.governmentEmployeePreferred
     ),
+    otherValues: {},
   };
 };
 
@@ -86,33 +109,71 @@ export const mapSaleDetailsToForm = (saleDetails) => {
   return {
     possessionStatus: saleDetails.possessionStatus || "",
     loanAvailability: saleDetails.loanAvailability || "",
+    otherValues: {},
   };
 };
 
 export const buildRentalDetailsPayload = (rentalDetails, listingType) => {
   if (!isRentalListingType(listingType) || !rentalDetails) return null;
 
-  const securityDeposit = toNullIfEmpty(rentalDetails.securityDeposit);
-  const availability = toNullIfEmpty(rentalDetails.availability);
-  const preferredMoveInDate = toNullIfEmpty(rentalDetails.preferredMoveInDate);
+  const otherValues = rentalDetails.otherValues || {};
+  const securityDeposit = resolveFormField(
+    rentalDetails.securityDeposit,
+    otherValues,
+    "securityDeposit"
+  );
+  const availability = resolveFormField(
+    rentalDetails.availability,
+    otherValues,
+    "availability"
+  );
+  const preferredMoveInDate = resolveFormField(
+    rentalDetails.preferredMoveInDate,
+    otherValues,
+    "preferredMoveInDate"
+  );
 
   return {
     tenantTypeAllowed: rentalDetails.tenantTypeAllowed || [],
-    occupationPreference: toNullIfEmpty(rentalDetails.occupationPreference),
+    occupationPreference: resolveFormField(
+      rentalDetails.occupationPreference,
+      otherValues,
+      "occupationPreference"
+    ),
     employmentVerification: rentalDetails.employmentVerification || [],
-    rentalAgreementDuration: toNullIfEmpty(rentalDetails.rentalAgreementDuration),
-    minimumStayDuration: toNullIfEmpty(rentalDetails.minimumStayDuration),
-    lockInPeriod: toNullIfEmpty(rentalDetails.lockInPeriod),
+    rentalAgreementDuration: resolveFormField(
+      rentalDetails.rentalAgreementDuration,
+      otherValues,
+      "rentalAgreementDuration"
+    ),
+    minimumStayDuration: resolveFormField(
+      rentalDetails.minimumStayDuration,
+      otherValues,
+      "minimumStayDuration"
+    ),
+    lockInPeriod: resolveFormField(
+      rentalDetails.lockInPeriod,
+      otherValues,
+      "lockInPeriod"
+    ),
     availability,
     availabilityDate:
       availability === "Specific Date"
         ? formatDateForApi(rentalDetails.availabilityDate)
         : null,
-    foodPreference: toNullIfEmpty(rentalDetails.foodPreference),
-    pets: toNullIfEmpty(rentalDetails.pets),
-    smoking: toNullIfEmpty(rentalDetails.smoking),
-    alcohol: toNullIfEmpty(rentalDetails.alcohol),
-    guestPolicy: toNullIfEmpty(rentalDetails.guestPolicy),
+    foodPreference: resolveFormField(
+      rentalDetails.foodPreference,
+      otherValues,
+      "foodPreference"
+    ),
+    pets: resolveFormField(rentalDetails.pets, otherValues, "pets"),
+    smoking: resolveFormField(rentalDetails.smoking, otherValues, "smoking"),
+    alcohol: resolveFormField(rentalDetails.alcohol, otherValues, "alcohol"),
+    guestPolicy: resolveFormField(
+      rentalDetails.guestPolicy,
+      otherValues,
+      "guestPolicy"
+    ),
     tenantVerification: rentalDetails.tenantVerification || [],
     securityDeposit,
     securityDepositCustomAmount:
@@ -132,13 +193,69 @@ export const buildRentalDetailsPayload = (rentalDetails, listingType) => {
 
 export const buildSaleDetailsPayload = (saleDetails, isSell) => {
   if (!isSell || !saleDetails) return null;
+  const otherValues = saleDetails.otherValues || {};
   return {
-    possessionStatus: toNullIfEmpty(saleDetails.possessionStatus),
-    loanAvailability: toNullIfEmpty(saleDetails.loanAvailability),
+    possessionStatus: resolveFormField(
+      saleDetails.possessionStatus,
+      otherValues,
+      "possessionStatus"
+    ),
+    loanAvailability: resolveFormField(
+      saleDetails.loanAvailability,
+      otherValues,
+      "loanAvailability"
+    ),
   };
 };
 
-export const mapPropertyToFormBase = (property) => {
+const mapRentalDetailsOtherFields = (rentalDetails, constants) => {
+  if (!rentalDetails) return { ...EMPTY_RENTAL_DETAILS, otherValues: {} };
+  const base = mapRentalDetailsToForm(rentalDetails);
+  const otherValues = {};
+
+  const rentalFieldOptions = {
+    occupationPreference: constants?.OCCUPATION_PREFERENCES ?? [],
+    rentalAgreementDuration: constants?.RENTAL_AGREEMENT_DURATIONS ?? [],
+    minimumStayDuration: constants?.MINIMUM_STAY_DURATIONS ?? [],
+    lockInPeriod: constants?.LOCK_IN_PERIODS ?? [],
+    availability: constants?.AVAILABILITY_OPTIONS ?? [],
+    foodPreference: constants?.FOOD_PREFERENCES ?? [],
+    securityDeposit: constants?.SECURITY_DEPOSIT_OPTIONS ?? [],
+    preferredMoveInDate: constants?.AVAILABILITY_OPTIONS ?? [],
+    pets: constants?.ALLOWANCE_POLICY_OPTIONS ?? [],
+    smoking: constants?.ALLOWANCE_POLICY_OPTIONS ?? [],
+    alcohol: constants?.ALLOWANCE_POLICY_OPTIONS ?? [],
+    guestPolicy: constants?.GUEST_POLICY_OPTIONS ?? [],
+  };
+
+  Object.entries(rentalFieldOptions).forEach(([key, options]) => {
+    const split = splitOtherField(base[key], options);
+    base[key] = split.value;
+    if (split.other) otherValues[key] = split.other;
+  });
+
+  return { ...base, otherValues };
+};
+
+const mapSaleDetailsOtherFields = (saleDetails, constants) => {
+  if (!saleDetails) return { ...EMPTY_SALE_DETAILS, otherValues: {} };
+  const base = mapSaleDetailsToForm(saleDetails);
+  const otherValues = {};
+
+  ["possessionStatus", "loanAvailability"].forEach((key) => {
+    const options =
+      key === "possessionStatus"
+        ? constants?.POSSESSION_STATUSES ?? []
+        : constants?.LOAN_AVAILABILITY ?? [];
+    const split = splitOtherField(base[key], options);
+    base[key] = split.value;
+    if (split.other) otherValues[key] = split.other;
+  });
+
+  return { ...base, otherValues };
+};
+
+export const mapPropertyToFormBase = (property, constants = null) => {
   const imagesObj = {};
   if (property.media?.length) {
     property.media.forEach((mediaItem) => {
@@ -184,16 +301,51 @@ export const mapPropertyToFormBase = (property) => {
     });
   }
 
+  const listingType = formatListingTypeLabel(property.listingType) || "";
+  const otherValues = {};
+
+  const splitCore = (key, options) => {
+    const split = splitOtherField(property[key], options);
+    if (split.other) otherValues[key] = split.other;
+    return split.value;
+  };
+
+  const titleOptions = getTitleOptions(listingType);
+  const titleSplit = splitOtherField(property.title || "", titleOptions);
+  if (titleSplit.other) otherValues.title = titleSplit.other;
+
+  const stateValue = property.location?.state || "Maharashtra";
+  let stateForm = stateValue;
+  if (constants) {
+    const stateSplit = splitOtherField(stateValue, constants.INDIAN_STATE_NAMES ?? []);
+    stateForm = stateSplit.value || stateValue;
+    if (stateSplit.other) otherValues.state = stateSplit.other;
+  }
+
   return {
-    listingType: formatListingTypeLabel(property.listingType) || "",
-    propertyType: property.propertyType || "",
-    ownershipType: property.ownershipType || "Freehold",
-    title: property.title || "",
+    listingType: constants
+      ? splitCore("listingType", constants.LISTING_TYPES ?? []) || listingType
+      : listingType,
+    propertyType: constants
+      ? splitCore("propertyType", constants.PROPERTY_TYPES ?? [])
+      : property.propertyType || "",
+    ownershipType: constants
+      ? splitCore("ownershipType", constants.OWNERSHIP_TYPES ?? [])
+      : property.ownershipType || "Freehold",
+    title: constants ? titleSplit.value : property.title || "",
     description: property.description || "",
-    condition: property.condition || "Brand New",
-    constructionStatus: property.constructionStatus || "Ready to Move",
-    furnishing: property.furnishing || "Unfurnished",
-    facing: property.facing || "North",
+    condition: constants
+      ? splitCore("condition", constants.PROPERTY_CONDITIONS ?? [])
+      : property.condition || "Brand New",
+    constructionStatus: constants
+      ? splitCore("constructionStatus", constants.CONSTRUCTION_STATUSES ?? [])
+      : property.constructionStatus || "Ready to Move",
+    furnishing: constants
+      ? splitCore("furnishing", constants.FURNISHING_STATUSES ?? [])
+      : property.furnishing || "Unfurnished",
+    facing: constants
+      ? splitCore("facing", constants.FACING_DIRECTIONS ?? [])
+      : property.facing || "North",
     areaValue: property.area?.value ?? "",
     price: property.price ?? "",
     roi: property.roi ?? "",
@@ -201,39 +353,65 @@ export const mapPropertyToFormBase = (property) => {
     bathrooms: property.bathrooms ?? "",
     floorNo: property.floorNo ?? "",
     totalFloors: property.totalFloors ?? "",
-    flooringType: property.flooringType || "Marble",
+    flooringType: constants
+      ? splitCore("flooringType", constants.FLOORING_TYPES ?? [])
+      : property.flooringType || "Marble",
     maintenance: property.maintenance ?? "",
-    waterSupply: property.waterSupply || "Municipal Water",
-    powerBackup: property.powerBackup || "No Backup",
-    parkingType: property.parkingType || "No Parking",
+    waterSupply: constants
+      ? splitCore("waterSupply", constants.WATER_SUPPLY_TYPES ?? [])
+      : property.waterSupply || "Municipal Water",
+    powerBackup: constants
+      ? splitCore("powerBackup", constants.POWER_BACKUP_TYPES ?? [])
+      : property.powerBackup || "No Backup",
+    parkingType: constants
+      ? splitCore("parkingType", constants.PARKING_TYPES ?? [])
+      : property.parkingType || "No Parking",
     securityFeatures: property.securityFeatures || [],
     amenities: property.amenities || [],
     connectivity: property.connectivity || [],
     nearbyFacilities: property.nearbyFacilities || [],
     fullAddress: property.location?.fullAddress || "",
     city: property.location?.city || "",
-    state: property.location?.state || "Maharashtra",
+    state: stateForm,
     pincode: property.location?.pincode || "",
     latitude: property.location?.latitude ?? "",
     longitude: property.location?.longitude ?? "",
-    rentalDetails: mapRentalDetailsToForm(property.rentalDetails),
-    saleDetails: mapSaleDetailsToForm(property.saleDetails),
+    otherValues,
+    rentalDetails: constants
+      ? mapRentalDetailsOtherFields(property.rentalDetails, constants)
+      : mapRentalDetailsToForm(property.rentalDetails),
+    saleDetails: constants
+      ? mapSaleDetailsOtherFields(property.saleDetails, constants)
+      : mapSaleDetailsToForm(property.saleDetails),
     images: imagesObj,
     documents: documentsObj,
   };
 };
 
-export const buildCorePropertyPayload = (formData) => ({
-  listingType: formData.listingType,
-  propertyType: formData.propertyType,
-  ownershipType: toNullIfEmpty(formData.ownershipType),
-  title: formData.title,
-  description: formData.description || "",
-  condition: toNullIfEmpty(formData.condition),
-  constructionStatus: toNullIfEmpty(formData.constructionStatus),
-  furnishing: toNullIfEmpty(formData.furnishing),
-  facing: toNullIfEmpty(formData.facing),
-  flooringType: toNullIfEmpty(formData.flooringType),
+export const buildCorePropertyPayload = (formData) => {
+  const otherValues = formData.otherValues || {};
+
+  return {
+    listingType: resolveOtherField(formData.listingType, otherValues, "listingType"),
+    propertyType: resolveOtherField(formData.propertyType, otherValues, "propertyType"),
+    ownershipType: toNullIfEmpty(
+      resolveOtherField(formData.ownershipType, otherValues, "ownershipType")
+    ),
+    title: resolveOtherField(formData.title, otherValues, "title"),
+    description: formData.description || "",
+    condition: toNullIfEmpty(
+      resolveOtherField(formData.condition, otherValues, "condition")
+    ),
+    constructionStatus: toNullIfEmpty(
+      resolveOtherField(formData.constructionStatus, otherValues, "constructionStatus")
+    ),
+    furnishing: toNullIfEmpty(
+      resolveOtherField(formData.furnishing, otherValues, "furnishing")
+    ),
+    facing: toNullIfEmpty(resolveOtherField(formData.facing, otherValues, "facing")),
+    flooringType: toNullIfEmpty(
+      resolveOtherField(formData.flooringType, otherValues, "flooringType")
+    ),
   area: {
     value: toNumberOrNull(formData.areaValue) ?? 0,
     unit: "sqft",
@@ -245,22 +423,29 @@ export const buildCorePropertyPayload = (formData) => ({
   bathrooms: toNumberOrNull(formData.bathrooms),
   floorNo: toNumberOrNull(formData.floorNo),
   totalFloors: toNumberOrNull(formData.totalFloors),
-  waterSupply: toNullIfEmpty(formData.waterSupply),
-  powerBackup: toNullIfEmpty(formData.powerBackup),
-  parkingType: toNullIfEmpty(formData.parkingType),
+  waterSupply: toNullIfEmpty(
+    resolveOtherField(formData.waterSupply, otherValues, "waterSupply")
+  ),
+  powerBackup: toNullIfEmpty(
+    resolveOtherField(formData.powerBackup, otherValues, "powerBackup")
+  ),
+  parkingType: toNullIfEmpty(
+    resolveOtherField(formData.parkingType, otherValues, "parkingType")
+  ),
   securityFeatures: formData.securityFeatures || [],
   amenities: formData.amenities || [],
   connectivity: formData.connectivity || [],
   nearbyFacilities: formData.nearbyFacilities || [],
   location: {
-    fullAddress: formData.fullAddress,
+    fullAddress: formData.fullAddress || "",
     city: formData.city,
-    state: formData.state,
+    state: toNullIfEmpty(resolveOtherField(formData.state, otherValues, "state")),
     pincode: formData.pincode,
     latitude: toNumberOrNull(formData.latitude) ?? undefined,
     longitude: toNumberOrNull(formData.longitude) ?? undefined,
   },
-});
+};
+};
 
 /** Map document type label → form key (edit/delete tracking) */
 export const DOCUMENT_TYPE_TO_KEY = {
@@ -307,20 +492,23 @@ export const buildFullPropertyPayload = (formData, { isSell }) => {
 };
 
 const REQUIRED_PROPERTY_FIELDS = [
-  { key: "listingType", label: "Listing Type" },
-  { key: "propertyType", label: "Property Type" },
-  { key: "title", label: "Listing Title" },
+  { key: "listingType", label: "Listing Type", otherKey: "listingType" },
+  { key: "propertyType", label: "Property Type", otherKey: "propertyType" },
+  { key: "title", label: "Listing Title", otherKey: "title" },
   { key: "price", label: "Price" },
-  { key: "fullAddress", label: "Full Address" },
   { key: "city", label: "City" },
-  { key: "state", label: "State" },
+  { key: "state", label: "State", otherKey: "state" },
   { key: "pincode", label: "Pincode" },
 ];
 
 export const getPropertyRequiredFieldErrors = (formData) => {
+  const otherValues = formData?.otherValues || {};
   const missing = REQUIRED_PROPERTY_FIELDS
-    .filter(({ key }) => {
-      const value = formData?.[key];
+    .filter(({ key, otherKey }) => {
+      const raw = formData?.[key];
+      const value = otherKey
+        ? resolveOtherField(raw, otherValues, otherKey)
+        : raw;
       return value === undefined || value === null || String(value).trim() === "";
     })
     .map(({ label }) => label);

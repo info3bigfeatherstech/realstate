@@ -45,8 +45,9 @@ const INITIAL_FORM = {
     pincode: "",
     latitude: "",
     longitude: "",
-    rentalDetails: { ...EMPTY_RENTAL_DETAILS },
-    saleDetails: { ...EMPTY_SALE_DETAILS },
+    otherValues: {},
+    rentalDetails: { ...EMPTY_RENTAL_DETAILS, otherValues: {} },
+    saleDetails: { ...EMPTY_SALE_DETAILS, otherValues: {} },
     images: {},
     documents: {},
 };

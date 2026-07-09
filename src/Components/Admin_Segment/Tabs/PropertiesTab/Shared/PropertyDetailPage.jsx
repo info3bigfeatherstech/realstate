@@ -53,6 +53,14 @@ const DetailCard = ({ label, value }) => (
     </div>
 );
 
+const formatActorDetails = (actor) => {
+    if (!actor) return "—";
+    const displayName = actor.name || actor.fullName || "—";
+    const emailPart = actor.email ? ` (${actor.email})` : "";
+    const typePart = actor.accountType || actor.role ? ` - ${actor.accountType || actor.role}` : "";
+    return `${displayName}${emailPart}${typePart}`;
+};
+
 const TagPill = ({ label, color = "blue" }) => {
     const colors = {
         blue: "bg-blue-50 text-blue-700",
@@ -396,7 +404,7 @@ const PropertyDetailPage = () => {
                         </div>
                         <div>
                             <p className="text-slate-500">Created By</p>
-                            <p className="text-slate-800 font-semibold">{property.createdBy?.name} ({property.createdBy?.email})</p>
+                            <p className="text-slate-800 font-semibold">{formatActorDetails(property.createdBy)}</p>
                         </div>
                         {property.publishedAt && (
                             <div>
