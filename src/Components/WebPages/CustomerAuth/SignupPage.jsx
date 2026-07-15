@@ -3,10 +3,12 @@ import React, { useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Loader2, UserPlus, Eye, EyeOff, Building2, CheckCircle2 } from "lucide-react";
 import { useRegisterMutation } from "../../../REDUX_FEATURES/REDUX_SLICES/customerAuth/customerAuthApi";
-import { setPendingVerificationEmail } from "../../../REDUX_FEATURES/REDUX_SLICES/customerAuth/customerAuthSlice";
+import { setPendingVerificationEmail, setCustomerCredentials } from "../../../REDUX_FEATURES/REDUX_SLICES/customerAuth/customerAuthSlice";
 import { useDispatch } from "react-redux";
 import { toast, getApiErrorMessage } from "../../Shared/ToastConfig";
 import { getReturnUrl } from "../../../utils/inquiryFormDraft";
+import GoogleAuthProvider from "./GoogleAuthProvider";
+import GoogleAuthButton from "./GoogleAuthButton";
 
 const ACCOUNT_TYPES = [
   { value: "seeker", label: "Property Seeker", desc: "Looking to rent or buy" },
@@ -52,11 +54,22 @@ const SignupPage = () => {
     }
   };
 
+  const finishGoogleAuth = async (result) => {
+    if (!result?.user || !result?.accessToken) {
+      toast.error("Google signup succeeded but session data was incomplete. Please try again.");
+      return;
+    }
+    dispatch(setCustomerCredentials({ user: result.user, accessToken: result.accessToken }));
+    toast.success("Signed up with Google successfully");
+    navigate(returnUrl, { replace: true });
+  };
+
   const loginHref = searchParams.get("returnUrl")
     ? `/login?returnUrl=${searchParams.get("returnUrl")}`
     : "/customer/login";
 
   return (
+    <GoogleAuthProvider>
     <div className="min-h-screen w-full flex bg-white">
       {/* LEFT BRAND PANEL — hidden on mobile/tablet, visible from lg up */}
       <div className="hidden lg:flex lg:w-[42%] xl:w-[38%] relative bg-gradient-to-br from-slate-900 to-slate-800 text-white flex-col justify-between p-10 xl:p-14">
@@ -114,6 +127,53 @@ const SignupPage = () => {
               Register as <strong>Property Seeker</strong> to submit your accommodation inquiry.
             </p>
           )}
+
+          <GoogleAuthButton
+            onAuthenticated={finishGoogleAuth}
+            lockedAccountType={fromEnquiry ? "seeker" : undefined}
+            disabled={isLoading}
+            text="signup_with"
+          />
+
+          <div className="relative my-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-slate-200" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase tracking-wide">
+              <span className="bg-white px-3 text-slate-400 font-semibold">or sign up with email</span>
+            </div>
+          </div>
+
+          <div className="mb-5">
+            <label className="text-xs font-semibold text-slate-600 mb-2 block">Register as</label>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+              {ACCOUNT_TYPES.map((type) => {
+                const isSelected = form.accountType === type.value;
+                const isDisabled = fromEnquiry && type.value !== "seeker";
+                return (
+                  <label
+                    key={type.value}
+                    className={`relative flex flex-col gap-0.5 p-3 rounded-lg border cursor-pointer transition-all ${isSelected
+                        ? "border-blue-600 bg-blue-50 ring-1 ring-blue-600"
+                        : "border-slate-200 hover:border-slate-300"
+                      } ${isDisabled ? "opacity-50 cursor-not-allowed" : ""}`}
+                  >
+                    <input
+                      type="radio"
+                      name="accountType"
+                      value={type.value}
+                      checked={isSelected}
+                      disabled={isDisabled}
+                      onChange={() => setForm({ ...form, accountType: type.value })}
+                      className="sr-only"
+                    />
+                    <p className="text-sm font-semibold text-slate-800">{type.label}</p>
+                    <p className="text-xs text-slate-500 leading-snug">{type.desc}</p>
+                  </label>
+                );
+              })}
+            </div>
+          </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -176,37 +236,6 @@ const SignupPage = () => {
               </div>
             </div>
 
-            <div>
-              <label className="text-xs font-semibold text-slate-600 mb-2 block">Register as</label>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                {ACCOUNT_TYPES.map((type) => {
-                  const isSelected = form.accountType === type.value;
-                  const isDisabled = fromEnquiry && type.value !== "seeker";
-                  return (
-                    <label
-                      key={type.value}
-                      className={`relative flex flex-col gap-0.5 p-3 rounded-lg border cursor-pointer transition-all ${isSelected
-                          ? "border-blue-600 bg-blue-50 ring-1 ring-blue-600"
-                          : "border-slate-200 hover:border-slate-300"
-                        } ${isDisabled ? "opacity-50 cursor-not-allowed" : ""}`}
-                    >
-                      <input
-                        type="radio"
-                        name="accountType"
-                        value={type.value}
-                        checked={isSelected}
-                        disabled={isDisabled}
-                        onChange={() => setForm({ ...form, accountType: type.value })}
-                        className="sr-only"
-                      />
-                      <p className="text-sm font-semibold text-slate-800">{type.label}</p>
-                      <p className="text-xs text-slate-500 leading-snug">{type.desc}</p>
-                    </label>
-                  );
-                })}
-              </div>
-            </div>
-
             <button
               type="submit"
               disabled={isLoading}
@@ -226,6 +255,7 @@ const SignupPage = () => {
         </div>
       </div>
     </div>
+    </GoogleAuthProvider>
   );
 };
 

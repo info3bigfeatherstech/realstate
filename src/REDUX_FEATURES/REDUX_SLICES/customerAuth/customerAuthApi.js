@@ -37,6 +37,10 @@ export const customerAuthApi = createApi({
       query: (body) => ({ url: "/customer/auth/login", method: "POST", body }),
       transformResponse: (response) => response.data,
     }),
+    googleLogin: builder.mutation({
+      query: (body) => ({ url: "/customer/auth/google", method: "POST", body }),
+      transformResponse: (response) => response.data,
+    }),
     refreshToken: builder.mutation({
       query: () => ({ url: "/customer/auth/refresh-token", method: "POST", body: {} }),
       transformResponse: (response) => response.data,
@@ -57,6 +61,7 @@ export const {
   useVerifyOtpMutation,
   useResendOtpMutation,
   useLoginMutation,
+  useGoogleLoginMutation,
   useRefreshTokenMutation,
   useLogoutMutation,
   useGetMeQuery,
