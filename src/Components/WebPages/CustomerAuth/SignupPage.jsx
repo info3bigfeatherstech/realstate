@@ -80,7 +80,7 @@ const SignupPage = () => {
       <div className="min-h-screen w-full bg-slate-50 flex items-center justify-center px-4 py-10 sm:py-14">
         <div className="w-full max-w-md">
           <div className="bg-white rounded-2xl border border-slate-200 shadow-sm px-5 sm:px-8 py-7 sm:py-9">
-            <div className="flex items-center gap-2 mb-6">
+            <div className="flex items-center justify-center gap-2 mb-6">
               <Building2 className="w-6 h-6 text-blue-600 shrink-0" />
               <span className="text-base font-bold text-slate-800">Mehta Estates</span>
             </div>
