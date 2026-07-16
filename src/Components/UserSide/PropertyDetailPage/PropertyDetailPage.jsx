@@ -321,15 +321,15 @@ export default function PropertyDetailPage() {
                         </div>
 
                         {/* CTA buttons — hidden on mobile (sticky bar handles it) */}
-                        <div className="hidden lg:grid grid-cols-2 gap-3">
-                            <button className="flex w-full items-center justify-center gap-2.5 rounded-2xl bg-[#111] py-4 text-[14px] font-bold text-white transition hover:bg-[#333] active:scale-[0.99]">
+                      <div className="hidden lg:grid grid-cols-2 gap-3">
+                            <a href="tel:+919873085801" className="flex w-full items-center justify-center gap-2.5 rounded-2xl bg-[#111] py-4 text-[14px] font-bold text-white transition hover:bg-[#333] active:scale-[0.99]">
                                 <Phone size={16} />
                                 Schedule a Visit
-                            </button>
-                            <button className="flex w-full items-center justify-center gap-2.5 rounded-2xl border border-[#DCDCDC] bg-white py-4 text-[14px] font-bold text-[#111] transition hover:border-[#111] hover:bg-[#F5F5F5]">
+                            </a>
+                            <a href="mailto:mehtaestatesncr@gmail.com" className="flex w-full items-center justify-center gap-2.5 rounded-2xl border border-[#DCDCDC] bg-white py-4 text-[14px] font-bold text-[#111] transition hover:border-[#111] hover:bg-[#F5F5F5]">
                                 <Mail size={16} />
                                 Send Enquiry
-                            </button>
+                            </a>
                         </div>
 
                     </div>
@@ -467,14 +467,14 @@ export default function PropertyDetailPage() {
             {/* ── Mobile Sticky Bottom CTA Bar ── */}
             <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-[#EBEBEB] bg-white/95 px-4 py-3 backdrop-blur-md lg:hidden">
                 <div className="grid grid-cols-2 gap-3">
-                    <button className="flex items-center justify-center gap-2 rounded-xl bg-[#111] py-3.5 text-[14px] font-bold text-white transition hover:bg-[#333] active:scale-[0.99]">
+                    <a href="tel:+919873085801" className="flex items-center justify-center gap-2 rounded-xl bg-[#111] py-3.5 text-[14px] font-bold text-white transition hover:bg-[#333] active:scale-[0.99]">
                         <Phone size={15} />
                         Schedule Visit
-                    </button>
-                    <button className="flex items-center justify-center gap-2 rounded-xl border border-[#DCDCDC] bg-white py-3.5 text-[14px] font-bold text-[#111] transition hover:border-[#111]">
+                    </a>
+                    <a href="mailto:mehtaestatesncr@gmail.com" className="flex items-center justify-center gap-2 rounded-xl border border-[#DCDCDC] bg-white py-3.5 text-[14px] font-bold text-[#111] transition hover:border-[#111]">
                         <Mail size={15} />
                         Send Enquiry
-                    </button>
+                    </a>
                 </div>
             </div>
         </div>
