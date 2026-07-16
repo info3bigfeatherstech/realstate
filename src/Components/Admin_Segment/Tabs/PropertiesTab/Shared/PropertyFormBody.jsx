@@ -536,14 +536,16 @@ const PropertyFormBody = ({ formData, onChange }) => {
                             />
                         </div>
                         <InputField label="City" required placeholder="Enter City" value={formData.city} onChange={set("city")} />
-                        <OtherSelect
-                            label="State"
-                            required
-                            fieldKey="state"
-                            formData={formData}
-                            onChange={onChange}
-                            options={stateNames}
-                        />
+                        <Field label="State" required>
+                            <select
+                                className={inputCls}
+                                value={formData.state ?? ""}
+                                onChange={(e) => onChange("state", e.target.value)}
+                            >
+                                <option value="">Select State</option>
+                                <option value="Delhi">Delhi</option>
+                            </select>
+                        </Field>
                         <InputField label="Pincode" required placeholder="Enter pincode" value={formData.pincode} onChange={set("pincode")} />
                         <InputField label="Latitude" placeholder="optional" value={formData.latitude} onChange={set("latitude")} />
                         <InputField label="Longitude" placeholder="optional" value={formData.longitude} onChange={set("longitude")} />

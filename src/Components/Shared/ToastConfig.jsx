@@ -8,7 +8,7 @@ export { getApiErrorMessage };
 /** Single source for all toast timing, theme, and styling. */
 export const APP_TOAST_SETTINGS = {
     position: "top-right",
-    autoClose: 3000,
+    autoClose: 2000,
     hideProgressBar: false,
     newestOnTop: true,
     closeOnClick: true,
@@ -45,8 +45,9 @@ const ToastConfig = () => {
             pauseOnHover={APP_TOAST_SETTINGS.pauseOnHover}
             draggable={APP_TOAST_SETTINGS.draggable}
             theme={APP_TOAST_SETTINGS.theme}
-            toastClassName="!bg-white !border !border-gray-300 !rounded !shadow-md !text-sm !text-gray-800"
-            bodyClassName="!text-sm !font-normal !text-gray-800"
+            className="!w-72 sm:!w-96 !max-w-[90vw] !fixed !top-4 !right-4 !left-auto"
+            toastClassName="!bg-white !border !border-slate-200 !rounded-xl !shadow-lg !text-xs sm:!text-sm !text-slate-800 !min-h-[48px] !mb-2"
+            bodyClassName="!text-xs sm:!text-sm !font-medium !text-slate-800 !p-1"
             progressClassName="!bg-blue-700"
         />
     );
