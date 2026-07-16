@@ -200,7 +200,7 @@ const GoogleAuthButton = ({
       )}
 
       {needsProfileType && (
-        <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 space-y-3">
+        <div className="space-y-4">
           <div>
             <p className="text-sm font-semibold text-slate-800">How do you want to use Mehta Estates?</p>
             <p className="text-xs text-slate-500 mt-1">
