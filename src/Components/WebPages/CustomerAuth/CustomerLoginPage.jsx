@@ -90,14 +90,14 @@ const CustomerLoginPage = () => {
                   </div>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-5">
+                <form onSubmit={handleSubmit} autoComplete="off" className="space-y-5">
                   <div>
                     <label className={labelCls}>Email or mobile</label>
                     <input
                       className={inputCls}
                       type="text"
                       required
-                      autoComplete="username"
+                      autoComplete="nope"
                       placeholder="you@example.com or 10-digit mobile"
                       value={form.identifier}
                       onChange={(e) => {
@@ -119,7 +119,7 @@ const CustomerLoginPage = () => {
                         className={`${inputCls} pr-10`}
                         type={showPassword ? "text" : "password"}
                         required
-                        autoComplete="current-password"
+                        autoComplete="new-password"
                         placeholder="Enter your password"
                         value={form.password}
                         onChange={(e) => setForm({ ...form, password: e.target.value })}

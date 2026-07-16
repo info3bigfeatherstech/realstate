@@ -151,13 +151,14 @@ const SignupPage = () => {
                   </div>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} autoComplete="off" className="space-y-4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className={labelCls}>Full Name</label>
                       <input
                         className={inputCls}
                         required
+                        autoComplete="nope"
                         placeholder="Enter your full name"
                         value={form.fullName}
                         onChange={(e) => setForm({ ...form, fullName: e.target.value })}
@@ -170,6 +171,7 @@ const SignupPage = () => {
                       <input
                         className={inputCls}
                         type="email"
+                        autoComplete="nope"
                         placeholder="you@example.com"
                         value={form.email}
                         onChange={(e) => setForm({ ...form, email: e.target.value })}
@@ -181,29 +183,18 @@ const SignupPage = () => {
                     <div>
                       <label className={labelCls}>Mobile</label>
                        <input
-
                         className={inputCls}
-
                         type="tel"
-
                         required
-
+                        autoComplete="nope"
                         value={form.mobile}
-
                         onChange={(e) => {
-
                           const val = e.target.value.replace(/\D/g, "");
-
                           if (val.length <= 10) {
-
                             setForm({ ...form, mobile: val });
-
                           }
-
                         }}
-
                         placeholder="10-digit mobile number"
-
                       />
                     </div>
                     <div>
@@ -213,6 +204,7 @@ const SignupPage = () => {
                           className={`${inputCls} pr-10`}
                           type={showPassword ? "text" : "password"}
                           required
+                          autoComplete="new-password"
                           minLength={8}
                           placeholder="At least 8 characters"
                           value={form.password}
