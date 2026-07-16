@@ -90,7 +90,7 @@ export default function PropertyCard({ property, onClick }) {
 
                 {/* Title */}
                 <div className="flex items-start justify-between gap-2 mb-3">
-                    <h3 className="text-[15px] font-bold text-[#111] leading-snug line-clamp-1 tracking-tight flex-1">
+                    <h3 className="text-[15px] font-bold text-[#111] leading-snug line-clamp-1 tracking-tight uppercase flex-1">
                         {property.title}
                     </h3>
                     <div className="shrink-0 flex h-6 w-6 items-center justify-center rounded-full border border-[#E5E5E5] transition-all duration-200 group-hover:border-[#111] group-hover:bg-[#111]">
